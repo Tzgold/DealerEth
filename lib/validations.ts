@@ -21,6 +21,7 @@ export const creatorProfileSchema = z.object({
     .max(30)
     .regex(/^[a-z0-9_]+$/, "Username must use lowercase letters, numbers, and underscore only."),
   name: z.string().min(2),
+  avatarUrl: z.string().url("Avatar URL must be a valid URL.").optional().or(z.literal("")),
   tiktokHandle: z.string().min(2),
   bio: z.string().min(10).max(280),
   niche: z.string().min(2),
@@ -34,6 +35,7 @@ export const creatorProfileSchema = z.object({
 
 export const clientProfileSchema = z.object({
   companyName: z.string().min(2),
+  avatarUrl: z.string().url("Avatar URL must be a valid URL.").optional().or(z.literal("")),
   contactName: z.string().min(2),
   industry: z.string().min(2),
   website: z.string().url("Website must be a valid URL.").optional().or(z.literal("")),

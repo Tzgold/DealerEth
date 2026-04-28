@@ -17,14 +17,14 @@ function RoleModal({ open, onClose }: { open: boolean; onClose: () => void }) {
         <p className="mt-1 text-sm text-zinc-600">Choose how you want to use DealerEth.</p>
 
         <div className="mt-5 grid gap-3">
-          <Link href="/signup" className="rounded-2xl border border-cyan-200 bg-cyan-50/70 p-4 transition hover:bg-cyan-50">
+          <a href="/login" className="rounded-2xl border border-cyan-200 bg-cyan-50/70 p-4 transition hover:bg-cyan-50">
             <p className="font-semibold">I&apos;m a Creator</p>
-            <p className="text-xs text-zinc-600">Get your profile link and receive deal requests.</p>
-          </Link>
-          <Link href="/client/signup" className="rounded-2xl border border-zinc-200 bg-zinc-50/70 p-4 transition hover:bg-zinc-50">
+            <p className="text-xs text-zinc-600">Log in to manage your profile and receive deal requests.</p>
+          </a>
+          <a href="/client/login" className="rounded-2xl border border-zinc-200 bg-zinc-50/70 p-4 transition hover:bg-zinc-50">
             <p className="font-semibold">I&apos;m a Brand</p>
-            <p className="text-xs text-zinc-600">Find creators and launch campaigns.</p>
-          </Link>
+            <p className="text-xs text-zinc-600">Log in to find creators and launch campaigns.</p>
+          </a>
         </div>
 
         <button className="mt-5 text-sm font-medium text-zinc-600 underline" onClick={onClose}>
@@ -208,8 +208,8 @@ export function LandingExperience() {
             </p>
 
             <div className="mt-8 grid gap-3 sm:grid-cols-2">
-              <button
-                onClick={() => setOpen(true)}
+              <a
+                href="/login"
                 className="group relative flex items-start justify-between gap-3 overflow-hidden rounded-[24px_8px_24px_8px] border border-cyan-200/80 bg-gradient-to-br from-cyan-50 via-white to-cyan-100/60 p-4 text-left shadow-sm transition duration-300 hover:-translate-y-1 hover:rotate-[-0.6deg] hover:shadow-[0_20px_45px_rgba(37,244,238,0.22)]"
               >
                 <span className="absolute -right-8 -top-8 h-16 w-16 rounded-full bg-cyan-300/35 blur-xl transition group-hover:scale-125" />
@@ -223,10 +223,10 @@ export function LandingExperience() {
                   </div>
                 </div>
                 <Arrow className="mt-1 h-5 w-5 text-[#25F4EE] transition group-hover:translate-x-0.5" />
-              </button>
+              </a>
 
-              <button
-                onClick={() => setOpen(true)}
+              <a
+                href="/client/login"
                 className="group relative flex items-start justify-between gap-3 overflow-hidden rounded-[8px_24px_8px_24px] border border-rose-200/80 bg-gradient-to-br from-rose-50 via-white to-rose-100/60 p-4 text-left shadow-sm transition duration-300 hover:-translate-y-1 hover:rotate-[0.6deg] hover:shadow-[0_20px_45px_rgba(254,44,85,0.24)]"
               >
                 <span className="absolute -left-8 -bottom-8 h-16 w-16 rounded-full bg-rose-300/35 blur-xl transition group-hover:scale-125" />
@@ -240,12 +240,12 @@ export function LandingExperience() {
                   </div>
                 </div>
                 <Arrow className="mt-1 h-5 w-5 text-[#FE2C55] transition group-hover:translate-x-0.5" />
-              </button>
+              </a>
             </div>
 
             <div className="mt-8 flex flex-wrap items-center gap-3 text-sm text-zinc-600">
               <div className="flex -space-x-2">
-                {["/landing/avatar-1.svg", "/landing/avatar-2.svg", "/landing/avatar-3.svg", "/landing/avatar-4.svg"].map((src, index) => (
+                {["/landing/face-1.jpg", "/landing/face-2.jpg", "/landing/face-3.jpg", "/landing/face-4.jpg"].map((src, index) => (
                   <Image
                     key={src}
                     src={src}
@@ -419,18 +419,18 @@ export function LandingExperience() {
             <p className="mt-3 max-w-md text-sm text-zinc-300">Join DealerEth today and start creating impactful collaborations.</p>
           </div>
           <div className="flex flex-wrap gap-3">
-            <button
-              onClick={() => setOpen(true)}
+            <a
+              href="/login"
               className="rounded-xl bg-gradient-to-r from-[#25F4EE] to-[#FE2C55] px-6 py-3 text-sm font-extrabold text-white shadow-[0_12px_30px_rgba(254,44,85,0.25)] transition hover:-translate-y-0.5 hover:shadow-[0_16px_34px_rgba(254,44,85,0.35)]"
             >
               I&apos;m a Creator
-            </button>
-            <button
-              onClick={() => setOpen(true)}
+            </a>
+            <a
+              href="/client/login"
               className="rounded-xl border border-white/25 bg-white/5 px-6 py-3 text-sm font-extrabold transition hover:-translate-y-0.5 hover:bg-white/10"
             >
               I&apos;m a Brand
-            </button>
+            </a>
           </div>
         </div>
       </section>

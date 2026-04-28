@@ -4,6 +4,37 @@ import { prisma } from "@/lib/prisma";
 import { getSessionUser } from "@/lib/session";
 import { clientProfileSchema } from "@/lib/validations";
 
+export async function GET() {
+  const session = await getSessionUser();
+
+  if (!session) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  if (session.role !== "CLIENT") {
+    return NextResponse.json({ error: "Client profile is only available for client accounts." }, { status: 403 });
+  }
+
+  const user = await prisma.user.findUnique({
+    where: { id: session.userId },
+    select: {
+      email: true,
+      googleAvatarUrl: true,
+      googleDisplayName: true,
+      clientProfile: true,
+    },
+  });
+
+  return NextResponse.json({
+    profile: user?.clientProfile ?? null,
+    defaults: {
+      avatarUrl: user?.googleAvatarUrl ?? "",
+      contactName: user?.googleDisplayName ?? "",
+      email: user?.email ?? "",
+    },
+  });
+}
+
 export async function POST(request: Request) {
   const session = await getSessionUser();
 
@@ -23,6 +54,7 @@ export async function POST(request: Request) {
       create: {
         userId: session.userId,
         companyName: payload.companyName,
+        avatarUrl: payload.avatarUrl || null,
         contactName: payload.contactName,
         industry: payload.industry,
         website: payload.website || null,
@@ -30,6 +62,7 @@ export async function POST(request: Request) {
       },
       update: {
         companyName: payload.companyName,
+        avatarUrl: payload.avatarUrl || null,
         contactName: payload.contactName,
         industry: payload.industry,
         website: payload.website || null,

@@ -13,13 +13,22 @@ enum UserRole {
 }
 
 model User {
-  id            String          @id @default(cuid())
-  email         String          @unique
-  password      String
-  role          UserRole        @default(CREATOR)
-  createdAt     DateTime        @default(now())
-  profile       CreatorProfile?
-  clientProfile ClientProfile?
+  id                String          @id @default(cuid())
+  email             String          @unique
+  password          String
+  role              UserRole        @default(CREATOR)
+  authProvider      String          @default("local")
+  googleSub         String?         @unique
+  googleDisplayName String?
+  googleAvatarUrl   String?
+  tiktokOpenId      String?         @unique
+  tiktokUsername    String?
+  tiktokDisplayName String?
+  tiktokAvatarUrl   String?
+  tiktokFollowers   Int?
+  createdAt         DateTime        @default(now())
+  profile           CreatorProfile?
+  clientProfile     ClientProfile?
 }
 
 model CreatorProfile {
@@ -27,6 +36,7 @@ model CreatorProfile {
   userId       String        @unique
   username     String        @unique
   name         String
+  avatarUrl    String?
   tiktokHandle String
   bio          String
   niche        String
@@ -57,6 +67,7 @@ model ClientProfile {
   id          String         @id @default(cuid())
   userId      String         @unique
   companyName String
+  avatarUrl   String?
   contactName String
   industry    String
   website     String?

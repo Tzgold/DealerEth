@@ -4,6 +4,43 @@ import { prisma } from "@/lib/prisma";
 import { getSessionUser } from "@/lib/session";
 import { creatorProfileSchema } from "@/lib/validations";
 
+export async function GET() {
+  const session = await getSessionUser();
+
+  if (!session) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  if (session.role !== "CREATOR") {
+    return NextResponse.json({ error: "Creator profile is only available for creator accounts." }, { status: 403 });
+  }
+
+  const user = await prisma.user.findUnique({
+    where: { id: session.userId },
+    select: {
+      email: true,
+      googleAvatarUrl: true,
+      googleDisplayName: true,
+      tiktokAvatarUrl: true,
+      tiktokUsername: true,
+      tiktokDisplayName: true,
+      tiktokFollowers: true,
+      profile: true,
+    },
+  });
+
+  return NextResponse.json({
+    profile: user?.profile ?? null,
+    defaults: {
+      name: user?.tiktokDisplayName ?? user?.googleDisplayName ?? "",
+      avatarUrl: user?.tiktokAvatarUrl ?? user?.googleAvatarUrl ?? "",
+      tiktokHandle: user?.tiktokUsername ? `@${user.tiktokUsername.replace(/^@+/, "")}` : "",
+      followers: user?.tiktokFollowers ?? "",
+      email: user?.email ?? "",
+    },
+  });
+}
+
 export async function POST(request: Request) {
   const session = await getSessionUser();
 
@@ -34,6 +71,7 @@ export async function POST(request: Request) {
         userId: session.userId,
         username: payload.username,
         name: payload.name,
+        avatarUrl: payload.avatarUrl || null,
         tiktokHandle: payload.tiktokHandle,
         bio: payload.bio,
         niche: payload.niche,
@@ -44,6 +82,7 @@ export async function POST(request: Request) {
       update: {
         username: payload.username,
         name: payload.name,
+        avatarUrl: payload.avatarUrl || null,
         tiktokHandle: payload.tiktokHandle,
         bio: payload.bio,
         niche: payload.niche,
