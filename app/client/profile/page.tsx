@@ -123,9 +123,19 @@ export default function ClientProfilePage() {
               </li>
             ))}
           </ol>
+
+          <div className="mt-6 rounded-xl border border-rose-200 bg-rose-50/70 p-4">
+            <p className="text-sm font-bold text-zinc-900">After you finish setup</p>
+            <ul className="mt-2 space-y-1 text-xs leading-5 text-zinc-600">
+              <li>- Your brand profile becomes visible to creators.</li>
+              <li>- You can post promotions and receive applications.</li>
+              <li>- You can move deals to chat and contract flow.</li>
+            </ul>
+          </div>
         </aside>
 
         <section className="rounded-[24px] border border-zinc-200 bg-white p-6 shadow-sm sm:p-7">
+          <p className="text-xs font-black uppercase tracking-[0.14em] text-zinc-500">Brand setup</p>
           <h2 className="text-xl font-black text-zinc-900">Brand Profile Details</h2>
           <p className="mt-1 text-sm text-zinc-600">This helps creators understand your campaign fit and expected collaboration style.</p>
           <div className="mt-4">
@@ -138,7 +148,11 @@ export default function ClientProfilePage() {
             </div>
           </div>
 
-          <form className="mt-5 space-y-5" onSubmit={onSubmit}>
+          <form className="mt-5 space-y-6" onSubmit={onSubmit}>
+            <div>
+              <p className="text-sm font-bold text-zinc-900">1) Brand image</p>
+              <p className="text-xs text-zinc-500">Use your logo or a professional contact image.</p>
+            </div>
             <div className="flex items-center gap-4 rounded-2xl border border-zinc-200 bg-zinc-50/70 p-3">
               <img
                 src={form.avatarUrl || "/vercel.svg"}
@@ -157,6 +171,10 @@ export default function ClientProfilePage() {
               </div>
             </div>
 
+            <div>
+              <p className="text-sm font-bold text-zinc-900">2) Brand identity</p>
+              <p className="text-xs text-zinc-500">Tell creators who you are and what market you serve.</p>
+            </div>
             <Input
               name="companyName"
               placeholder="Company name"
@@ -193,6 +211,10 @@ export default function ClientProfilePage() {
               onChange={(event) => setForm((prev) => ({ ...prev, website: event.target.value }))}
             />
 
+            <div>
+              <p className="text-sm font-bold text-zinc-900">3) Collaboration intent</p>
+              <p className="text-xs text-zinc-500">Explain campaign goals and what type of creators you want.</p>
+            </div>
             <Textarea
               name="description"
               rows={6}
@@ -208,7 +230,7 @@ export default function ClientProfilePage() {
               disabled={loading || bootLoading}
               className="w-full rounded-xl bg-gradient-to-r from-[#FE2C55] via-[#ff5f8a] to-[#25F4EE] py-2.5 font-bold text-white hover:opacity-95"
             >
-              {bootLoading ? "Preparing form..." : loading ? "Saving..." : "Save Brand Profile & Continue"}
+              {bootLoading ? "Preparing form..." : loading ? "Saving..." : "Complete Brand Setup"}
             </Button>
           </form>
 

@@ -6,7 +6,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 
-export function CampaignPostForm() {
+const darkFieldClass =
+  "rounded-xl border-white/10 bg-white/5 text-white placeholder:text-white/40 focus:border-white/30";
+
+export function CampaignPostForm({ dark }: { dark?: boolean }) {
   const router = useRouter();
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -45,16 +48,24 @@ export function CampaignPostForm() {
 
   return (
     <form className="space-y-3" onSubmit={handleSubmit}>
-      <Input name="title" placeholder="Campaign title" required />
-      <Textarea name="description" rows={4} placeholder="What is the campaign about?" required />
-      <Input name="budget" placeholder="Budget (USD/ETB)" required />
-      <Input name="niche" placeholder="Target niche (fashion, tech, food...)" required />
-      <Textarea name="deliverables" rows={3} placeholder="Deliverables (videos, stories, timeline)" required />
-      <Input name="deadline" placeholder="Deadline (optional)" />
-      <Button type="submit" disabled={loading} className="w-full">
-        {loading ? "Publishing..." : "Publish Campaign"}
+      <Input name="title" placeholder="Campaign title" required className={dark ? darkFieldClass : undefined} />
+      <Textarea name="description" rows={4} placeholder="What is the campaign about?" required className={dark ? darkFieldClass : undefined} />
+      <Input name="budget" placeholder="Budget (e.g. 8,000–15,000 ETB)" required className={dark ? darkFieldClass : undefined} />
+      <Input name="niche" placeholder="Target niche (fashion, tech, food...)" required className={dark ? darkFieldClass : undefined} />
+      <Textarea name="deliverables" rows={3} placeholder="Deliverables (videos, stories, timeline)" required className={dark ? darkFieldClass : undefined} />
+      <Input name="deadline" placeholder="Deadline (optional)" className={dark ? darkFieldClass : undefined} />
+      <Button
+        type="submit"
+        disabled={loading}
+        className={
+          dark
+            ? "w-full rounded-full bg-gradient-to-r from-[#FE2C55] via-[#ff5f8a] to-[#25F4EE] font-bold text-white hover:opacity-95"
+            : "w-full"
+        }
+      >
+        {loading ? "Publishing..." : "Publish campaign"}
       </Button>
-      {error && <p className="text-sm text-red-600">{error}</p>}
+      {error && <p className={`text-sm ${dark ? "text-rose-300" : "text-red-600"}`}>{error}</p>}
     </form>
   );
 }

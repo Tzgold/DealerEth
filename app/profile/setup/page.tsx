@@ -162,9 +162,19 @@ export default function ProfileSetupPage() {
               </li>
             ))}
           </ol>
+
+          <div className="mt-6 rounded-xl border border-cyan-200 bg-cyan-50/70 p-4">
+            <p className="text-sm font-bold text-zinc-900">After you finish setup</p>
+            <ul className="mt-2 space-y-1 text-xs leading-5 text-zinc-600">
+              <li>- Your public creator link is ready for TikTok bio.</li>
+              <li>- Brands can send campaign requests directly.</li>
+              <li>- You can apply to open promotions from dashboard.</li>
+            </ul>
+          </div>
         </aside>
 
         <section className="rounded-[24px] border border-zinc-200 bg-white p-6 shadow-sm sm:p-7">
+          <p className="text-xs font-black uppercase tracking-[0.14em] text-zinc-500">Creator setup</p>
           <h2 className="text-xl font-black text-zinc-900">Public Profile Details</h2>
           <p className="mt-1 text-sm text-zinc-600">Brands use this information to decide if you are the right match.</p>
           <div className="mt-4">
@@ -177,7 +187,11 @@ export default function ProfileSetupPage() {
             </div>
           </div>
 
-          <form className="mt-5 space-y-5" onSubmit={onSubmit}>
+          <form className="mt-5 space-y-6" onSubmit={onSubmit}>
+            <div>
+              <p className="text-sm font-bold text-zinc-900">1) Profile photo</p>
+              <p className="text-xs text-zinc-500">Use a clear photo so brands can trust your profile instantly.</p>
+            </div>
             <div className="flex items-center gap-4 rounded-2xl border border-zinc-200 bg-zinc-50/70 p-3">
               <img
                 src={form.avatarUrl || "/vercel.svg"}
@@ -196,6 +210,10 @@ export default function ProfileSetupPage() {
               </div>
             </div>
 
+            <div>
+              <p className="text-sm font-bold text-zinc-900">2) Identity and TikTok account</p>
+              <p className="text-xs text-zinc-500">These details appear at the top of your public creator page.</p>
+            </div>
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               <Input
                 name="name"
@@ -237,6 +255,10 @@ export default function ProfileSetupPage() {
               onChange={(event) => setForm((prev) => ({ ...prev, bio: event.target.value }))}
             />
 
+            <div>
+              <p className="text-sm font-bold text-zinc-900">3) Audience and pricing</p>
+              <p className="text-xs text-zinc-500">Help brands understand your fit and campaign expectations.</p>
+            </div>
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               <Input
                 name="niche"
@@ -267,6 +289,10 @@ export default function ProfileSetupPage() {
             />
 
             <div>
+              <p className="text-sm font-bold text-zinc-900">4) Portfolio links</p>
+              <p className="text-xs text-zinc-500">Add your strongest TikTok links to improve your chances of getting selected.</p>
+            </div>
+            <div>
               <Textarea
                 name="sampleVideos"
                 rows={5}
@@ -284,7 +310,7 @@ export default function ProfileSetupPage() {
               disabled={loading || bootLoading}
               className="w-full rounded-xl bg-gradient-to-r from-[#25F4EE] via-[#00C2FF] to-[#FE2C55] py-2.5 font-bold text-white hover:opacity-95"
             >
-              {bootLoading ? "Preparing form..." : loading ? "Saving..." : "Save Profile & Continue"}
+              {bootLoading ? "Preparing form..." : loading ? "Saving..." : "Complete Creator Setup"}
             </Button>
           </form>
 
