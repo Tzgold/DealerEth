@@ -42,6 +42,7 @@ export function CampaignPostForm({ dark }: { dark?: boolean }) {
     }
 
     event.currentTarget.reset();
+    router.push("/client/dashboard/campaigns");
     router.refresh();
     setLoading(false);
   }

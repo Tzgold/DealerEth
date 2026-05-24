@@ -59,3 +59,15 @@ export const dealRequestSchema = z.object({
   budget: z.string().min(1),
   deliverables: z.string().min(5),
 });
+
+export const campaignApplicationSchema = z.object({
+  campaignId: z.string().min(1),
+  coverLetter: z.string().min(20).max(2000),
+  proposedBudget: z.string().optional(),
+});
+
+export const applicationMessageSchema = z.object({
+  text: z.string().min(1).max(2000),
+});
+
+export const applicationStatusSchema = z.enum(["APPLIED", "SHORTLISTED", "IN_CHAT", "ACTIVE", "COMPLETED", "REJECTED"]);
