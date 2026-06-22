@@ -33,7 +33,7 @@ export function CreatorProfilePreview({
             <p className="truncate text-lg font-black text-white">{name || "Your name"}</p>
             <p className="text-sm text-white/60">{tiktokHandle || "@tiktok"}</p>
             {username.trim() && (
-              <p className="mt-0.5 font-mono text-xs text-[#25F4EE]">/@{username.replace(/^@+/, "")}</p>
+              <p className="mt-0.5 font-mono text-xs text-[#25F4EE]">/{username.replace(/^@+/, "").toLowerCase()}</p>
             )}
           </div>
         </div>

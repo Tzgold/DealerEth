@@ -646,3 +646,32 @@ select.de-field option {
   background-color: #11110f;
   color: #ffffff;
 }
+
+.public-profile-editorial main h1 {
+  font-size: clamp(2.25rem, 5vw, 3.75rem);
+  line-height: 0.98;
+}
+
+.public-profile-editorial main > div > section:first-child > div:first-child {
+  border-bottom: 1px solid rgba(17, 17, 15, 0.08);
+  background-color: rgba(17, 17, 15, 0.025);
+}
+
+.public-profile-editorial .de-card h2 {
+  font-size: 1.75rem !important;
+  line-height: 1.08;
+}
+
+.public-profile-editorial main section.rounded-2xl h2 {
+  font-size: 1.35rem !important;
+}
+
+.public-profile-editorial main section.rounded-2xl,
+.public-profile-editorial .de-card {
+  border-radius: 1.25rem;
+}
+
+.public-profile-editorial a[class*="text-[#25F4EE]"] {
+  color: #11110f;
+  text-decoration-color: rgba(17, 17, 15, 0.28);
+}

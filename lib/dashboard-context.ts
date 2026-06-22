@@ -99,7 +99,7 @@ export async function getPublicProfileUrls(username: string) {
   const headerList = await headers();
   const host = headerList.get("x-forwarded-host") ?? headerList.get("host") ?? "dealereth.com";
   const proto = headerList.get("x-forwarded-proto") ?? "http";
-  const path = `/@${username}`;
+  const path = `/${username.replace(/^@+/, "").toLowerCase()}`;
   return {
     path,
     display: `${host.replace(/^www\./, "")}${path}`,

@@ -18,27 +18,31 @@ export default function LoginPage() {
 
     const formData = new FormData(event.currentTarget);
 
-    const response = await fetch("/api/auth/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        email: formData.get("email"),
-        password: formData.get("password"),
-        role: "CREATOR",
-      }),
-    });
+    try {
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: formData.get("email"),
+          password: formData.get("password"),
+          role: "CREATOR",
+        }),
+      });
 
-    if (!response.ok) {
-      const data = (await response.json()) as { error?: string };
-      setError(data.error ?? "Login failed");
+      if (!response.ok) {
+        const data = (await response.json()) as { error?: string };
+        setError(data.error ?? "Login failed");
+        return;
+      }
+
+      const data = (await response.json()) as { role?: "CREATOR" | "CLIENT" };
+      router.push(data.role === "CLIENT" ? "/client/dashboard" : "/dashboard");
+      router.refresh();
+    } catch {
+      setError("Could not connect to the server. Please try again.");
+    } finally {
       setLoading(false);
-      return;
     }
-
-    const data = (await response.json()) as { role?: "CREATOR" | "CLIENT" };
-
-    router.push(data.role === "CLIENT" ? "/client/dashboard" : "/dashboard");
-    router.refresh();
   }
 
   return (

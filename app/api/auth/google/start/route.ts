@@ -3,10 +3,10 @@ import { cookies } from "next/headers";
 import { getGoogleAuthConfig } from "@/lib/google";
 
 export async function GET(request: Request) {
+  const { searchParams } = new URL(request.url);
+  const role = searchParams.get("role") === "CLIENT" ? "CLIENT" : "CREATOR";
   try {
     const { clientId, redirectUri } = getGoogleAuthConfig();
-    const { searchParams } = new URL(request.url);
-    const role = searchParams.get("role") === "CLIENT" ? "CLIENT" : "CREATOR";
     const state = crypto.randomUUID();
     const cookieStore = await cookies();
 
@@ -38,6 +38,6 @@ export async function GET(request: Request) {
 
     return NextResponse.redirect(`https://accounts.google.com/o/oauth2/v2/auth?${params.toString()}`);
   } catch {
-    return NextResponse.redirect(new URL("/login?error=google_setup", request.url));
+    return NextResponse.redirect(new URL(role === "CLIENT" ? "/client/login?error=google_setup" : "/login?error=google_setup", request.url));
   }
 }

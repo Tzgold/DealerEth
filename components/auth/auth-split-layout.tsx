@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ReactNode } from "react";
+import { ReactNode, useSyncExternalStore } from "react";
 
 type AuthSplitLayoutProps = {
   badge: string; heading: string; subheading: string; steps: string[]; formTitle: string; formSubtitle: string;
@@ -10,6 +10,21 @@ type AuthSplitLayoutProps = {
 
 export function AuthSplitLayout(props: AuthSplitLayoutProps) {
   const isBrand = props.badge.toLowerCase().includes("brand");
+  const search = useSyncExternalStore(
+    () => () => undefined,
+    () => window.location.search,
+    () => "",
+  );
+  const error = new URLSearchParams(search).get("error");
+  const messages: Record<string, string> = {
+    google_setup: "Google sign-in needs GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, and GOOGLE_REDIRECT_URI in the server environment.",
+    tiktok_setup: "TikTok sign-in needs TIKTOK_CLIENT_KEY, TIKTOK_CLIENT_SECRET, and TIKTOK_REDIRECT_URI in the server environment.",
+    google_state: "Google sign-in expired or was interrupted. Please try again.",
+    tiktok_state: "TikTok sign-in expired or was interrupted. Please try again.",
+    google_failed: "Google could not complete sign-in. Please retry or use email and password.",
+    tiktok_failed: "TikTok could not complete sign-in. Please retry or use email and password.",
+  };
+  const providerError = error ? (messages[error] ?? "Sign-in could not be completed. Please try again.") : "";
   return (
     <main className="dashboard-surface editorial-auth min-h-screen px-4 py-5 sm:px-6 sm:py-8">
       <div className="mx-auto flex max-w-6xl items-center justify-between py-2">
@@ -24,6 +39,7 @@ export function AuthSplitLayout(props: AuthSplitLayoutProps) {
         </aside>
         <section className="p-7 sm:p-10 lg:p-12">
           <p className="de-eyebrow">Secure access</p><h2 className="mt-2 text-3xl font-extrabold tracking-tight sm:text-4xl">{props.formTitle}</h2><p className="mt-3 max-w-lg text-sm leading-6 text-white/55">{props.formSubtitle}</p>
+          {providerError && <p role="alert" className="mt-5 rounded-xl border border-rose-900/15 bg-rose-950/[0.04] px-4 py-3 text-sm leading-6 text-rose-800">{providerError}</p>}
           <div className="auth-form mt-8">{props.children}</div>
           <p className="mt-7 text-sm text-white/55">{props.footerText} <Link href={props.footerLinkHref} className="font-bold text-white underline decoration-white/30 underline-offset-4 hover:decoration-white">{props.footerLinkText}</Link></p>
         </section>

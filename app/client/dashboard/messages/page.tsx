@@ -67,7 +67,7 @@ export default async function BrandMessagesPage({
             {focused.proposedBudget && (
               <p className="mt-2 text-sm text-white/60">Proposed budget: {focused.proposedBudget}</p>
             )}
-            <Link href={`/@${focused.creator.username}`} className="mt-3 inline-block text-xs font-semibold text-[#25F4EE] underline">
+            <Link href={`/${focused.creator.username}`} className="mt-3 inline-block text-xs font-semibold text-[#25F4EE] underline">
               View creator profile
             </Link>
             <div className="mt-5 border-t border-white/10 pt-5">

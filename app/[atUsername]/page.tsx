@@ -7,7 +7,7 @@ import { prisma } from "@/lib/prisma";
 
 export default async function CreatorPublicPage({ params }: { params: Promise<{ atUsername: string }> }) {
   const { atUsername } = await params;
-  const normalizedUsername = atUsername.startsWith("@") ? atUsername.slice(1) : atUsername;
+  const normalizedUsername = atUsername.trim().replace(/^@+/, "").toLowerCase();
 
   const profile = await prisma.creatorProfile.findUnique({
     where: { username: normalizedUsername },
@@ -30,28 +30,25 @@ export default async function CreatorPublicPage({ params }: { params: Promise<{ 
   const headerList = await headers();
   const host = headerList.get("x-forwarded-host") ?? headerList.get("host") ?? "";
   const proto = headerList.get("x-forwarded-proto") ?? "http";
-  const profilePath = `/@${profile.username}`;
+  const profilePath = `/${profile.username}`;
   const profilePageUrl = host ? `${proto}://${host}${profilePath}` : profilePath;
   const displayHost = host.replace(/^www\./, "");
 
   return (
-    <div className="min-h-screen bg-[#0a0a0b] text-white">
-      <header className="border-b border-white/5 bg-[#0a0a0b]/95">
+    <div className="product-editorial public-profile-editorial min-h-screen">
+      <header className="sticky top-0 z-30 border-b border-black/10 bg-[#f7f6f2]/90 backdrop-blur">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4 sm:px-6">
-          <Link href="/" className="text-xl font-black">
-            <span className="text-white">dealer</span>
-            <span className="text-[#25F4EE]">Eth</span>
-          </Link>
-          <p className="text-xs font-semibold text-white/50">Creator profile</p>
+          <Link href="/" className="font-serif text-lg tracking-[0.14em] text-black">DEALERETH</Link>
+          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-black/45">Creator media kit</p>
         </div>
       </header>
 
-      <div className="mx-auto grid w-full max-w-6xl gap-5 px-4 py-8 sm:px-6 lg:grid-cols-[1.6fr,1fr]">
+      <main className="mx-auto grid w-full max-w-6xl gap-5 px-4 py-8 sm:px-6 sm:py-10 lg:grid-cols-[1.6fr,1fr]">
         <div className="space-y-4">
           <section className="overflow-hidden rounded-2xl border border-white/10 bg-[#141416] shadow-[0_8px_30px_rgba(0,0,0,0.35)]">
             <div className="bg-gradient-to-r from-[#25F4EE]/15 via-transparent to-[#FE2C55]/15 px-6 py-4">
-              <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#25F4EE]">DealerEth creator</p>
-              <p className="mt-1 text-sm text-white/65">Public page — brands can request a paid collaboration here.</p>
+              <p className="de-eyebrow">Available for partnerships</p>
+              <p className="mt-1 text-sm text-white/65">A clear view of this creator’s audience, work, and collaboration details.</p>
             </div>
             <div className="p-6">
               <div className="flex flex-wrap items-start gap-4">
@@ -82,7 +79,8 @@ export default async function CreatorPublicPage({ params }: { params: Promise<{ 
           </section>
 
           <section className="rounded-2xl border border-white/10 bg-[#141416] p-6">
-            <h2 className="text-lg font-black">At a glance</h2>
+            <p className="de-eyebrow">Creator overview</p>
+            <h2 className="mt-2 text-lg font-black">At a glance</h2>
             <div className="mt-4 grid gap-3 sm:grid-cols-2">
               <div className="rounded-xl border border-white/10 bg-white/[0.04] px-4 py-3">
                 <p className="text-xs text-white/50">Audience</p>
@@ -96,7 +94,8 @@ export default async function CreatorPublicPage({ params }: { params: Promise<{ 
           </section>
 
           <section className="rounded-2xl border border-white/10 bg-[#141416] p-6">
-            <h2 className="text-lg font-black">Portfolio</h2>
+            <p className="de-eyebrow">Selected work</p>
+            <h2 className="mt-2 text-lg font-black">Portfolio</h2>
             <ul className="mt-4 space-y-2">
               {sampleVideos.length === 0 ? (
                 <li className="rounded-xl border border-dashed border-white/15 px-3 py-4 text-sm text-white/50">No portfolio links yet.</li>
@@ -114,15 +113,15 @@ export default async function CreatorPublicPage({ params }: { params: Promise<{ 
           </section>
         </div>
 
-        <section className="de-card h-fit p-6">
-          <p className="de-eyebrow">For brands</p>
+        <section className="de-card h-fit p-6 lg:sticky lg:top-24">
+          <p className="de-eyebrow">Start a conversation</p>
           <h2 className="mt-2 text-2xl font-extrabold">Request a collaboration</h2>
-          <p className="mt-2 text-sm leading-6 text-white/65">Send budget, deliverables, and timeline. The creator gets notified on DealerEth.</p>
+          <p className="mt-2 text-sm leading-6 text-white/65">Share the campaign idea, budget, deliverables, and timeline. The request goes directly to the creator’s DealerEth inbox.</p>
           <div className="mt-5">
             <DealRequestForm creatorId={profile.id} dark />
           </div>
         </section>
-      </div>
+      </main>
     </div>
   );
 }

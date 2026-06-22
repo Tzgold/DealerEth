@@ -67,7 +67,7 @@ export default async function BrandCreatorsPage({ searchParams }: { searchParams
               </div>
               <p className="mt-4 line-clamp-3 text-sm leading-6 text-white/70">{creator.bio}</p>
               {creator.priceRange && <p className="mt-3 text-xs font-semibold text-white/55">Typical rate: <span className="text-white/85">{creator.priceRange}</span></p>}
-              <Link href={`/@${creator.username}`} className="mt-4 inline-flex w-full items-center justify-center rounded-xl bg-white px-4 py-2.5 text-sm font-bold text-zinc-950 transition group-hover:bg-[#25F4EE]">
+              <Link href={`/${creator.username}`} className="mt-4 inline-flex w-full items-center justify-center rounded-xl bg-white px-4 py-2.5 text-sm font-bold text-zinc-950 transition group-hover:bg-[#25F4EE]">
                 View profile and request a deal
               </Link>
             </li>

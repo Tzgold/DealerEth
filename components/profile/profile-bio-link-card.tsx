@@ -18,7 +18,7 @@ export function ProfileBioLinkCard({
 
   const normalized = username.trim().toLowerCase().replace(/^@+/, "").replace(/\s+/g, "_");
   const hasUsername = normalized.length >= 3;
-  const path = hasUsername ? `/@${normalized}` : "";
+  const path = hasUsername ? `/${normalized}` : "";
   const host = origin ? origin.replace(/^https?:\/\//, "") : "dealereth.com";
   const display = hasUsername ? `${host}${path}` : "Set a username to unlock your link";
   const fullUrl = hasUsername && origin ? `${origin}${path}` : "";
