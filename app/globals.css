@@ -82,14 +82,63 @@ select {
 .editorial-shell .de-eyebrow, .editorial-auth .de-eyebrow { color: rgba(17, 17, 15, 0.48); letter-spacing: 0.11em; }
 .editorial-shell .de-btn, .editorial-auth .de-btn { min-height: 42px; border-radius: 999px; padding-inline: 1.2rem; }
 .editorial-shell .de-btn-primary, .editorial-auth .de-btn-primary { border-color: #11110f; background: #11110f; color: #fff; }
-.editorial-shell .de-btn-primary:hover:not(:disabled), .editorial-auth .de-btn-primary:hover:not(:disabled) { border-color: #30302d; background: #30302d; box-shadow: 0 10px 26px rgba(17, 17, 15, 0.13); }
+.editorial-shell .de-btn-primary:hover:not(:disabled), .editorial-auth .de-btn-primary:hover:not(:disabled) { border-color: #11110f; background: #f2ad7d; color: #11110f; box-shadow: none; }
 .editorial-shell .de-btn-secondary, .editorial-auth .de-btn-secondary { border-color: rgba(17, 17, 15, 0.12); background: rgba(255, 255, 255, 0.7); color: #242421; }
-.editorial-shell .de-btn-secondary:hover:not(:disabled), .editorial-auth .de-btn-secondary:hover:not(:disabled) { border-color: #11110f; background: #11110f; color: #fff; }
+.editorial-shell .de-btn-secondary:hover:not(:disabled), .editorial-auth .de-btn-secondary:hover:not(:disabled) { border-color: #11110f; background: #f2ad7d; color: #11110f; }
 .editorial-shell .de-chip, .editorial-auth .de-chip { border-color: rgba(17, 17, 15, 0.09); background: rgba(255, 255, 255, 0.55); color: rgba(17, 17, 15, 0.62); }
-.editorial-shell .de-chip:hover, .editorial-auth .de-chip:hover { border-color: rgba(17, 17, 15, 0.2); background: #fff; color: #11110f; }
+.editorial-shell .de-chip:hover, .editorial-auth .de-chip:hover { border-color: rgba(17, 17, 15, 0.3); background: #f2ad7d; color: #11110f; }
 .editorial-shell .de-chip-active { border-color: rgba(17, 17, 15, 0.14); background: #fff; color: #11110f; }
 .editorial-shell header { border-color: rgba(17, 17, 15, 0.09); background: rgba(247, 246, 242, 0.88); }
 .editorial-shell footer, .editorial-shell section { border-color: rgba(17, 17, 15, 0.08); }
+.editorial-shell .landing-feature-card,
+.editorial-shell .landing-workflow-card,
+.editorial-shell .landing-faq-row {
+  border-color: rgba(17, 17, 15, 0.16);
+  background: transparent;
+  box-shadow: none;
+}
+.editorial-shell .landing-feature-card { transition: background-color 180ms ease, border-color 180ms ease; }
+.editorial-shell .landing-feature-card:hover {
+  border-color: rgba(17, 17, 15, 0.28);
+  background: #f2ad7d;
+}
+.editorial-shell .landing-workflow-row {
+  border-color: rgba(17, 17, 15, 0.16);
+  background: transparent;
+}
+.editorial-shell .landing-workflow-row:hover {
+  border-color: rgba(17, 17, 15, 0.3);
+  background: #f2ad7d;
+}
+.editorial-shell .landing-step-number { border-color: rgba(17, 17, 15, 0.42); }
+.editorial-shell .landing-final-cta {
+  border-color: rgba(17, 17, 15, 0.16);
+  border-radius: 1.25rem;
+  background: transparent;
+  box-shadow: none;
+}
+.editorial-shell .landing-faq-row {
+  overflow: hidden;
+  border-radius: 1rem;
+  transition: background-color 180ms ease, border-color 180ms ease;
+}
+.editorial-shell .landing-faq-row:hover,
+.editorial-shell .landing-faq-row[open] {
+  border-color: rgba(17, 17, 15, 0.3);
+  background: #f2ad7d;
+}
+.editorial-shell .landing-faq-control { border-color: rgba(17, 17, 15, 0.45); }
+.editorial-shell details > summary::-webkit-details-marker { display: none; }
+.editorial-shell .landing-role-card {
+  border-color: rgba(17, 17, 15, 0.16);
+  background: transparent;
+}
+.editorial-shell .landing-role-card:hover {
+  border-color: rgba(17, 17, 15, 0.35);
+  background: #f2ad7d;
+}
+.editorial-shell .landing-footer-link { transition: color 150ms ease; }
+.editorial-shell .landing-footer-link:hover { color: #b55324; }
 .editorial-auth > div:nth-child(2) { border-color: rgba(17, 17, 15, 0.1); background: rgba(255, 255, 255, 0.72); box-shadow: none; }
 .editorial-auth aside { border-color: rgba(17, 17, 15, 0.08); background: rgba(17, 17, 15, 0.025); }
 .editorial-auth .auth-form input { border-color: rgba(17, 17, 15, 0.12) !important; background: rgba(255, 255, 255, 0.82) !important; color: #171715 !important; }
@@ -349,15 +398,22 @@ select.de-field option {
 
 .editorial-shell .de-btn-primary:hover:not(:disabled),
 .editorial-auth .de-btn-primary:hover:not(:disabled) {
-  border-color: #2d2d2a;
-  background: #2d2d2a;
+  border-color: #11110f;
+  background: #f2ad7d;
+  color: #11110f;
 }
 
 .editorial-shell .de-btn-secondary:hover:not(:disabled),
 .editorial-auth .de-btn-secondary:hover:not(:disabled) {
-  border-color: rgba(17, 17, 15, 0.22);
-  background: rgba(17, 17, 15, 0.055);
+  border-color: rgba(17, 17, 15, 0.42);
+  background: #f2ad7d;
   color: #11110f;
+}
+
+.editorial-auth .de-btn {
+  min-height: 46px;
+  border-radius: 12px;
+  font-weight: 650;
 }
 
 .editorial-auth .auth-form input:focus {
@@ -379,14 +435,15 @@ select.de-field option {
 
 .editorial-auth .auth-form form button[type="submit"] {
   border-color: #11110f !important;
-  border-radius: 999px !important;
+  border-radius: 12px !important;
   background: #11110f !important;
   color: #ffffff !important;
 }
 
 .editorial-auth .auth-form form button[type="submit"]:hover:not(:disabled) {
-  border-color: #2d2d2a !important;
-  background: #2d2d2a !important;
+  border-color: #11110f !important;
+  background: #f2ad7d !important;
+  color: #11110f !important;
   box-shadow: none !important;
   transform: none;
 }
@@ -529,9 +586,9 @@ select.de-field option {
 
 .product-editorial .de-btn-primary:hover:not(:disabled),
 .product-editorial .de-btn-accent:hover:not(:disabled) {
-  border-color: #30302d;
-  background: #30302d;
-  color: #ffffff;
+  border-color: #11110f;
+  background: #f2ad7d;
+  color: #11110f;
 }
 
 .product-editorial .de-btn-secondary {
@@ -541,8 +598,8 @@ select.de-field option {
 }
 
 .product-editorial .de-btn-secondary:hover:not(:disabled) {
-  border-color: rgba(17, 17, 15, 0.24);
-  background: rgba(17, 17, 15, 0.055);
+  border-color: rgba(17, 17, 15, 0.4);
+  background: #f2ad7d;
   color: #11110f;
 }
 
@@ -591,8 +648,8 @@ select.de-field option {
 }
 
 .product-editorial .de-chip:hover {
-  border-color: rgba(17, 17, 15, 0.1);
-  background: rgba(17, 17, 15, 0.04);
+  border-color: rgba(17, 17, 15, 0.3);
+  background: #f2ad7d;
   color: #11110f;
 }
 
@@ -605,7 +662,7 @@ select.de-field option {
 
 .product-editorial .de-nav-item:hover {
   border-color: transparent;
-  background: rgba(17, 17, 15, 0.045);
+  background: #f2ad7d;
 }
 
 .product-editorial .de-nav-item-active {
@@ -632,7 +689,7 @@ select.de-field option {
 }
 
 .product-editorial .de-menu-item:hover {
-  background: rgba(17, 17, 15, 0.055);
+  background: #f2ad7d;
   color: #11110f;
 }
 
@@ -674,4 +731,40 @@ select.de-field option {
 .public-profile-editorial a[class*="text-[#25F4EE]"] {
   color: #11110f;
   text-decoration-color: rgba(17, 17, 15, 0.28);
+}
+
+/* Stable interaction treatment: no gray or colored hover fills. */
+.editorial-shell .landing-feature-card:hover,
+.editorial-shell .landing-workflow-row:hover,
+.editorial-shell .landing-faq-row:hover,
+.editorial-shell .landing-faq-row[open],
+.editorial-shell .landing-role-card:hover {
+  border-color: rgba(17, 17, 15, 0.16);
+  background: transparent;
+}
+
+.editorial-shell .landing-footer-link:hover {
+  color: inherit;
+}
+
+.editorial-shell .de-btn-primary:hover:not(:disabled),
+.editorial-auth .de-btn-primary:hover:not(:disabled),
+.editorial-auth .auth-form form button[type="submit"]:hover:not(:disabled) {
+  border-color: #11110f !important;
+  background: #11110f !important;
+  color: #ffffff !important;
+}
+
+.editorial-shell .de-btn-secondary:hover:not(:disabled),
+.editorial-auth .de-btn-secondary:hover:not(:disabled) {
+  border-color: rgba(17, 17, 15, 0.12);
+  background: rgba(255, 255, 255, 0.7);
+  color: #242421;
+}
+
+.editorial-shell .de-chip:hover,
+.editorial-auth .de-chip:hover {
+  border-color: rgba(17, 17, 15, 0.09);
+  background: rgba(255, 255, 255, 0.55);
+  color: rgba(17, 17, 15, 0.62);
 }
