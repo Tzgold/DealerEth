@@ -50,6 +50,57 @@ select {
   --accent-rgb: 255, 84, 118;
 }
 
+.public-shell {
+  --accent: #ffffff;
+  --accent-rgb: 255, 255, 255;
+  background:
+    radial-gradient(circle at 12% 0%, rgba(255, 255, 255, 0.045), transparent 30rem),
+    radial-gradient(circle at 92% 16%, rgba(255, 255, 255, 0.03), transparent 28rem),
+    #08080a;
+}
+
+.editorial-shell,
+.editorial-auth {
+  --accent: #111111;
+  --accent-rgb: 17, 17, 17;
+  background: #f7f6f2;
+  color: #171715;
+}
+
+.editorial-shell { font-family: Arial, Helvetica, sans-serif; }
+.editorial-shell h1, .editorial-shell h2, .editorial-auth h1, .editorial-auth h2 {
+  color: #11110f; font-family: Georgia, "Times New Roman", serif; font-weight: 400; letter-spacing: -0.045em;
+}
+.editorial-shell h3, .editorial-shell [class*="text-white"], .editorial-auth [class*="text-white"] { color: #1a1a18; }
+.editorial-shell [class*="text-white/"] { color: rgba(26, 26, 24, 0.6); }
+.editorial-auth [class*="text-white/"] { color: rgba(26, 26, 24, 0.58); }
+.editorial-shell [class*="border-white"], .editorial-auth [class*="border-white"] { border-color: rgba(17, 17, 15, 0.1); }
+.editorial-shell [class*="bg-white/"] { background-color: rgba(17, 17, 15, 0.025); }
+.editorial-shell .de-card, .editorial-auth .de-card {
+  border-color: rgba(17, 17, 15, 0.1); background: rgba(255, 255, 255, 0.66); box-shadow: 0 18px 60px rgba(29, 28, 24, 0.055);
+}
+.editorial-shell .de-eyebrow, .editorial-auth .de-eyebrow { color: rgba(17, 17, 15, 0.48); letter-spacing: 0.11em; }
+.editorial-shell .de-btn, .editorial-auth .de-btn { min-height: 42px; border-radius: 999px; padding-inline: 1.2rem; }
+.editorial-shell .de-btn-primary, .editorial-auth .de-btn-primary { border-color: #11110f; background: #11110f; color: #fff; }
+.editorial-shell .de-btn-primary:hover:not(:disabled), .editorial-auth .de-btn-primary:hover:not(:disabled) { border-color: #30302d; background: #30302d; box-shadow: 0 10px 26px rgba(17, 17, 15, 0.13); }
+.editorial-shell .de-btn-secondary, .editorial-auth .de-btn-secondary { border-color: rgba(17, 17, 15, 0.12); background: rgba(255, 255, 255, 0.7); color: #242421; }
+.editorial-shell .de-btn-secondary:hover:not(:disabled), .editorial-auth .de-btn-secondary:hover:not(:disabled) { border-color: #11110f; background: #11110f; color: #fff; }
+.editorial-shell .de-chip, .editorial-auth .de-chip { border-color: rgba(17, 17, 15, 0.09); background: rgba(255, 255, 255, 0.55); color: rgba(17, 17, 15, 0.62); }
+.editorial-shell .de-chip:hover, .editorial-auth .de-chip:hover { border-color: rgba(17, 17, 15, 0.2); background: #fff; color: #11110f; }
+.editorial-shell .de-chip-active { border-color: rgba(17, 17, 15, 0.14); background: #fff; color: #11110f; }
+.editorial-shell header { border-color: rgba(17, 17, 15, 0.09); background: rgba(247, 246, 242, 0.88); }
+.editorial-shell footer, .editorial-shell section { border-color: rgba(17, 17, 15, 0.08); }
+.editorial-auth > div:nth-child(2) { border-color: rgba(17, 17, 15, 0.1); background: rgba(255, 255, 255, 0.72); box-shadow: none; }
+.editorial-auth aside { border-color: rgba(17, 17, 15, 0.08); background: rgba(17, 17, 15, 0.025); }
+.editorial-auth .auth-form input { border-color: rgba(17, 17, 15, 0.12) !important; background: rgba(255, 255, 255, 0.82) !important; color: #171715 !important; }
+.editorial-auth .auth-form input::placeholder { color: rgba(17, 17, 15, 0.38) !important; }
+.editorial-auth .auth-form svg path { fill: currentColor; }
+.editorial-auth .auth-form span[class*="bg-white"] { background: rgba(17, 17, 15, 0.12); }
+
+.public-shell .auth-form svg path {
+  fill: currentColor;
+}
+
 .dashboard-surface main h1,
 .dashboard-surface main h2,
 .dashboard-surface main h3 {
@@ -250,4 +301,348 @@ select.de-field option {
 ::selection {
   background: rgba(37, 244, 238, 0.28);
   color: white;
+}
+
+.auth-form input {
+  width: 100%;
+  min-height: 46px;
+  border: 1px solid rgba(255, 255, 255, 0.11) !important;
+  border-radius: 10px !important;
+  background: rgba(255, 255, 255, 0.035) !important;
+  color: #f4f4f5 !important;
+  font-size: 0.9rem;
+}
+
+.auth-form input::placeholder {
+  color: rgba(255, 255, 255, 0.32) !important;
+}
+
+.auth-form input:focus {
+  border-color: rgba(var(--accent-rgb), 0.5) !important;
+  box-shadow: 0 0 0 3px rgba(var(--accent-rgb), 0.08) !important;
+}
+
+.auth-form form button[type="submit"] {
+  min-height: 44px;
+  border: 1px solid #f4f4f5 !important;
+  border-radius: 10px !important;
+  background: #f4f4f5 !important;
+  color: #111113 !important;
+  font-size: 0.875rem;
+  font-weight: 800;
+  transition: background-color 160ms ease, border-color 160ms ease, transform 160ms ease !important;
+}
+
+.auth-form form button[type="submit"]:hover:not(:disabled) {
+  border-color: var(--accent) !important;
+  background: var(--accent) !important;
+  opacity: 1 !important;
+  transform: translateY(-1px);
+}
+
+/* Calm, monochrome interactions for the public and authentication surfaces. */
+.editorial-shell .de-btn:hover:not(:disabled),
+.editorial-auth .de-btn:hover:not(:disabled) {
+  transform: none;
+  box-shadow: none;
+}
+
+.editorial-shell .de-btn-primary:hover:not(:disabled),
+.editorial-auth .de-btn-primary:hover:not(:disabled) {
+  border-color: #2d2d2a;
+  background: #2d2d2a;
+}
+
+.editorial-shell .de-btn-secondary:hover:not(:disabled),
+.editorial-auth .de-btn-secondary:hover:not(:disabled) {
+  border-color: rgba(17, 17, 15, 0.22);
+  background: rgba(17, 17, 15, 0.055);
+  color: #11110f;
+}
+
+.editorial-auth .auth-form input:focus {
+  border-color: #353531 !important;
+  background: #ffffff !important;
+  box-shadow: none !important;
+}
+
+.editorial-auth .auth-form input:focus-visible,
+.editorial-auth .auth-form textarea:focus-visible,
+.editorial-auth .auth-form select:focus-visible {
+  --tw-ring-color: transparent !important;
+  --tw-ring-offset-shadow: 0 0 #0000 !important;
+  --tw-ring-shadow: 0 0 #0000 !important;
+  border-color: #353531 !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.editorial-auth .auth-form form button[type="submit"] {
+  border-color: #11110f !important;
+  border-radius: 999px !important;
+  background: #11110f !important;
+  color: #ffffff !important;
+}
+
+.editorial-auth .auth-form form button[type="submit"]:hover:not(:disabled) {
+  border-color: #2d2d2a !important;
+  background: #2d2d2a !important;
+  box-shadow: none !important;
+  transform: none;
+}
+
+/* Shared editorial product system: creator and brand dashboards + profile setup. */
+.product-editorial {
+  --accent: #11110f;
+  --accent-rgb: 17, 17, 15;
+  min-height: 100vh;
+  background: #f7f6f2;
+  color: #191917;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.product-editorial main h1,
+.product-editorial main h2,
+.product-editorial > div h1,
+.product-editorial > div h2 {
+  color: #11110f;
+  font-family: Georgia, "Times New Roman", serif;
+  font-weight: 400;
+  letter-spacing: -0.035em;
+}
+
+.product-editorial h3,
+.product-editorial h4,
+.product-editorial label {
+  color: #1b1b18;
+}
+
+.product-editorial [class*="text-white"] {
+  color: rgba(25, 25, 23, 0.68);
+}
+
+.product-editorial [class*="text-[#25F4EE]"],
+.product-editorial [class*="text-[#FE2C55]"] {
+  color: #11110f;
+}
+
+.product-editorial [class*="border-white"] {
+  border-color: rgba(17, 17, 15, 0.1);
+}
+
+.product-editorial [class*="bg-[#141416]"],
+.product-editorial [class*="bg-[#151518]"],
+.product-editorial [class*="bg-[#0f0f11]"],
+.product-editorial [class*="bg-[#101012]"] {
+  background-color: #efeee8;
+}
+
+.product-editorial [class*="bg-white/"] {
+  background-color: rgba(17, 17, 15, 0.035);
+}
+
+.product-editorial [class*="bg-gradient"] {
+  background-image: none;
+}
+
+.product-editorial .de-card {
+  border-color: rgba(17, 17, 15, 0.08);
+  background: #efeee8;
+  box-shadow: none;
+}
+
+.product-editorial main section.rounded-2xl,
+.product-editorial main li.rounded-2xl,
+.product-editorial .de-stat-tile {
+  border-color: rgba(17, 17, 15, 0.08);
+  background-color: #efeee8;
+}
+
+.product-editorial [class*="shadow-"],
+.product-editorial .de-chip-active,
+.product-editorial .de-nav-item-active,
+.editorial-auth [class*="shadow-"] {
+  box-shadow: none !important;
+}
+
+.product-editorial [class*="hover:-translate"]:hover {
+  transform: none !important;
+}
+
+.product-editorial .de-card h2,
+.product-editorial .de-card h3,
+.product-editorial main section.rounded-2xl h2,
+.product-editorial main section.rounded-2xl h3,
+.product-editorial main li.rounded-2xl h2,
+.product-editorial main li.rounded-2xl h3 {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1.125rem !important;
+  font-weight: 400;
+  line-height: 1.3;
+  letter-spacing: -0.025em;
+}
+
+.product-editorial .de-stat-value {
+  color: #171715;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 2rem;
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: -0.04em;
+}
+
+.product-editorial .de-stat-label {
+  color: rgba(17, 17, 15, 0.58);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.product-editorial main section.rounded-2xl > p:not(.de-eyebrow),
+.product-editorial .de-card > p:not(.de-eyebrow) {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 0.875rem;
+  line-height: 1.65;
+}
+
+.product-editorial .de-eyebrow {
+  color: rgba(17, 17, 15, 0.5);
+  letter-spacing: 0.12em;
+}
+
+.product-editorial .de-btn {
+  border-radius: 999px;
+  transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease;
+}
+
+.product-editorial .de-btn:hover:not(:disabled) {
+  transform: none;
+  box-shadow: none;
+}
+
+.product-editorial .de-btn-primary,
+.product-editorial .de-btn-accent {
+  border-color: #11110f;
+  background: #11110f;
+  color: #ffffff;
+}
+
+.product-editorial .de-btn-primary:hover:not(:disabled),
+.product-editorial .de-btn-accent:hover:not(:disabled) {
+  border-color: #30302d;
+  background: #30302d;
+  color: #ffffff;
+}
+
+.product-editorial .de-btn-secondary {
+  border-color: rgba(17, 17, 15, 0.14);
+  background: rgba(255, 255, 255, 0.72);
+  color: #242421;
+}
+
+.product-editorial .de-btn-secondary:hover:not(:disabled) {
+  border-color: rgba(17, 17, 15, 0.24);
+  background: rgba(17, 17, 15, 0.055);
+  color: #11110f;
+}
+
+.product-editorial .de-field,
+.product-editorial input:not([type="checkbox"]):not([type="radio"]),
+.product-editorial textarea,
+.product-editorial select {
+  border-color: rgba(17, 17, 15, 0.14);
+  background-color: rgba(255, 255, 255, 0.88);
+  color: #191917;
+}
+
+.product-editorial .de-field::placeholder,
+.product-editorial input::placeholder,
+.product-editorial textarea::placeholder {
+  color: rgba(17, 17, 15, 0.38);
+}
+
+.product-editorial .de-field:focus,
+.product-editorial input:focus,
+.product-editorial textarea:focus,
+.product-editorial select:focus {
+  border-color: #353531;
+  background-color: #ffffff;
+  box-shadow: none;
+  outline: none;
+}
+
+.product-editorial .de-select:hover,
+.product-editorial select.de-field:hover {
+  border-color: rgba(17, 17, 15, 0.28);
+  background-color: #ffffff;
+}
+
+.product-editorial .de-select option,
+.product-editorial select.de-field option,
+.product-editorial select option {
+  background: #ffffff;
+  color: #191917;
+}
+
+.product-editorial .de-chip {
+  border-color: transparent;
+  background: transparent;
+  color: rgba(17, 17, 15, 0.58);
+}
+
+.product-editorial .de-chip:hover {
+  border-color: rgba(17, 17, 15, 0.1);
+  background: rgba(17, 17, 15, 0.04);
+  color: #11110f;
+}
+
+.product-editorial .de-chip-active {
+  border-color: rgba(17, 17, 15, 0.12);
+  background: #ffffff;
+  color: #11110f;
+  box-shadow: none;
+}
+
+.product-editorial .de-nav-item:hover {
+  border-color: transparent;
+  background: rgba(17, 17, 15, 0.045);
+}
+
+.product-editorial .de-nav-item-active {
+  border-color: rgba(17, 17, 15, 0.08);
+  background: #ffffff;
+  color: #11110f;
+  box-shadow: inset 2px 0 0 #11110f;
+}
+
+.product-editorial .de-nav-item-active svg,
+.product-editorial .de-mobile-active,
+.product-editorial .de-mobile-active svg {
+  color: #11110f;
+}
+
+.product-editorial .de-menu {
+  border-color: rgba(17, 17, 15, 0.12);
+  background: rgba(255, 255, 255, 0.98);
+  box-shadow: 0 20px 50px rgba(17, 17, 15, 0.12);
+}
+
+.product-editorial .de-menu-item {
+  color: rgba(17, 17, 15, 0.7);
+}
+
+.product-editorial .de-menu-item:hover {
+  background: rgba(17, 17, 15, 0.055);
+  color: #11110f;
+}
+
+.product-editorial .editorial-mobile-nav {
+  border-color: rgba(17, 17, 15, 0.1);
+  background: rgba(247, 246, 242, 0.94);
+}
+
+.product-editorial [class*="bg-[#FE2C55]"],
+.product-editorial [class*="bg-[#25F4EE]"] {
+  background-color: #11110f;
+  color: #ffffff;
 }

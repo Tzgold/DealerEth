@@ -43,7 +43,7 @@ export default function ProfileSetupPage() {
   useEffect(() => {
     async function loadProfileDefaults() {
       try {
-        const response = await fetch("/api/profile", { method: "GET" });
+        const response = await fetch("/api/profile", { method: "GET", cache: "no-store" });
         if (!response.ok) {
           setBootLoading(false);
           return;

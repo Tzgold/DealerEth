@@ -61,12 +61,11 @@ export function CreatorDashboardShell({
   }
 
   return (
-    <div className="dashboard-surface creator-shell min-h-screen text-white">
-      <header className="sticky top-0 z-30 border-b border-white/5 bg-[#0a0a0b]/95 backdrop-blur">
+    <div className="dashboard-surface product-editorial creator-shell min-h-screen">
+      <header className="sticky top-0 z-30 border-b border-black/10 bg-[#f7f6f2]/90 backdrop-blur">
         <div className="mx-auto flex max-w-[1400px] items-center gap-3 px-4 py-3 sm:px-6">
-          <Link href="/" className="flex items-center gap-0 text-xl font-black tracking-tight">
-            <span className="text-white">dealer</span>
-            <span className="text-[#25F4EE]">Eth</span>
+          <Link href="/" className="font-serif text-lg tracking-[0.14em] text-black">
+            <span>DEALERETH</span>
           </Link>
           <nav className="ml-8 hidden items-center gap-2 md:flex">
             {topTabs.map((tab) => (
@@ -87,7 +86,7 @@ export function CreatorDashboardShell({
                   name="q"
                   defaultValue={searchDefault}
                   placeholder="Search campaigns"
-                  className="w-56 rounded-lg border border-white/10 bg-white/5 px-4 py-2 pl-9 text-sm text-white placeholder:text-white/35 outline-none focus:border-[#25F4EE]/40"
+                  className="de-field w-56 py-2 pl-9 text-sm"
                 />
                 <svg viewBox="0 0 24 24" className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-white/50" aria-hidden="true">
                   <path fill="currentColor" d="M10 4a6 6 0 1 1 0 12 6 6 0 0 1 0-12Zm10.7 16.3-3.8-3.8a8 8 0 1 0-1.4 1.4l3.8 3.8a1 1 0 0 0 1.4-1.4Z" />
@@ -170,7 +169,7 @@ export function CreatorDashboardShell({
         </aside>
         <main className="space-y-5 pb-20 md:pb-0">{children}</main>
       </div>
-      <nav className="fixed inset-x-0 bottom-0 z-40 border-t border-white/10 bg-[#101012]/95 px-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-2 backdrop-blur md:hidden" aria-label="Creator dashboard">
+      <nav className="editorial-mobile-nav fixed inset-x-0 bottom-0 z-40 border-t px-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-2 backdrop-blur md:hidden" aria-label="Creator dashboard">
         <ul className="mx-auto grid max-w-lg grid-cols-5 gap-1">
           {navItems.map((item) => {
             const active = isActive(item);

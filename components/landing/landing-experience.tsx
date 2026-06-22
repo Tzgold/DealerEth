@@ -4,470 +4,98 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 
-function RoleModal({ open, onClose }: { open: boolean; onClose: () => void }) {
-  if (!open) return null;
+const creatorSteps = ["Build a credible creator profile", "Share your DealerEth bio link", "Review briefs and direct offers", "Collaborate and get paid"];
+const brandSteps = ["Create a trusted brand profile", "Discover creators by niche", "Publish a clear campaign brief", "Review applications and collaborate"];
 
+function EditorialIcon({ index, className = "h-6 w-6" }: { index: number; className?: string }) {
+  const paths = [
+    <path key="user" d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm-7 8c.6-3.4 3.1-5.5 7-5.5s6.4 2.1 7 5.5" />,
+    <path key="brief" d="M8 7V5.5A1.5 1.5 0 0 1 9.5 4h5A1.5 1.5 0 0 1 16 5.5V7m-12 4h16M5 7h14a1 1 0 0 1 1 1v10H4V8a1 1 0 0 1 1-1Z" />,
+    <path key="search" d="m20 20-4.2-4.2m1.2-5.3a6.5 6.5 0 1 1-13 0 6.5 6.5 0 0 1 13 0Z" />,
+    <path key="chat" d="M5 5h14v10H9l-4 4V5Zm4 4h6m-6 3h4" />,
+  ];
+  return <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{paths[index % paths.length]}</svg>;
+}
+
+function RoleModal({ close }: { close: () => void }) {
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/55 p-4" onClick={onClose}>
-      <div
-        className="w-full max-w-md rounded-[28px] bg-white p-6 shadow-[0_30px_100px_rgba(0,0,0,0.35)]"
-        onClick={(event) => event.stopPropagation()}
-      >
-        <h3 className="text-xl font-extrabold tracking-tight">Get Started</h3>
-        <p className="mt-1 text-sm text-zinc-600">Choose how you want to use DealerEth.</p>
-
-        <div className="mt-5 grid gap-3">
-          <Link href="/login" className="rounded-2xl border border-cyan-200 bg-cyan-50/70 p-4 transition hover:bg-cyan-50">
-            <p className="font-semibold">I&apos;m a Creator</p>
-            <p className="text-xs text-zinc-600">Log in to manage your profile and receive deal requests.</p>
+    <div className="fixed inset-0 z-50 grid place-items-center bg-black/75 p-4 backdrop-blur-sm" onClick={close}>
+      <section className="de-card w-full max-w-lg p-6 sm:p-7" onClick={(event) => event.stopPropagation()}>
+        <div className="flex items-start justify-between gap-4">
+          <div><p className="de-eyebrow">Choose your workspace</p><h2 className="mt-1 text-2xl font-extrabold text-white">How will you use DealerEth?</h2></div>
+          <button type="button" onClick={close} className="de-btn de-btn-secondary min-h-9 px-3" aria-label="Close">×</button>
+        </div>
+        <div className="mt-6 grid gap-3 sm:grid-cols-2">
+          <Link href="/signup" className="group rounded-2xl border border-white/10 bg-white/[0.025] p-5 transition hover:-translate-y-0.5 hover:border-white/25 hover:bg-white/[0.06]">
+            <span className="text-2xl">✦</span><h3 className="mt-4 font-extrabold text-white">I’m a creator</h3><p className="mt-1 text-sm leading-6 text-white/60">Create your profile, find campaigns, and manage brand deals.</p><p className="mt-5 text-sm font-bold text-white">Create creator account →</p>
           </Link>
-          <Link href="/client/login" className="rounded-2xl border border-zinc-200 bg-zinc-50/70 p-4 transition hover:bg-zinc-50">
-            <p className="font-semibold">I&apos;m a Brand</p>
-            <p className="text-xs text-zinc-600">Log in to find creators and launch campaigns.</p>
+          <Link href="/client/signup" className="group rounded-2xl border border-white/10 bg-white/[0.025] p-5 transition hover:-translate-y-0.5 hover:border-white/25 hover:bg-white/[0.06]">
+            <span className="text-2xl">◆</span><h3 className="mt-4 font-extrabold text-white">I’m a brand</h3><p className="mt-1 text-sm leading-6 text-white/60">Discover talent, publish briefs, and run collaborations.</p><p className="mt-5 text-sm font-bold text-white">Create brand account →</p>
           </Link>
         </div>
-
-        <button className="mt-5 text-sm font-medium text-zinc-600 underline" onClick={onClose}>
-          Close
-        </button>
-      </div>
+        <p className="mt-5 text-center text-sm text-white/50">Already registered? <Link href="/login" className="font-bold text-white underline decoration-white/25 underline-offset-4 hover:decoration-white">Sign in</Link></p>
+      </section>
     </div>
   );
 }
 
-function Step({
-  number,
-  title,
-  text,
-  variant,
-}: {
-  number: number;
-  title: string;
-  text: string;
-  variant: "creator" | "brand";
-}) {
-  const badge =
-    variant === "creator"
-      ? "bg-[#25F4EE] text-black"
-      : "bg-[#FE2C55] text-white";
-
-  return (
-    <li className="group relative flex gap-3 rounded-2xl border border-white/70 bg-white/65 px-3 py-2 backdrop-blur transition hover:-translate-y-0.5 hover:border-zinc-200">
-      <span className={`mt-0.5 inline-flex h-7 w-7 items-center justify-center rounded-[10px] text-xs font-extrabold ${badge}`}>
-        {number}
-      </span>
-      <div>
-        <p className="text-sm font-bold tracking-tight">{title}</p>
-        <p className="text-xs leading-5 text-zinc-600">{text}</p>
-      </div>
-    </li>
-  );
-}
-
-function Arrow({ className }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" className={className} aria-hidden="true">
-      <path
-        fill="currentColor"
-        d="M13.5 5.5 19 11H5v2h14l-5.5 5.5 1.4 1.4L22.8 12l-8-8-1.3 1.5Z"
-      />
-    </svg>
-  );
-}
-
-function IconUser({ className }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" className={className} aria-hidden="true">
-      <path
-        fill="currentColor"
-        d="M12 12a4 4 0 1 0-4-4 4 4 0 0 0 4 4Zm0 2c-3.3 0-6 2-6 4v1h12v-1c0-2-2.7-4-6-4Z"
-      />
-    </svg>
-  );
-}
-
-function IconBriefcase({ className }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" className={className} aria-hidden="true">
-      <path
-        fill="currentColor"
-        d="M10 3h4a2 2 0 0 1 2 2v1h3a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h3V5a2 2 0 0 1 2-2Zm6 3V5h-4v1h4Z"
-      />
-    </svg>
-  );
-}
-
-function SocialIcon({ label }: { label: string }) {
-  return (
-    <span
-      aria-label={label}
-      className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-white text-black shadow-sm"
-    >
-      <span className="text-[11px] font-bold">{label[0]}</span>
-    </span>
-  );
-}
-
-function FeatureIcon({ type }: { type: "shield" | "target" | "bolt" | "spark" }) {
-  const common = "h-5 w-5";
-
-  if (type === "shield") {
-    return (
-      <svg viewBox="0 0 24 24" className={common} aria-hidden="true">
-        <path fill="currentColor" d="M12 2 4 5v6c0 5 3.4 9.7 8 11 4.6-1.3 8-6 8-11V5l-8-3Zm0 3.1 5 1.9V11c0 3.6-2.2 7-5 8.2-2.8-1.2-5-4.6-5-8.2V7l5-1.9Z" />
-      </svg>
-    );
-  }
-
-  if (type === "target") {
-    return (
-      <svg viewBox="0 0 24 24" className={common} aria-hidden="true">
-        <path
-          fill="currentColor"
-          d="M12 3a9 9 0 1 0 9 9h-2a7 7 0 1 1-7-7V3Zm0 4a5 5 0 1 0 5 5h-2a3 3 0 1 1-3-3V7Zm8-4v3h-3v2h3v3h2V8h3V6h-3V3h-2Z"
-        />
-      </svg>
-    );
-  }
-
-  if (type === "bolt") {
-    return (
-      <svg viewBox="0 0 24 24" className={common} aria-hidden="true">
-        <path fill="currentColor" d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z" />
-      </svg>
-    );
-  }
-
-  return (
-    <svg viewBox="0 0 24 24" className={common} aria-hidden="true">
-      <path
-        fill="currentColor"
-        d="m12 2 2.1 4.9L19 9l-4.9 2.1L12 16l-2.1-4.9L5 9l4.9-2.1L12 2Zm7 12 1.3 3 3 1.3-3 1.3L19 23l-1.3-3-3-1.3 3-1.3L19 14ZM5 13l1 2.3L8.3 16 6 17l-1 2.3L4 17l-2.3-1L4 15.3 5 13Z"
-      />
-    </svg>
-  );
-}
-
 export function LandingExperience() {
-  const [open, setOpen] = useState(false);
-
+  const [modalOpen, setModalOpen] = useState(false);
   return (
-    <div className="min-h-screen w-full bg-[radial-gradient(circle_at_15%_5%,rgba(37,244,238,0.18),transparent_35%),radial-gradient(circle_at_90%_10%,rgba(254,44,85,0.14),transparent_38%),linear-gradient(to_bottom,#f8fafc,#ffffff,#fff7fa)]">
-      <div className="mx-auto w-full max-w-[1200px] px-6 sm:px-10 lg:px-12">
-        <header className="sticky top-0 z-30 flex flex-wrap items-center justify-between gap-4 px-1 py-4">
-          <Link href="/" className="text-2xl font-black tracking-tight">
-            Dealer
-            <span className="bg-gradient-to-r from-[#25F4EE] via-[#00C2FF] to-[#FE2C55] bg-clip-text text-transparent">Eth</span>
-          </Link>
-
-          <nav className="hidden flex-wrap items-center gap-1 text-sm text-zinc-700 md:flex">
-            <a href="#how" className="rounded-full px-3 py-2 transition hover:bg-gradient-to-r hover:from-[#25F4EE]/20 hover:to-[#FE2C55]/20 hover:text-black">
-              How it works
-            </a>
-            <a href="#creators" className="rounded-full px-3 py-2 transition hover:bg-gradient-to-r hover:from-[#25F4EE]/20 hover:to-[#FE2C55]/20 hover:text-black">
-              For Creators
-            </a>
-            <a href="#brands" className="rounded-full px-3 py-2 transition hover:bg-gradient-to-r hover:from-[#25F4EE]/20 hover:to-[#FE2C55]/20 hover:text-black">
-              For Brands
-            </a>
-            <a href="#features" className="rounded-full px-3 py-2 transition hover:bg-gradient-to-r hover:from-[#25F4EE]/20 hover:to-[#FE2C55]/20 hover:text-black">
-              Features
-            </a>
-            <a href="#faq" className="rounded-full px-3 py-2 transition hover:bg-gradient-to-r hover:from-[#25F4EE]/20 hover:to-[#FE2C55]/20 hover:text-black">
-              FAQ
-            </a>
+    <div className="editorial-shell min-h-screen overflow-hidden">
+      <header className="sticky top-0 z-40 border-b border-white/[0.07] bg-[#09090b]/85 backdrop-blur-xl">
+        <div className="mx-auto flex h-16 max-w-[1240px] items-center px-5 sm:px-8">
+          <Link href="/" className="font-serif text-lg tracking-[0.14em] text-black">DEALERETH</Link>
+          <nav className="ml-10 hidden items-center gap-1 md:flex">
+            {[['#how','How it works'],['#features','Why DealerEth'],['#faq','FAQ']].map(([href,label]) => <a key={href} href={href} className="de-chip border-transparent bg-transparent">{label}</a>)}
           </nav>
+          <div className="ml-auto flex items-center gap-2"><Link href="/login" className="de-btn de-btn-secondary">Sign in</Link><button type="button" onClick={() => setModalOpen(true)} className="de-btn de-btn-primary">Get started</button></div>
+        </div>
+      </header>
 
-          <div className="flex items-center gap-2">
-            <Link
-              href="/login"
-              className="rounded-full border border-zinc-200 bg-white px-4 py-2 text-sm font-semibold transition hover:border-[#25F4EE]/60 hover:text-[#0f172a]"
-            >
-              Log in
-            </Link>
-            <button
-              onClick={() => setOpen(true)}
-              className="rounded-full bg-gradient-to-r from-[#111111] via-[#1d1d1d] to-[#FE2C55] px-5 py-2 text-sm font-semibold text-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
-            >
-              Get Started
-            </button>
-          </div>
-        </header>
-      </div>
-
-      <section className="mt-5">
-        <div className="mx-auto grid w-full max-w-[1200px] items-center gap-12 px-6 py-14 sm:px-10 lg:grid-cols-2 lg:px-12 lg:py-20">
-          <div>
-            <h1 className="max-w-xl text-4xl font-black leading-[1.02] tracking-tight text-zinc-900 sm:text-6xl">
-              Creative campaigns that connect brands and{" "}
-              <span className="bg-gradient-to-r from-[#25F4EE] via-[#00C2FF] to-[#FE2C55] bg-clip-text text-transparent">TikTok creators</span> in
-              Ethiopia.
-            </h1>
-            <p className="mt-6 max-w-md text-base leading-7 text-zinc-700">
-              DealerEth helps creators grow their income and brands reach the right audience through powerful collaborations.
-            </p>
-
-            <div className="mt-8 grid gap-3 sm:grid-cols-2">
-              <Link
-                href="/login"
-                className="group relative flex items-start justify-between gap-3 overflow-hidden rounded-[24px_8px_24px_8px] border border-cyan-200/80 bg-gradient-to-br from-cyan-50 via-white to-cyan-100/60 p-4 text-left shadow-sm transition duration-300 hover:-translate-y-1 hover:rotate-[-0.6deg] hover:shadow-[0_20px_45px_rgba(37,244,238,0.22)]"
-              >
-                <span className="absolute -right-8 -top-8 h-16 w-16 rounded-full bg-cyan-300/35 blur-xl transition group-hover:scale-125" />
-                <div className="flex items-start gap-3">
-                  <span className="inline-flex h-10 w-10 items-center justify-center rounded-[14px] bg-white text-[#25F4EE] shadow-sm">
-                    <IconUser className="h-5 w-5" />
-                  </span>
-                  <div>
-                    <p className="text-sm font-black uppercase tracking-[0.08em] text-cyan-950">I&apos;m a Creator</p>
-                    <p className="mt-1 text-xs leading-5 text-zinc-700">Get your profile link and receive deals.</p>
-                  </div>
-                </div>
-                <Arrow className="mt-1 h-5 w-5 text-[#25F4EE] transition group-hover:translate-x-0.5" />
-              </Link>
-
-              <Link
-                href="/client/login"
-                className="group relative flex items-start justify-between gap-3 overflow-hidden rounded-[8px_24px_8px_24px] border border-rose-200/80 bg-gradient-to-br from-rose-50 via-white to-rose-100/60 p-4 text-left shadow-sm transition duration-300 hover:-translate-y-1 hover:rotate-[0.6deg] hover:shadow-[0_20px_45px_rgba(254,44,85,0.24)]"
-              >
-                <span className="absolute -left-8 -bottom-8 h-16 w-16 rounded-full bg-rose-300/35 blur-xl transition group-hover:scale-125" />
-                <div className="flex items-start gap-3">
-                  <span className="inline-flex h-10 w-10 items-center justify-center rounded-[14px] bg-white text-[#FE2C55] shadow-sm">
-                    <IconBriefcase className="h-5 w-5" />
-                  </span>
-                  <div>
-                    <p className="text-sm font-black uppercase tracking-[0.08em] text-rose-950">I&apos;m a Brand</p>
-                    <p className="mt-1 text-xs leading-5 text-zinc-700">Find creators and launch campaigns.</p>
-                  </div>
-                </div>
-                <Arrow className="mt-1 h-5 w-5 text-[#FE2C55] transition group-hover:translate-x-0.5" />
-              </Link>
-            </div>
-
-            <div className="mt-8 flex flex-wrap items-center gap-3 text-sm text-zinc-600">
-              <div className="flex -space-x-2">
-                {["/landing/face-1.jpg", "/landing/face-2.jpg", "/landing/face-3.jpg", "/landing/face-4.jpg"].map((src, index) => (
-                  <Image
-                    key={src}
-                    src={src}
-                    alt={`Creator avatar ${index + 1}`}
-                    width={36}
-                    height={36}
-                    className="h-9 w-9 rounded-full border-2 border-white object-cover"
-                  />
-                ))}
-                <span className="inline-flex h-9 w-9 items-center justify-center rounded-full border-2 border-white bg-zinc-900 text-[10px] font-bold text-white">
-                  +120
-                </span>
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="bg-gradient-to-r from-[#25F4EE] via-[#00C2FF] to-[#FE2C55] bg-clip-text text-transparent">★★★★★</span>
-                <span className="text-xs sm:text-sm">Trusted by creators and brands across Ethiopia</span>
-              </div>
-            </div>
-          </div>
-
+      <main>
+        <section className="relative mx-auto grid max-w-[1240px] items-center gap-12 px-5 py-16 sm:px-8 lg:grid-cols-[1.05fr_.95fr] lg:py-24">
+          <div className="pointer-events-none absolute -left-64 top-0 h-[520px] w-[520px] rounded-full bg-white/[0.04] blur-3xl" />
           <div className="relative">
-            <div className="relative overflow-hidden rounded-[28px] border border-white/80 bg-gradient-to-br from-white/80 to-white/50 p-0">
-              <div className="relative min-h-[380px] w-full sm:min-h-[520px] lg:min-h-[640px]">
-                <Image
-                  src="/landing/dealereth-hero.png"
-                  alt="DealerEth mobile preview"
-                  fill
-                  priority
-                  quality={100}
-                  sizes="(min-width: 1536px) 720px, (min-width: 1024px) 640px, 92vw"
-                  className="object-contain p-2 contrast-[1.03] saturate-[1.03]"
-                />
-              </div>
+            <div className="de-chip de-chip-active w-fit">Built for Ethiopia’s creator economy</div>
+            <h1 className="mt-7 max-w-3xl text-5xl font-extrabold leading-[1.03] tracking-[-0.055em] text-white sm:text-6xl lg:text-7xl">Better brand deals start with a <span className="text-white/55">better connection.</span></h1>
+            <p className="mt-6 max-w-xl text-base leading-8 text-white/65 sm:text-lg">DealerEth gives TikTok creators and brands one professional place to discover each other, share clear briefs, and turn good ideas into paid collaborations.</p>
+            <div className="mt-8 flex flex-wrap gap-3"><Link href="/signup" className="de-btn de-btn-primary">Join as a creator</Link><Link href="/client/signup" className="de-btn de-btn-secondary">Join as a brand</Link></div>
+            <div className="mt-9 flex flex-wrap items-center gap-4 border-t border-white/[0.08] pt-6">
+              <div className="flex -space-x-2">{[1,2,3,4].map((number) => <Image key={number} src={`/landing/face-${number}.jpg`} alt="Creator" width={36} height={36} className="h-9 w-9 rounded-full border-2 border-[#09090b] object-cover" />)}</div>
+              <p className="text-sm text-white/55"><span className="font-bold text-white">Creator-first.</span> Clear for brands. Built locally.</p>
             </div>
           </div>
-        </div>
-      </section>
+          <div className="relative">
+            <div className="absolute -inset-8 rounded-full bg-white/[0.035] blur-3xl" />
+            <div className="de-card relative overflow-hidden p-3"><div className="relative min-h-[460px] sm:min-h-[590px]"><Image src="/landing/dealereth-hero.png" alt="DealerEth creator profile and campaign preview" fill priority sizes="(min-width: 1024px) 48vw, 90vw" className="object-contain" /></div></div>
+          </div>
+        </section>
 
-      <section id="how" className="mx-auto w-full max-w-[1200px] px-6 py-16 sm:px-10 lg:px-12 lg:py-20">
-        <h2 className="text-center text-4xl font-black tracking-tight text-zinc-900">How it works</h2>
-        <p className="mt-2 text-center text-sm text-zinc-600">Simple steps for powerful collaborations</p>
-
-        <div className="relative mt-10 grid gap-8 lg:grid-cols-2">
-          <div className="pointer-events-none absolute left-1/2 top-0 hidden h-full w-px -translate-x-1/2 bg-black/10 lg:block" />
-
-          <article
-            id="creators"
-            className="group relative overflow-hidden rounded-[28px_10px_28px_10px] border border-cyan-200/90 bg-gradient-to-br from-cyan-50/90 via-white to-cyan-100/50 p-7 shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-[0_22px_45px_rgba(37,244,238,0.24)]"
-          >
-            <div className="pointer-events-none absolute -right-8 -top-8 h-20 w-20 rounded-full bg-cyan-300/35 blur-2xl transition group-hover:scale-125" />
-            <div className="flex items-center gap-2">
-              <span className="inline-flex h-9 w-9 items-center justify-center rounded-[12px] bg-white text-[#25F4EE] shadow-sm">
-                <IconUser className="h-5 w-5" />
-              </span>
-              <p className="text-xl font-black uppercase tracking-[0.08em] text-[#0F172A]">For Creators</p>
-            </div>
-            <ul className="mt-6 space-y-4">
-              <Step variant="creator" number={1} title="Create your profile" text="Add your info, niche, audience and rates." />
-              <Step variant="creator" number={2} title="Get your unique link" text="Share your DealerEth link in your TikTok bio." />
-              <Step variant="creator" number={3} title="Receive deal requests" text="Brands send structured offers and briefs." />
-              <Step variant="creator" number={4} title="Collaborate & earn" text="Choose the best deals and grow your brand." />
-            </ul>
-          </article>
-
-          <article
-            id="brands"
-            className="group relative overflow-hidden rounded-[10px_28px_10px_28px] border border-rose-200/90 bg-gradient-to-br from-rose-50/90 via-white to-rose-100/50 p-7 shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-[0_22px_45px_rgba(254,44,85,0.2)]"
-          >
-            <div className="pointer-events-none absolute -left-8 -bottom-8 h-20 w-20 rounded-full bg-rose-300/35 blur-2xl transition group-hover:scale-125" />
-            <div className="flex items-center gap-2">
-              <span className="inline-flex h-9 w-9 items-center justify-center rounded-[12px] bg-zinc-50 text-black shadow-sm">
-                <IconBriefcase className="h-5 w-5" />
-              </span>
-              <p className="text-xl font-black uppercase tracking-[0.08em]">For Brands</p>
-            </div>
-            <ul className="mt-6 space-y-4">
-              <Step variant="brand" number={1} title="Find the right creators" text="Search and discover creators by niche and audience." />
-              <Step variant="brand" number={2} title="Send a campaign request" text="Tell them about your product and budget." />
-              <Step variant="brand" number={3} title="Connect & collaborate" text="Creators review and accept your offers." />
-              <Step variant="brand" number={4} title="Track & grow" text="Build long-term partnerships and boost your brand." />
-            </ul>
-          </article>
-        </div>
-      </section>
-
-      <section id="features" className="border-y border-zinc-200/80 bg-gradient-to-b from-cyan-50/60 via-white to-rose-50/40">
-        <div className="mx-auto w-full max-w-[1200px] px-6 py-16 sm:px-10 lg:px-12 lg:py-20">
-          <h2 className="text-center text-4xl font-black tracking-tight text-zinc-900">Why choose DealerEth?</h2>
-          <p className="mt-2 text-center text-sm text-zinc-600">Built with speed, trust, and creator-first workflow in mind.</p>
-
-          <div className="mt-10 grid gap-6 lg:grid-cols-[1.1fr,1.6fr]">
-            <div className="relative overflow-hidden rounded-[28px_12px_28px_12px] border border-zinc-200 bg-white/85 p-7">
-              <span className="pointer-events-none absolute -right-10 -top-10 h-28 w-28 rounded-full bg-cyan-200/50 blur-2xl" />
-              <p className="text-xs font-black uppercase tracking-[0.14em] text-zinc-500">DealerEth Value</p>
-              <p className="mt-3 text-3xl font-black leading-tight text-zinc-900">
-                One place to discover, connect, and launch creator campaigns that actually convert.
-              </p>
-              <p className="mt-4 text-sm leading-6 text-zinc-600">
-                We combine creator identity, campaign briefs, and fast collaboration flow so brands and creators can move from idea to execution with less friction.
-              </p>
-            </div>
-
-            <div className="grid gap-4 sm:grid-cols-2">
-              {[
-                ["shield", "Trusted & Secure", "Verified profile flow and structured requests keep collaborations safer."],
-                ["target", "Right Audience", "Match by niche and community fit, not random DMs and guesswork."],
-                ["bolt", "Fast Execution", "Launch campaign requests in minutes with clear goals and budget context."],
-                ["spark", "Creative Growth", "Build repeat partnerships that grow both creator influence and brand results."],
-              ].map(([icon, title, text]) => (
-                <article
-                  key={title}
-                  className="group relative overflow-hidden rounded-[20px_8px_20px_8px] border border-zinc-200 bg-white/90 p-5 transition duration-300 hover:-translate-y-1 hover:border-zinc-300 hover:shadow-[0_14px_34px_rgba(15,23,42,0.12)]"
-                >
-                  <span className="pointer-events-none absolute -right-7 -top-7 h-16 w-16 rounded-full bg-gradient-to-br from-[#25F4EE]/20 to-[#FE2C55]/20 blur-xl transition group-hover:scale-125" />
-                  <div className="inline-flex h-11 w-11 items-center justify-center rounded-[14px] bg-gradient-to-br from-[#25F4EE]/35 via-[#00C2FF]/25 to-[#FE2C55]/30 text-zinc-900">
-                    <FeatureIcon type={icon as "shield" | "target" | "bolt" | "spark"} />
-                  </div>
-                  <p className="mt-3 text-sm font-black uppercase tracking-[0.06em] text-zinc-900">{title}</p>
-                  <p className="mt-2 text-xs leading-5 text-zinc-600">{text}</p>
-                </article>
+        <section id="how" className="border-y border-white/[0.07] bg-white/[0.018]">
+          <div className="mx-auto max-w-[1240px] px-5 py-20 sm:px-8">
+            <p className="de-eyebrow">A simpler workflow</p><h2 className="mt-2 max-w-2xl text-4xl font-extrabold tracking-tight sm:text-5xl">From discovery to collaboration, without the messy DMs.</h2>
+            <div className="mt-10 grid gap-5 lg:grid-cols-2">
+              {[["For creators", creatorSteps, "text-white", "border-white/10"], ["For brands", brandSteps, "text-white", "border-white/10"]].map(([title, steps, color, border]) => (
+                <article key={title as string} className={`de-card p-6 sm:p-7 ${border}`}><h3 className={`text-xl font-extrabold ${color}`}>{title as string}</h3><ol className="mt-6 space-y-3">{(steps as string[]).map((step,index) => <li key={step} className="flex items-center gap-4 rounded-xl border border-white/[0.07] bg-white/[0.025] p-4 transition hover:border-white/15 hover:bg-white/[0.045]"><span className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-white/[0.07] text-xs font-bold text-white/70">0{index+1}</span><span className="font-semibold text-white/80">{step}</span></li>)}</ol></article>
               ))}
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      <section id="faq" className="mx-auto w-full max-w-[1200px] px-6 py-16 sm:px-10 lg:px-12 lg:py-20">
-        <h2 className="text-center text-4xl font-black tracking-tight text-zinc-900">FAQ</h2>
-        <p className="mt-2 text-center text-sm text-zinc-600">Clear answers before you get started.</p>
-
-        <div className="mx-auto mt-9 grid max-w-5xl gap-6 lg:grid-cols-[0.9fr,1.6fr]">
-          <aside className="rounded-[24px_10px_24px_10px] border border-zinc-200 bg-white/80 p-6">
-            <p className="text-xs font-black uppercase tracking-[0.14em] text-zinc-500">Need help?</p>
-            <p className="mt-3 text-2xl font-black leading-tight text-zinc-900">Common questions, quick answers.</p>
-            <p className="mt-3 text-sm leading-6 text-zinc-600">
-              We designed DealerEth to stay simple. If you still need support, use the contact page and we will guide you.
-            </p>
-          </aside>
-
-          <div className="space-y-3">
-            {[
-              ["Is DealerEth a marketplace?", "No. It is a focused MVP for creator profiles, campaign requests, and straightforward collaboration setup."],
-              ["Do creators pay to join?", "Not during early validation. We are focused on growth first, then pricing can evolve later."],
-              ["Can brands message creators inside the app?", "Not in this MVP. We keep communication structured through requests instead of full chat."],
-              ["How fast can a brand launch a campaign?", "A brand can publish a campaign request in a few minutes once profile and budget details are ready."],
-              ["Can creators reject offers?", "Yes. Creators can review campaign details and choose only the opportunities that fit their audience and values."],
-              ["Does DealerEth support long-term partnerships?", "Yes. The platform is built to help brands and creators build repeat collaborations over time."],
-            ].map(([q, a], index) => (
-              <details
-                key={q}
-                className="group rounded-[18px_8px_18px_8px] border border-zinc-200 bg-white/90 p-4 open:border-[#25F4EE]/50 open:bg-gradient-to-r open:from-cyan-50/45 open:to-rose-50/35"
-              >
-                <summary className="flex cursor-pointer list-none items-center gap-3 text-sm font-bold text-zinc-900">
-                  <span className="inline-flex h-7 w-7 items-center justify-center rounded-[10px] bg-zinc-900 text-[11px] font-black text-white">
-                    {index + 1}
-                  </span>
-                  <span>{q}</span>
-                  <span className="ml-auto text-base text-zinc-400 transition group-open:rotate-45 group-open:text-zinc-700">+</span>
-                </summary>
-                <p className="mt-3 pl-10 text-xs leading-6 text-zinc-600">{a}</p>
-              </details>
-            ))}
+        <section id="features" className="mx-auto max-w-[1240px] px-5 py-20 sm:px-8">
+          <div className="grid gap-8 lg:grid-cols-[.8fr_1.2fr]"><div><p className="de-eyebrow">Why DealerEth</p><h2 className="mt-2 text-4xl font-extrabold tracking-tight">Professional tools for real creator work.</h2><p className="mt-4 text-sm leading-7 text-white/60">One focused workspace replaces scattered links, vague messages, and campaign details lost in chat.</p></div>
+            <div className="grid gap-4 sm:grid-cols-2">{[["Clear profiles","Show niche, audience, rates, and portfolio in one shareable page."],["Structured briefs","Budget, deliverables, and timeline are clear before anyone commits."],["Creator discovery","Brands can search by niche and review creators before reaching out."],["Deal workflow","Applications, statuses, and conversations stay connected to the campaign."]].map(([title,text], index) => <article key={title} className="de-card p-5 transition hover:-translate-y-0.5 hover:border-black/20"><EditorialIcon index={index} className="h-7 w-7 text-black/70" /><h3 className="mt-5 font-extrabold">{title}</h3><p className="mt-2 text-sm leading-6 text-white/55">{text}</p></article>)}</div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      <section className="border-t border-zinc-200 bg-[linear-gradient(130deg,#101010,#161616_45%,#2c0f1b)]">
-        <div className="mx-auto flex w-full max-w-[1200px] flex-wrap items-center justify-between gap-6 px-6 py-12 text-white sm:px-10 lg:px-12">
-          <div>
-            <h2 className="text-4xl font-black tracking-tight">Ready to start?</h2>
-            <p className="mt-3 max-w-md text-sm text-zinc-300">Join DealerEth today and start creating impactful collaborations.</p>
-          </div>
-          <div className="flex flex-wrap gap-3">
-            <Link
-              href="/login"
-              className="rounded-xl bg-gradient-to-r from-[#25F4EE] to-[#FE2C55] px-6 py-3 text-sm font-extrabold text-white shadow-[0_12px_30px_rgba(254,44,85,0.25)] transition hover:-translate-y-0.5 hover:shadow-[0_16px_34px_rgba(254,44,85,0.35)]"
-            >
-              I&apos;m a Creator
-            </Link>
-            <Link
-              href="/client/login"
-              className="rounded-xl border border-white/25 bg-white/5 px-6 py-3 text-sm font-extrabold transition hover:-translate-y-0.5 hover:bg-white/10"
-            >
-              I&apos;m a Brand
-            </Link>
-          </div>
-        </div>
-      </section>
+        <section id="faq" className="border-y border-white/[0.07] bg-white/[0.018]"><div className="mx-auto max-w-4xl px-5 py-20 sm:px-8"><p className="de-eyebrow">Common questions</p><h2 className="mt-2 text-4xl font-extrabold">A few things worth knowing.</h2><div className="mt-8 space-y-3">{[["Who is DealerEth for?","Ethiopian TikTok creators and brands that want clearer, more professional collaborations."],["Can creators choose which offers to accept?","Yes. Creators review campaign details and decide what fits their audience and values."],["Can brands talk with applicants?","Yes. Every campaign application can become a focused message thread."],["Does it work on mobile?","Yes. Creator and brand workspaces include responsive mobile navigation and forms."]].map(([q,a]) => <details key={q} className="de-card group p-5"><summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-bold"><span>{q}</span><span className="text-xl text-white/40 transition group-open:rotate-45 group-open:text-white">+</span></summary><p className="mt-3 max-w-2xl text-sm leading-7 text-white/55">{a}</p></details>)}</div></div></section>
 
-      <footer className="border-t border-zinc-200 bg-white/85 backdrop-blur">
-        <div className="mx-auto flex w-full max-w-[1200px] flex-wrap items-center justify-between gap-6 px-6 py-8 text-xs text-zinc-600 sm:px-10 lg:px-12">
-          <p className="max-w-md leading-5">
-            <span className="font-black text-black">Dealer</span>
-            <span className="bg-gradient-to-r from-[#25F4EE] via-[#00C2FF] to-[#FE2C55] bg-clip-text font-black text-transparent">Eth</span>
-            <span className="ml-2">Connecting brands with TikTok creators in Ethiopia.</span>
-          </p>
+        <section className="mx-auto max-w-[1240px] px-5 py-20 sm:px-8"><div className="de-card relative overflow-hidden p-8 sm:p-12"><div className="absolute right-0 top-0 h-64 w-64 rounded-full bg-white/[0.04] blur-3xl" /><div className="relative flex flex-wrap items-end justify-between gap-8"><div><p className="de-eyebrow">Ready when you are</p><h2 className="mt-2 max-w-xl text-4xl font-extrabold tracking-tight">Make your next collaboration easier to start—and easier to manage.</h2></div><button type="button" onClick={() => setModalOpen(true)} className="de-btn de-btn-primary">Create your workspace</button></div></div></section>
+      </main>
 
-          <div className="flex flex-wrap items-center gap-4">
-            <a href="#" className="transition hover:text-black">
-              About Us
-            </a>
-            <a href="#" className="transition hover:text-black">
-              Contact
-            </a>
-            <a href="#" className="transition hover:text-black">
-              Terms
-            </a>
-            <a href="#" className="transition hover:text-black">
-              Privacy
-            </a>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <SocialIcon label="TikTok" />
-            <SocialIcon label="Instagram" />
-            <SocialIcon label="Twitter" />
-            <SocialIcon label="YouTube" />
-          </div>
-        </div>
-      </footer>
-
-      <RoleModal open={open} onClose={() => setOpen(false)} />
+      <footer className="border-t border-white/[0.07]"><div className="mx-auto flex max-w-[1240px] flex-wrap items-center justify-between gap-5 px-5 py-8 text-sm text-white/45 sm:px-8"><p><span className="font-black text-white">dealerEth</span> · Creator partnerships, made clearer.</p><div className="flex gap-5"><a href="#how" className="hover:text-white">How it works</a><a href="#faq" className="hover:text-white">FAQ</a><Link href="/login" className="hover:text-white">Sign in</Link></div></div></footer>
+      {modalOpen && <RoleModal close={() => setModalOpen(false)} />}
     </div>
   );
 }

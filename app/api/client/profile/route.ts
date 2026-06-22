@@ -42,7 +42,7 @@ export async function GET() {
       contactName: user?.googleDisplayName ?? "",
       email: user?.email ?? "",
     },
-  });
+  }, { headers: { "Cache-Control": "no-store" } });
 }
 
 export async function POST(request: Request) {

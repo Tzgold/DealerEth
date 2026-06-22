@@ -1,82 +1,31 @@
 "use client";
 
-import { ReactNode } from "react";
 import Link from "next/link";
+import { ReactNode } from "react";
 
 type AuthSplitLayoutProps = {
-  badge: string;
-  heading: string;
-  subheading: string;
-  steps: string[];
-  formTitle: string;
-  formSubtitle: string;
-  footerText: string;
-  footerLinkHref: string;
-  footerLinkText: string;
-  children: ReactNode;
+  badge: string; heading: string; subheading: string; steps: string[]; formTitle: string; formSubtitle: string;
+  footerText: string; footerLinkHref: string; footerLinkText: string; children: ReactNode;
 };
 
-export function AuthSplitLayout({
-  badge,
-  heading,
-  subheading,
-  steps,
-  formTitle,
-  formSubtitle,
-  footerText,
-  footerLinkHref,
-  footerLinkText,
-  children,
-}: AuthSplitLayoutProps) {
+export function AuthSplitLayout(props: AuthSplitLayoutProps) {
+  const isBrand = props.badge.toLowerCase().includes("brand");
   return (
-    <main className="min-h-screen w-full bg-[radial-gradient(circle_at_20%_0%,rgba(37,244,238,0.16),transparent_35%),radial-gradient(circle_at_90%_100%,rgba(254,44,85,0.18),transparent_35%),#0b0b0f] px-4 py-8 sm:px-6 lg:py-10">
-      <div className="mx-auto grid w-full max-w-6xl overflow-hidden rounded-[30px] border border-white/15 bg-black/70 shadow-[0_25px_90px_rgba(0,0,0,0.45)] lg:grid-cols-2">
-        <aside className="relative isolate flex flex-col justify-between overflow-hidden bg-[linear-gradient(165deg,#0f0f12_0%,#10131a_38%,#151025_72%,#0a0a0d_100%)] p-8 text-white sm:p-10">
-          <div className="pointer-events-none absolute -left-8 -top-8 h-40 w-40 rounded-full bg-cyan-300/25 blur-3xl" />
-          <div className="pointer-events-none absolute -bottom-10 -right-10 h-44 w-44 rounded-full bg-rose-300/25 blur-3xl" />
-          <div className="relative z-10">
-            <Link href="/" className="inline-flex items-center gap-2 text-sm font-bold">
-              <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-white/20">D</span>
-              DealerEth
-            </Link>
-            <h1 className="mt-14 max-w-md text-4xl font-black leading-tight sm:text-5xl">{heading}</h1>
-            <p className="mt-4 max-w-md text-sm leading-6 text-white/85">{subheading}</p>
-          </div>
-
-          <ol className="relative z-10 mt-10 space-y-3">
-            {steps.map((step, index) => (
-              <li
-                key={step}
-                className={`flex items-center gap-3 rounded-xl border px-4 py-3 text-sm transition ${
-                  index === 0 ? "border-white/35 bg-white/90 text-zinc-900" : "border-white/10 bg-white/5 text-white/85"
-                }`}
-              >
-                <span
-                  className={`inline-flex h-6 w-6 items-center justify-center rounded-full text-xs font-bold ${
-                    index === 0 ? "bg-zinc-900 text-white" : "bg-white/20 text-white"
-                  }`}
-                >
-                  {index + 1}
-                </span>
-                {step}
-              </li>
-            ))}
-          </ol>
+    <main className="dashboard-surface editorial-auth min-h-screen px-4 py-5 sm:px-6 sm:py-8">
+      <div className="mx-auto flex max-w-6xl items-center justify-between py-2">
+        <Link href="/" className="font-serif text-lg tracking-[0.14em] text-black">DEALERETH</Link>
+        <Link href={isBrand ? "/login" : "/client/login"} className="de-chip">Switch to {isBrand ? "creator" : "brand"}</Link>
+      </div>
+      <div className="mx-auto mt-5 grid w-full max-w-6xl overflow-hidden rounded-3xl border border-white/[0.09] bg-[#111114] shadow-[0_30px_90px_rgba(0,0,0,.34)] lg:grid-cols-[.88fr_1.12fr]">
+        <aside className="relative flex flex-col justify-between overflow-hidden border-b border-white/[0.08] bg-white/[0.018] p-7 sm:p-10 lg:min-h-[680px] lg:border-b-0 lg:border-r">
+          <div className="pointer-events-none absolute -left-24 -top-24 h-80 w-80 rounded-full bg-white/[0.045] blur-3xl" />
+          <div className="relative"><p className="de-eyebrow">{props.badge}</p><h1 className="mt-5 max-w-md text-4xl font-extrabold leading-[1.08] tracking-[-0.04em] sm:text-5xl">{props.heading}</h1><p className="mt-5 max-w-md text-sm leading-7 text-white/60">{props.subheading}</p></div>
+          <ol className="relative mt-10 space-y-3">{props.steps.map((step,index) => <li key={step} className="flex items-center gap-4 rounded-xl border border-white/[0.07] bg-white/[0.025] p-4 text-sm font-semibold text-white/70"><span className={`grid h-8 w-8 shrink-0 place-items-center rounded-lg text-xs font-black ${index === 0 ? "bg-[var(--accent)] text-zinc-950" : "bg-white/[0.06] text-white/50"}`}>{index+1}</span>{step}</li>)}</ol>
         </aside>
-
-        <section className="bg-[#0a0a0c] p-8 text-white sm:p-10 lg:p-14">
-          <p className="text-xs font-bold uppercase tracking-[0.14em] text-white/50">{badge}</p>
-          <h2 className="mt-3 text-3xl font-black sm:text-4xl">{formTitle}</h2>
-          <p className="mt-2 max-w-md text-sm leading-6 text-white/65">{formSubtitle}</p>
-
-          <div className="mt-7">{children}</div>
-
-          <p className="mt-6 text-sm text-white/65">
-            {footerText}{" "}
-            <Link href={footerLinkHref} className="font-semibold text-white underline decoration-white/40 underline-offset-4">
-              {footerLinkText}
-            </Link>
-          </p>
+        <section className="p-7 sm:p-10 lg:p-12">
+          <p className="de-eyebrow">Secure access</p><h2 className="mt-2 text-3xl font-extrabold tracking-tight sm:text-4xl">{props.formTitle}</h2><p className="mt-3 max-w-lg text-sm leading-6 text-white/55">{props.formSubtitle}</p>
+          <div className="auth-form mt-8">{props.children}</div>
+          <p className="mt-7 text-sm text-white/55">{props.footerText} <Link href={props.footerLinkHref} className="font-bold text-white underline decoration-white/30 underline-offset-4 hover:decoration-white">{props.footerLinkText}</Link></p>
         </section>
       </div>
     </main>

@@ -1,8 +1,8 @@
 export function StatTile({ label, value, tone }: { label: string; value: string; tone?: "default" | "accent" }) {
   return (
-    <div className="rounded-2xl border border-white/10 bg-[#151518] px-5 py-5 shadow-[0_8px_24px_rgba(0,0,0,0.22)]">
-      <p className={`text-3xl font-black tracking-tight ${tone === "accent" ? "text-[#25F4EE]" : "text-white"}`}>{value}</p>
-      <p className="mt-1.5 text-sm font-semibold text-white/65">{label}</p>
+    <div className="de-stat-tile rounded-2xl border border-white/10 bg-[#151518] px-5 py-5 shadow-[0_8px_24px_rgba(0,0,0,0.22)]">
+      <p className={`de-stat-value text-3xl font-black tracking-tight ${tone === "accent" ? "text-[#25F4EE]" : "text-white"}`}>{value}</p>
+      <p className="de-stat-label mt-1.5 text-sm font-semibold text-white/65">{label}</p>
     </div>
   );
 }

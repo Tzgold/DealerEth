@@ -65,7 +65,7 @@ export default function SignupPage() {
           onClick={() => {
             window.location.href = "/api/auth/google/start?role=CREATOR";
           }}
-          className="flex w-full items-center justify-center gap-2 rounded-xl border border-white/15 bg-white/5 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-white/10"
+          className="de-btn de-btn-secondary w-full"
         >
           <svg viewBox="0 0 24 24" className="h-4 w-4" aria-hidden="true">
             <path fill="#EA4335" d="M12 10.2v3.9h5.5c-.2 1.3-1.5 3.9-5.5 3.9-3.3 0-6-2.8-6-6.2s2.7-6.2 6-6.2c1.9 0 3.2.8 3.9 1.5l2.7-2.6C17 2.9 14.7 2 12 2 6.9 2 2.8 6.3 2.8 11.7S6.9 21.4 12 21.4c6.9 0 9.1-4.9 9.1-7.4 0-.5 0-.8-.1-1.1H12Z" />
@@ -77,7 +77,7 @@ export default function SignupPage() {
           onClick={() => {
             window.location.href = "/api/auth/tiktok/start?role=CREATOR";
           }}
-          className="flex w-full items-center justify-center gap-2 rounded-xl border border-white/15 bg-white/5 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-white/10"
+          className="de-btn de-btn-secondary w-full"
         >
           <svg viewBox="0 0 256 256" className="h-4 w-4" aria-hidden="true">
             <path fill="#25F4EE" d="M182 31c4 20 16 35 35 41v31c-14 0-27-4-38-11v64a71 71 0 1 1-71-71c3 0 6 0 9 1v32a39 39 0 1 0 30 38V31h35Z" />

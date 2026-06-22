@@ -56,16 +56,22 @@ export async function requireClientProfile() {
 }
 
 export function creatorProfileStrength(profile: {
+  name?: string;
+  avatarUrl?: string | null;
+  username?: string;
+  tiktokHandle?: string;
   bio?: string;
   niche?: string;
-  priceRange?: string | null;
   sampleVideos: unknown;
   followers: number;
 }) {
   const checks = [
+    Boolean(profile.avatarUrl?.trim()),
+    Boolean(profile.name?.trim()),
+    Boolean(profile.username?.trim()),
+    Boolean(profile.tiktokHandle?.trim()),
     Boolean(profile.bio?.trim()),
     Boolean(profile.niche?.trim()),
-    Boolean(profile.priceRange?.trim()),
     Array.isArray(profile.sampleVideos) && (profile.sampleVideos as unknown[]).length > 0,
     profile.followers > 0,
   ];

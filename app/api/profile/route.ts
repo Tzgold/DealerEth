@@ -38,7 +38,7 @@ export async function GET() {
       followers: user?.tiktokFollowers ?? "",
       email: user?.email ?? "",
     },
-  });
+  }, { headers: { "Cache-Control": "no-store" } });
 }
 
 export async function POST(request: Request) {
