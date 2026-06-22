@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { CreatorProfilePreview } from "@/components/profile/creator-profile-preview";
 import { ProfileBioLinkCard } from "@/components/profile/profile-bio-link-card";
 import { ProfileCompletionCard } from "@/components/profile/profile-completion-card";
+import { ProfileImageField } from "@/components/profile/profile-image-field";
 import { ProfilePageShell } from "@/components/profile/profile-page-shell";
 import { darkInputClass, darkTextareaClass } from "@/components/profile/profile-styles";
 
@@ -26,6 +27,7 @@ export default function ProfileSetupPage() {
   const [loading, setLoading] = useState(false);
   const [bootLoading, setBootLoading] = useState(true);
   const [savedUsername, setSavedUsername] = useState("");
+  const [sourceAvatarUrl, setSourceAvatarUrl] = useState("");
   const [form, setForm] = useState<CreatorSetupState>({
     name: "",
     avatarUrl: "",
@@ -68,6 +70,7 @@ export default function ProfileSetupPage() {
         };
 
         const username = data.profile?.username ?? "";
+        setSourceAvatarUrl(data.defaults?.avatarUrl ?? "");
         setSavedUsername(username);
         setForm((prev) => ({
           ...prev,
@@ -164,22 +167,8 @@ export default function ProfileSetupPage() {
           >
             <section>
               <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-white/50">Photo</p>
-              <div className="mt-3 flex flex-col gap-4 sm:flex-row sm:items-center">
-                <img
-                  src={form.avatarUrl || "/next.svg"}
-                  alt=""
-                  className="h-20 w-20 rounded-2xl border border-white/10 object-cover bg-white/5"
-                />
-                <div className="flex-1">
-                  <input
-                    className={darkInputClass}
-                    placeholder="Image URL (paste a photo link)"
-                    value={form.avatarUrl}
-                    disabled={bootLoading}
-                    onChange={(e) => setForm((p) => ({ ...p, avatarUrl: e.target.value }))}
-                  />
-                  <p className="mt-2 text-xs text-white/45">Use a clear headshot — brands trust faces more than logos.</p>
-                </div>
+              <div className="mt-3">
+                <ProfileImageField value={form.avatarUrl} fallbackUrl={sourceAvatarUrl} variant="creator" disabled={bootLoading} onChange={(avatarUrl) => setForm((previous) => ({ ...previous, avatarUrl }))} />
               </div>
             </section>
 
@@ -271,7 +260,7 @@ export default function ProfileSetupPage() {
               <button
                 type="submit"
                 disabled={loading || bootLoading}
-                className="flex-1 rounded-full bg-gradient-to-r from-[#25F4EE] via-[#00C2FF] to-[#FE2C55] py-3 text-sm font-bold text-white transition hover:opacity-95 disabled:opacity-50 sm:flex-none sm:px-8"
+                className="de-btn de-btn-primary flex-1 sm:flex-none"
               >
                 {bootLoading ? "Loading…" : loading ? "Saving…" : "Save profile"}
               </button>
@@ -279,7 +268,7 @@ export default function ProfileSetupPage() {
                 type="button"
                 disabled={bootLoading}
                 onClick={() => router.push("/dashboard")}
-                className="rounded-full border border-white/15 bg-white/5 px-6 py-3 text-sm font-semibold text-white transition hover:bg-white/10"
+                className="de-btn de-btn-secondary"
               >
                 Back to dashboard
               </button>

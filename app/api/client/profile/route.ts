@@ -4,6 +4,16 @@ import { prisma } from "@/lib/prisma";
 import { getSessionUser } from "@/lib/session";
 import { clientProfileSchema } from "@/lib/validations";
 
+function websiteLogoUrl(website?: string) {
+  if (!website) return null;
+  try {
+    const domain = new URL(website).hostname;
+    return `https://www.google.com/s2/favicons?domain=${encodeURIComponent(domain)}&sz=256`;
+  } catch {
+    return null;
+  }
+}
+
 export async function GET() {
   const session = await getSessionUser();
 
@@ -28,7 +38,7 @@ export async function GET() {
   return NextResponse.json({
     profile: user?.clientProfile ?? null,
     defaults: {
-      avatarUrl: user?.googleAvatarUrl ?? "",
+      avatarUrl: user?.clientProfile?.avatarUrl ?? websiteLogoUrl(user?.clientProfile?.website ?? undefined) ?? user?.googleAvatarUrl ?? "",
       contactName: user?.googleDisplayName ?? "",
       email: user?.email ?? "",
     },
@@ -48,13 +58,14 @@ export async function POST(request: Request) {
 
   try {
     const payload = clientProfileSchema.parse(await request.json());
+    const avatarUrl = payload.avatarUrl || websiteLogoUrl(payload.website);
 
     await prisma.clientProfile.upsert({
       where: { userId: session.userId },
       create: {
         userId: session.userId,
         companyName: payload.companyName,
-        avatarUrl: payload.avatarUrl || null,
+        avatarUrl,
         contactName: payload.contactName,
         industry: payload.industry,
         website: payload.website || null,
@@ -62,7 +73,7 @@ export async function POST(request: Request) {
       },
       update: {
         companyName: payload.companyName,
-        avatarUrl: payload.avatarUrl || null,
+        avatarUrl,
         contactName: payload.contactName,
         industry: payload.industry,
         website: payload.website || null,

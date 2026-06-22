@@ -2,12 +2,6 @@
 
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-
-const darkFieldClass =
-  "rounded-xl border-white/10 bg-white/5 text-white placeholder:text-white/40 focus:border-white/30";
 
 export function CampaignPostForm({ dark }: { dark?: boolean }) {
   const router = useRouter();
@@ -18,55 +12,40 @@ export function CampaignPostForm({ dark }: { dark?: boolean }) {
     event.preventDefault();
     setError("");
     setLoading(true);
-
-    const formData = new FormData(event.currentTarget);
-
+    const form = event.currentTarget;
+    const formData = new FormData(form);
     const response = await fetch("/api/client/campaigns", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        title: formData.get("title"),
-        description: formData.get("description"),
-        budget: formData.get("budget"),
-        niche: formData.get("niche"),
-        deliverables: formData.get("deliverables"),
-        deadline: formData.get("deadline") || undefined,
+        title: formData.get("title"), description: formData.get("description"), budget: formData.get("budget"),
+        niche: formData.get("niche"), deliverables: formData.get("deliverables"), deadline: formData.get("deadline") || undefined,
       }),
     });
-
     if (!response.ok) {
       const data = (await response.json()) as { error?: string };
       setError(data.error ?? "Could not publish campaign");
       setLoading(false);
       return;
     }
-
-    event.currentTarget.reset();
+    form.reset();
     router.push("/client/dashboard/campaigns");
     router.refresh();
-    setLoading(false);
   }
 
+  const fieldClass = dark ? "de-field" : "w-full rounded-lg border border-zinc-300 px-3 py-2";
   return (
-    <form className="space-y-3" onSubmit={handleSubmit}>
-      <Input name="title" placeholder="Campaign title" required className={dark ? darkFieldClass : undefined} />
-      <Textarea name="description" rows={4} placeholder="What is the campaign about?" required className={dark ? darkFieldClass : undefined} />
-      <Input name="budget" placeholder="Budget (e.g. 8,000–15,000 ETB)" required className={dark ? darkFieldClass : undefined} />
-      <Input name="niche" placeholder="Target niche (fashion, tech, food...)" required className={dark ? darkFieldClass : undefined} />
-      <Textarea name="deliverables" rows={3} placeholder="Deliverables (videos, stories, timeline)" required className={dark ? darkFieldClass : undefined} />
-      <Input name="deadline" placeholder="Deadline (optional)" className={dark ? darkFieldClass : undefined} />
-      <Button
-        type="submit"
-        disabled={loading}
-        className={
-          dark
-            ? "w-full rounded-full bg-gradient-to-r from-[#FE2C55] via-[#ff5f8a] to-[#25F4EE] font-bold text-white hover:opacity-95"
-            : "w-full"
-        }
-      >
-        {loading ? "Publishing..." : "Publish campaign"}
-      </Button>
-      {error && <p className={`text-sm ${dark ? "text-rose-300" : "text-red-600"}`}>{error}</p>}
+    <form className="space-y-5" onSubmit={handleSubmit}>
+      <label className="block space-y-2"><span className="text-sm font-semibold text-white/75">Campaign title</span><input name="title" placeholder="Example: Summer product launch" required className={fieldClass} /></label>
+      <label className="block space-y-2"><span className="text-sm font-semibold text-white/75">Campaign brief</span><textarea name="description" rows={5} placeholder="Describe the product, audience, campaign goal, and creative direction." required className={`${fieldClass} resize-y`} /></label>
+      <div className="grid gap-4 sm:grid-cols-2">
+        <label className="block space-y-2"><span className="text-sm font-semibold text-white/75">Budget</span><input name="budget" placeholder="8,000–15,000 ETB" required className={fieldClass} /></label>
+        <label className="block space-y-2"><span className="text-sm font-semibold text-white/75">Target niche</span><input name="niche" placeholder="Fashion, technology, food…" required className={fieldClass} /></label>
+      </div>
+      <label className="block space-y-2"><span className="text-sm font-semibold text-white/75">Deliverables</span><textarea name="deliverables" rows={4} placeholder="Example: Two TikTok videos and one revision round." required className={`${fieldClass} resize-y`} /></label>
+      <label className="block space-y-2"><span className="text-sm font-semibold text-white/75">Deadline <span className="font-normal text-white/40">(optional)</span></span><input name="deadline" type="date" className={`${fieldClass} [color-scheme:dark]`} /></label>
+      <button type="submit" disabled={loading} className="de-btn de-btn-primary w-full sm:w-auto">{loading ? "Publishing…" : "Publish campaign"}</button>
+      {error && <p className="text-sm text-rose-300">{error}</p>}
     </form>
   );
 }

@@ -1,6 +1,11 @@
 import { z } from "zod";
 
 const roleSchema = z.enum(["CREATOR", "CLIENT"]);
+const imageSourceSchema = z.union([
+  z.string().url("Image must be a valid URL."),
+  z.string().regex(/^\/uploads\/avatars\/[a-zA-Z0-9._-]+$/, "Invalid uploaded image."),
+  z.literal(""),
+]);
 
 export const signUpSchema = z.object({
   email: z.string().email(),
@@ -21,7 +26,7 @@ export const creatorProfileSchema = z.object({
     .max(30)
     .regex(/^[a-z0-9_]+$/, "Username must use lowercase letters, numbers, and underscore only."),
   name: z.string().min(2),
-  avatarUrl: z.string().url("Avatar URL must be a valid URL.").optional().or(z.literal("")),
+  avatarUrl: imageSourceSchema.optional(),
   tiktokHandle: z.string().min(2),
   bio: z.string().min(10).max(280),
   niche: z.string().min(2),
@@ -35,7 +40,7 @@ export const creatorProfileSchema = z.object({
 
 export const clientProfileSchema = z.object({
   companyName: z.string().min(2),
-  avatarUrl: z.string().url("Avatar URL must be a valid URL.").optional().or(z.literal("")),
+  avatarUrl: imageSourceSchema.optional(),
   contactName: z.string().min(2),
   industry: z.string().min(2),
   website: z.string().url("Website must be a valid URL.").optional().or(z.literal("")),
@@ -51,6 +56,10 @@ export const campaignPostSchema = z.object({
   deadline: z.string().optional(),
 });
 
+export const campaignUpdateSchema = campaignPostSchema.partial().extend({
+  status: z.enum(["LIVE", "PAUSED", "CLOSED"]).optional(),
+});
+
 export const dealRequestSchema = z.object({
   creatorId: z.string().min(1),
   name: z.string().min(2),
@@ -59,6 +68,8 @@ export const dealRequestSchema = z.object({
   budget: z.string().min(1),
   deliverables: z.string().min(5),
 });
+
+export const dealRequestStatusSchema = z.enum(["NEW", "ACCEPTED", "DECLINED"]);
 
 export const campaignApplicationSchema = z.object({
   campaignId: z.string().min(1),

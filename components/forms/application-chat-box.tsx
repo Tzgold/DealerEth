@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useState } from "react";
 
 type Message = {
   id: string;
@@ -22,16 +22,13 @@ export function ApplicationChatBox({
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    setMessages(initialMessages);
-  }, [initialMessages]);
-
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setError("");
     setLoading(true);
 
-    const formData = new FormData(event.currentTarget);
+    const form = event.currentTarget;
+    const formData = new FormData(form);
     const text = String(formData.get("text") ?? "").trim();
     if (!text) {
       setLoading(false);
@@ -53,7 +50,7 @@ export function ApplicationChatBox({
 
     const data = (await response.json()) as { message: Message };
     setMessages((prev) => [...prev, data.message]);
-    event.currentTarget.reset();
+    form.reset();
     setLoading(false);
   }
 
@@ -74,6 +71,9 @@ export function ApplicationChatBox({
                 {message.senderRole === "CREATOR" ? "Creator" : "Brand"}
               </p>
               <p className="mt-0.5 leading-6">{message.text}</p>
+              <time className="mt-1 block text-[10px] text-white/35" dateTime={message.createdAt}>
+                {new Date(message.createdAt).toLocaleString([], { dateStyle: "medium", timeStyle: "short" })}
+              </time>
             </li>
           ))
         )}
@@ -81,13 +81,15 @@ export function ApplicationChatBox({
       <form onSubmit={handleSubmit} className="flex gap-2">
         <input
           name="text"
+          required
+          maxLength={2000}
           placeholder="Type a message..."
-          className="min-w-0 flex-1 rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-white placeholder:text-white/40 outline-none focus:border-white/30"
+          className="de-field min-w-0 flex-1"
         />
         <button
           type="submit"
           disabled={loading}
-          className="shrink-0 rounded-full bg-white px-4 py-2 text-xs font-bold text-zinc-900 hover:bg-white/90 disabled:opacity-60"
+          className="de-btn de-btn-primary shrink-0"
         >
           Send
         </button>

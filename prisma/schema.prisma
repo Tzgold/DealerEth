@@ -21,6 +21,18 @@ enum ApplicationStatus {
   REJECTED
 }
 
+enum CampaignStatus {
+  LIVE
+  PAUSED
+  CLOSED
+}
+
+enum DealRequestStatus {
+  NEW
+  ACCEPTED
+  DECLINED
+}
+
 model User {
   id                String          @id @default(cuid())
   email             String          @unique
@@ -68,6 +80,7 @@ model DealRequest {
   description  String
   budget       String
   deliverables String
+  status       DealRequestStatus @default(NEW)
   createdAt    DateTime       @default(now())
 
   creator      CreatorProfile @relation(fields: [creatorId], references: [id], onDelete: Cascade)
@@ -98,6 +111,7 @@ model CampaignPost {
   niche        String
   deliverables String
   deadline     String?
+  status       CampaignStatus @default(LIVE)
   createdAt    DateTime      @default(now())
 
   client       ClientProfile @relation(fields: [clientId], references: [id], onDelete: Cascade)

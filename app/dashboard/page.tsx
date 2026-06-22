@@ -11,6 +11,7 @@ export default async function CreatorHubPage() {
   const nicheKeyword = profile.niche.toLowerCase();
 
   const marketCampaigns = await prisma.campaignPost.findMany({
+    where: { status: "LIVE" },
     take: 20,
     orderBy: { createdAt: "desc" },
     include: { client: { select: { companyName: true } } },
@@ -19,7 +20,7 @@ export default async function CreatorHubPage() {
   const applicationByCampaign = new Map(profile.applications.map((a) => [a.campaignId, a]));
   const matchedCampaigns = marketCampaigns.filter((c) => c.niche.toLowerCase().includes(nicheKeyword));
   const activeDeals = profile.applications.filter((a) => a.status === "ACTIVE").length;
-  const newOffers = profile.dealRequests.length;
+  const newOffers = profile.dealRequests.filter((request) => request.status === "NEW").length;
 
   return (
     <>
@@ -71,13 +72,13 @@ export default async function CreatorHubPage() {
                       <div className="mt-2 flex flex-wrap gap-2">
                         <Link
                           href={`/dashboard/campaigns/${campaign.id}`}
-                          className="rounded-full bg-white px-3 py-1 text-xs font-bold text-zinc-900 hover:bg-white/90"
+                          className="de-btn de-btn-primary min-h-8 px-3 py-1.5 text-xs"
                         >
                           {applied ? "View application" : "Apply"}
                         </Link>
                         <Link
                           href={`/dashboard/campaigns/${campaign.id}`}
-                          className="rounded-full border border-white/15 bg-white/[0.04] px-3 py-1 text-xs font-semibold text-white hover:bg-white/10"
+                          className="de-btn de-btn-secondary min-h-8 px-3 py-1.5 text-xs"
                         >
                           View brief
                         </Link>
@@ -101,7 +102,7 @@ export default async function CreatorHubPage() {
         <p className="mt-2 text-sm text-white/65">
           Profile strength {profileStrength}% — {matchedCampaigns.length} campaigns match your niche.
         </p>
-        <Link href="/profile/setup" className="mt-4 inline-flex rounded-full border border-white/15 bg-white/5 px-4 py-2 text-sm font-bold text-white hover:bg-white/10">
+        <Link href="/profile/setup" className="de-btn de-btn-secondary mt-4">
           Improve profile
         </Link>
       </section>

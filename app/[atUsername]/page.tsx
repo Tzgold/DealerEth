@@ -114,9 +114,9 @@ export default async function CreatorPublicPage({ params }: { params: Promise<{ 
           </section>
         </div>
 
-        <section className="h-fit rounded-2xl border border-white/10 bg-[#141416] p-6 shadow-[0_8px_30px_rgba(0,0,0,0.35)]">
-          <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-white/50">For brands</p>
-          <h2 className="mt-2 text-xl font-black">Request a collaboration</h2>
+        <section className="de-card h-fit p-6">
+          <p className="de-eyebrow">For brands</p>
+          <h2 className="mt-2 text-2xl font-extrabold">Request a collaboration</h2>
           <p className="mt-2 text-sm leading-6 text-white/65">Send budget, deliverables, and timeline. The creator gets notified on DealerEth.</p>
           <div className="mt-5">
             <DealRequestForm creatorId={profile.id} dark />

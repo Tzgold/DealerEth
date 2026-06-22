@@ -5,7 +5,7 @@ import { clientProfileStrength, initialsFor, requireClientProfile } from "@/lib/
 export default async function BrandHubPage() {
   const { profile } = await requireClientProfile();
   const profileStrength = clientProfileStrength(profile);
-  const liveCampaigns = profile.campaigns.length;
+  const liveCampaigns = profile.campaigns.filter((campaign) => campaign.status === "LIVE").length;
   const applications = profile.campaigns.flatMap((c) => c.applications);
   const activeDeals = applications.filter((a) => a.status === "ACTIVE").length;
   const pendingApplications = applications.filter((a) => a.status === "APPLIED").length;
@@ -29,10 +29,10 @@ export default async function BrandHubPage() {
             </p>
           </div>
           <div className="flex w-full flex-wrap gap-2 sm:ml-auto sm:w-auto">
-            <Link href="/client/dashboard/post" className="inline-flex rounded-full bg-gradient-to-r from-[#FE2C55] via-[#ff5f8a] to-[#25F4EE] px-4 py-2 text-xs font-bold text-white">
+            <Link href="/client/dashboard/post" className="de-btn de-btn-primary">
               Post new campaign
             </Link>
-            <Link href="/client/profile" className="inline-flex rounded-full border border-white/15 bg-white/5 px-4 py-2 text-xs font-semibold text-white hover:bg-white/10">
+            <Link href="/client/profile" className="de-btn de-btn-secondary">
               Edit profile
             </Link>
           </div>
@@ -75,7 +75,7 @@ export default async function BrandHubPage() {
       <section className="overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-br from-[#141416] to-[#0f0f11] p-5 sm:p-6">
         <h3 className="max-w-xl text-lg font-black text-white">Clear briefs and realistic budgets attract the right creators.</h3>
         <p className="mt-2 text-sm text-white/65">Profile strength {profileStrength}% — {liveCampaigns} live campaign{liveCampaigns === 1 ? "" : "s"}.</p>
-        <Link href="/client/profile" className="mt-4 inline-flex rounded-full border border-white/15 bg-white/5 px-4 py-2 text-sm font-bold text-white hover:bg-white/10">
+        <Link href="/client/profile" className="de-btn de-btn-secondary mt-4">
           Improve brand profile
         </Link>
       </section>

@@ -61,7 +61,7 @@ export function CreatorDashboardShell({
   }
 
   return (
-    <div className="min-h-screen bg-[#0a0a0b] text-white">
+    <div className="dashboard-surface creator-shell min-h-screen text-white">
       <header className="sticky top-0 z-30 border-b border-white/5 bg-[#0a0a0b]/95 backdrop-blur">
         <div className="mx-auto flex max-w-[1400px] items-center gap-3 px-4 py-3 sm:px-6">
           <Link href="/" className="flex items-center gap-0 text-xl font-black tracking-tight">
@@ -73,11 +73,7 @@ export function CreatorDashboardShell({
               <Link
                 key={tab.href}
                 href={tab.href}
-                className={`rounded-full border px-4 py-1.5 text-sm font-semibold transition ${
-                  tab.match(pathname)
-                    ? "border-white/25 bg-white/[0.06] text-white"
-                    : "border-white/10 text-white/70 hover:border-white/20 hover:text-white"
-                }`}
+                className={`de-chip text-sm ${tab.match(pathname) ? "de-chip-active" : ""}`}
               >
                 {tab.label}
               </Link>
@@ -91,7 +87,7 @@ export function CreatorDashboardShell({
                   name="q"
                   defaultValue={searchDefault}
                   placeholder="Search campaigns"
-                  className="w-56 rounded-full border border-white/10 bg-white/5 px-4 py-1.5 pl-9 text-sm text-white placeholder:text-white/40 outline-none focus:border-white/30"
+                  className="w-56 rounded-lg border border-white/10 bg-white/5 px-4 py-2 pl-9 text-sm text-white placeholder:text-white/35 outline-none focus:border-[#25F4EE]/40"
                 />
                 <svg viewBox="0 0 24 24" className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-white/50" aria-hidden="true">
                   <path fill="currentColor" d="M10 4a6 6 0 1 1 0 12 6 6 0 0 1 0-12Zm10.7 16.3-3.8-3.8a8 8 0 1 0-1.4 1.4l3.8 3.8a1 1 0 0 0 1.4-1.4Z" />
@@ -116,14 +112,14 @@ export function CreatorDashboardShell({
               >
                 <img src={avatar} alt="" className="h-full w-full object-cover" />
               </button>
-              <div className="invisible absolute right-0 top-11 z-40 w-44 rounded-xl border border-white/10 bg-[#121214] p-1 opacity-0 shadow-xl transition group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100">
-                <Link href={publicProfilePath} className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/5">
+              <div className="de-menu invisible absolute right-0 top-11 z-40 w-48 opacity-0 transition group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100">
+                <Link href={publicProfilePath} className="de-menu-item">
                   View public page
                 </Link>
-                <Link href="/profile/setup" className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/5">
+                <Link href="/profile/setup" className="de-menu-item">
                   Edit profile
                 </Link>
-                <Link href="/logout" className="block rounded-lg px-3 py-2 text-sm text-rose-300 hover:bg-white/5">
+                <Link href="/logout" className="de-menu-item text-rose-300">
                   Logout
                 </Link>
               </div>
@@ -132,7 +128,7 @@ export function CreatorDashboardShell({
         </div>
       </header>
 
-      <div className="mx-auto grid max-w-[1400px] gap-6 px-4 py-6 sm:px-6 md:grid-cols-[240px_minmax(0,1fr)]">
+      <div className="mx-auto grid max-w-[1440px] gap-8 px-4 py-7 sm:px-6 md:grid-cols-[240px_minmax(0,1fr)] lg:px-8">
         <aside className="hidden md:block">
           <p className="px-3 text-[11px] font-bold uppercase tracking-[0.18em] text-white/40">Creator</p>
           <ul className="mt-3 space-y-1">
@@ -142,8 +138,8 @@ export function CreatorDashboardShell({
                 <li key={item.href}>
                   <Link
                     href={item.href}
-                    className={`group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold transition ${
-                      active ? "bg-white/[0.08] text-white" : "text-white/70 hover:bg-white/[0.04] hover:text-white"
+                    className={`de-nav-item group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold transition ${
+                      active ? "de-nav-item-active" : "text-white/70 hover:text-white"
                     }`}
                   >
                     <SidebarIcon name={item.icon} className={active ? "text-white" : "text-white/60 group-hover:text-white"} />
@@ -172,8 +168,24 @@ export function CreatorDashboardShell({
             </li>
           </ul>
         </aside>
-        <main className="space-y-5">{children}</main>
+        <main className="space-y-5 pb-20 md:pb-0">{children}</main>
       </div>
+      <nav className="fixed inset-x-0 bottom-0 z-40 border-t border-white/10 bg-[#101012]/95 px-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-2 backdrop-blur md:hidden" aria-label="Creator dashboard">
+        <ul className="mx-auto grid max-w-lg grid-cols-5 gap-1">
+          {navItems.map((item) => {
+            const active = isActive(item);
+            return (
+              <li key={item.href}>
+                <Link href={item.href} className={`relative flex min-h-12 flex-col items-center justify-center gap-1 rounded-xl px-1 text-[10px] font-semibold transition ${active ? "de-mobile-active" : "text-white/50 hover:bg-white/5 hover:text-white"}`}>
+                  <SidebarIcon name={item.icon} className="h-4 w-4" />
+                  <span className="max-w-full truncate">{item.label.replace("Brand ", "")}</span>
+                  {item.badge ? <span className="absolute right-2 top-1 h-4 min-w-4 rounded-full bg-[#FE2C55] px-1 text-center text-[9px] leading-4 text-white">{item.badge}</span> : null}
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
+      </nav>
     </div>
   );
 }

@@ -13,6 +13,7 @@ export default async function CreatorCampaignsPage({
   const nicheKeyword = profile.niche.toLowerCase();
 
   const campaigns = await prisma.campaignPost.findMany({
+    where: { status: "LIVE" },
     orderBy: { createdAt: "desc" },
     include: { client: { select: { companyName: true, industry: true } } },
   });
@@ -38,13 +39,13 @@ export default async function CreatorCampaignsPage({
         <div className="flex gap-2">
           <Link
             href="/dashboard/campaigns"
-            className={`rounded-full border px-3 py-1.5 text-xs font-semibold ${!filter ? "border-white/25 bg-white/10 text-white" : "border-white/10 text-white/60"}`}
+            className={`de-chip ${!filter ? "de-chip-active" : ""}`}
           >
             All
           </Link>
           <Link
             href="/dashboard/campaigns?filter=match"
-            className={`rounded-full border px-3 py-1.5 text-xs font-semibold ${filter === "match" ? "border-white/25 bg-white/10 text-white" : "border-white/10 text-white/60"}`}
+            className={`de-chip ${filter === "match" ? "de-chip-active" : ""}`}
           >
             Best for my niche
           </Link>
@@ -82,17 +83,17 @@ export default async function CreatorCampaignsPage({
                 </div>
                 <p className="mt-3 line-clamp-2 text-sm text-white/75">{campaign.description}</p>
                 <div className="mt-4 flex flex-wrap gap-2">
-                  <Link href={`/dashboard/campaigns/${campaign.id}`} className="rounded-full bg-white px-4 py-1.5 text-xs font-bold text-zinc-900">
+                  <Link href={`/dashboard/campaigns/${campaign.id}`} className="de-btn de-btn-primary min-h-9 py-2 text-xs">
                     {application ? "View application" : "Apply"}
                   </Link>
                   <Link
                     href={`/dashboard/campaigns/${campaign.id}`}
-                    className="rounded-full border border-white/15 px-4 py-1.5 text-xs font-semibold text-white"
+                    className="de-btn de-btn-secondary min-h-9 py-2 text-xs"
                   >
                     View brief
                   </Link>
                   {application && (
-                    <Link href={`/dashboard/messages/${application.id}`} className="rounded-full border border-white/15 px-4 py-1.5 text-xs font-semibold text-[#25F4EE]">
+                    <Link href={`/dashboard/messages/${application.id}`} className="de-btn de-btn-accent min-h-9 py-2 text-xs">
                       Message brand
                     </Link>
                   )}

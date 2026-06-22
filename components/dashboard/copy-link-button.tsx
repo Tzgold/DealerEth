@@ -19,7 +19,7 @@ export function CopyLinkButton({ value, label = "Copy" }: { value: string; label
     <button
       type="button"
       onClick={handleCopy}
-      className="inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-white/5 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-white/10"
+      className="de-btn de-btn-secondary min-h-8 px-3 py-1.5 text-xs"
     >
       <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" aria-hidden="true">
         <path

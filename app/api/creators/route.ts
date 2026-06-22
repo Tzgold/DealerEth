@@ -5,6 +5,7 @@ import { getSessionUser } from "@/lib/session";
 export async function GET(request: Request) {
   const session = await getSessionUser();
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (session.role !== "CLIENT") return NextResponse.json({ error: "Only brands can discover creators." }, { status: 403 });
 
   const { searchParams } = new URL(request.url);
   const q = (searchParams.get("q") ?? "").trim().toLowerCase();

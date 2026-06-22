@@ -72,6 +72,7 @@ export default async function BrandMessagesPage({
             </Link>
             <div className="mt-5 border-t border-white/10 pt-5">
               <ApplicationChatBox
+                key={focused.id}
                 applicationId={focused.id}
                 initialMessages={focused.messages.map((m) => ({
                   id: m.id,

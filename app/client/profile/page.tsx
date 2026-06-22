@@ -4,8 +4,9 @@ import { FormEvent, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { BrandProfilePreview } from "@/components/profile/brand-profile-preview";
 import { ProfileCompletionCard } from "@/components/profile/profile-completion-card";
+import { ProfileImageField } from "@/components/profile/profile-image-field";
 import { ProfilePageShell } from "@/components/profile/profile-page-shell";
-import { darkInputClass, darkInputClassBrand, darkTextareaClassBrand } from "@/components/profile/profile-styles";
+import { darkInputClassBrand, darkTextareaClassBrand } from "@/components/profile/profile-styles";
 
 type ClientSetupState = {
   companyName: string;
@@ -21,6 +22,8 @@ export default function ClientProfilePage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [bootLoading, setBootLoading] = useState(true);
+  const [fallbackAvatarUrl, setFallbackAvatarUrl] = useState("");
+  const [hasProfile, setHasProfile] = useState(false);
   const [form, setForm] = useState<ClientSetupState>({
     companyName: "",
     avatarUrl: "",
@@ -54,6 +57,8 @@ export default function ClientProfilePage() {
           };
         };
 
+        setHasProfile(Boolean(data.profile));
+        setFallbackAvatarUrl(data.defaults?.avatarUrl ?? "");
         setForm((prev) => ({
           ...prev,
           companyName: data.profile?.companyName ?? "",
@@ -85,6 +90,10 @@ export default function ClientProfilePage() {
     setLoading(true);
     setError("");
 
+    const website = form.website.trim()
+      ? (/^https?:\/\//i.test(form.website.trim()) ? form.website.trim() : `https://${form.website.trim()}`)
+      : "";
+
     const response = await fetch("/api/client/profile", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -93,7 +102,7 @@ export default function ClientProfilePage() {
         avatarUrl: form.avatarUrl || "",
         contactName: form.contactName,
         industry: form.industry,
-        website: form.website,
+        website,
         description: form.description,
       }),
     });
@@ -125,18 +134,21 @@ export default function ClientProfilePage() {
             <div className="mt-3 flex flex-wrap gap-2">
               <button
                 type="button"
+                disabled={!hasProfile}
                 onClick={() => router.push("/client/dashboard/post")}
-                className="rounded-full bg-gradient-to-r from-[#FE2C55] via-[#ff5f8a] to-[#25F4EE] px-4 py-2 text-xs font-bold text-white"
+                className="de-btn de-btn-primary"
               >
                 Post a campaign
               </button>
               <button
                 type="button"
+                disabled={!hasProfile}
                 onClick={() => router.push("/client/dashboard/creators")}
-                className="rounded-full border border-white/15 bg-white/5 px-4 py-2 text-xs font-semibold text-white hover:bg-white/10"
+                className="de-btn de-btn-secondary"
               >
                 Discover creators
               </button>
+              {!hasProfile && <p className="w-full text-xs text-amber-200/80">Save your brand profile first to unlock creator discovery and campaign tools.</p>}
             </div>
           </div>
 
@@ -146,21 +158,8 @@ export default function ClientProfilePage() {
           >
             <section>
               <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-white/50">Brand image</p>
-              <div className="mt-3 flex flex-col gap-4 sm:flex-row sm:items-center">
-                <img
-                  src={form.avatarUrl || "/next.svg"}
-                  alt=""
-                  className="h-20 w-20 rounded-2xl border border-white/10 object-cover bg-white/5"
-                />
-                <div className="flex-1">
-                  <input
-                    className={darkInputClassBrand}
-                    placeholder="Logo or brand image URL"
-                    value={form.avatarUrl}
-                    disabled={bootLoading}
-                    onChange={(e) => setForm((p) => ({ ...p, avatarUrl: e.target.value }))}
-                  />
-                </div>
+              <div className="mt-3">
+                <ProfileImageField value={form.avatarUrl} fallbackUrl={fallbackAvatarUrl} website={form.website} variant="brand" disabled={bootLoading} onChange={(avatarUrl) => setForm((previous) => ({ ...previous, avatarUrl }))} />
               </div>
             </section>
 
@@ -194,7 +193,7 @@ export default function ClientProfilePage() {
               </div>
               <input
                 className={darkInputClassBrand}
-                placeholder="Website (optional)"
+                placeholder="Website (for example, company.com)"
                 value={form.website}
                 disabled={bootLoading}
                 onChange={(e) => setForm((p) => ({ ...p, website: e.target.value }))}
@@ -218,7 +217,7 @@ export default function ClientProfilePage() {
               <button
                 type="submit"
                 disabled={loading || bootLoading}
-                className="flex-1 rounded-full bg-gradient-to-r from-[#FE2C55] via-[#ff5f8a] to-[#25F4EE] py-3 text-sm font-bold text-white transition hover:opacity-95 disabled:opacity-50 sm:flex-none sm:px-8"
+                className="de-btn de-btn-primary flex-1 sm:flex-none"
               >
                 {bootLoading ? "Loading…" : loading ? "Saving…" : "Save brand profile"}
               </button>
@@ -226,7 +225,7 @@ export default function ClientProfilePage() {
                 type="button"
                 disabled={bootLoading}
                 onClick={() => router.push("/client/dashboard")}
-                className="rounded-full border border-white/15 bg-white/5 px-6 py-3 text-sm font-semibold text-white transition hover:bg-white/10"
+                className="de-btn de-btn-secondary"
               >
                 Back to dashboard
               </button>

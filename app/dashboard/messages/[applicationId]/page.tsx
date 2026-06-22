@@ -30,6 +30,7 @@ export default async function CreatorMessageThreadPage({ params }: { params: Pro
         <p className="mt-1 text-sm text-white/60">Status: {application.status.replace("_", " ")}</p>
         <div className="mt-5">
           <ApplicationChatBox
+            key={application.id}
             applicationId={application.id}
             initialMessages={application.messages.map((m) => ({
               id: m.id,

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useSyncExternalStore } from "react";
 import { CopyLinkButton } from "@/components/dashboard/copy-link-button";
 
 export function ProfileBioLinkCard({
@@ -10,10 +10,11 @@ export function ProfileBioLinkCard({
   username: string;
   accent?: "creator" | "brand";
 }) {
-  const [origin, setOrigin] = useState("");
-  useEffect(() => {
-    setOrigin(window.location.origin);
-  }, []);
+  const origin = useSyncExternalStore(
+    () => () => undefined,
+    () => window.location.origin,
+    () => "",
+  );
 
   const normalized = username.trim().toLowerCase().replace(/^@+/, "").replace(/\s+/g, "_");
   const hasUsername = normalized.length >= 3;
@@ -51,13 +52,13 @@ export function ProfileBioLinkCard({
               href={path}
               target="_blank"
               rel="noreferrer"
-              className="inline-flex rounded-full bg-white px-4 py-2 text-xs font-bold text-zinc-900 transition hover:bg-white/90"
+              className="de-btn de-btn-primary"
             >
               View public page
             </a>
             <a
               href={path}
-              className="inline-flex rounded-full border border-white/15 bg-white/5 px-4 py-2 text-xs font-semibold text-white transition hover:bg-white/10"
+              className="de-btn de-btn-secondary"
             >
               Open preview
             </a>

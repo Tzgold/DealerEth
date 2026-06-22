@@ -1,10 +1,10 @@
 "use client";
 
 import { FormEvent, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 
-const darkFieldClass =
-  "rounded-xl border-white/10 bg-white/5 text-white placeholder:text-white/40 focus:border-white/30 w-full px-4 py-2.5 text-sm outline-none border";
+const darkFieldClass = "de-field";
 
 export function CampaignApplyForm({
   campaignId,
@@ -24,9 +24,9 @@ export function CampaignApplyForm({
     return (
       <div className={`rounded-xl border px-4 py-3 text-sm ${dark ? "border-[#25F4EE]/40 bg-[#25F4EE]/10 text-[#25F4EE]" : "border-green-200 bg-green-50 text-green-800"}`}>
         Application submitted.{" "}
-        <a href="/dashboard/messages" className="font-semibold underline underline-offset-2">
+        <Link href="/dashboard/messages" className="font-semibold underline underline-offset-2">
           View in Messages
-        </a>
+        </Link>
       </div>
     );
   }
@@ -76,7 +76,7 @@ export function CampaignApplyForm({
       <button
         type="submit"
         disabled={loading}
-        className="w-full rounded-full bg-gradient-to-r from-[#25F4EE] via-[#00C2FF] to-[#FE2C55] py-2.5 text-sm font-bold text-white hover:opacity-95 disabled:opacity-60"
+        className="de-btn de-btn-primary w-full"
       >
         {loading ? "Submitting..." : "Submit application"}
       </button>

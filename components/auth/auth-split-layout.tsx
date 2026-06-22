@@ -1,6 +1,7 @@
 "use client";
 
 import { ReactNode } from "react";
+import Link from "next/link";
 
 type AuthSplitLayoutProps = {
   badge: string;
@@ -34,10 +35,10 @@ export function AuthSplitLayout({
           <div className="pointer-events-none absolute -left-8 -top-8 h-40 w-40 rounded-full bg-cyan-300/25 blur-3xl" />
           <div className="pointer-events-none absolute -bottom-10 -right-10 h-44 w-44 rounded-full bg-rose-300/25 blur-3xl" />
           <div className="relative z-10">
-            <a href="/" className="inline-flex items-center gap-2 text-sm font-bold">
+            <Link href="/" className="inline-flex items-center gap-2 text-sm font-bold">
               <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-white/20">D</span>
               DealerEth
-            </a>
+            </Link>
             <h1 className="mt-14 max-w-md text-4xl font-black leading-tight sm:text-5xl">{heading}</h1>
             <p className="mt-4 max-w-md text-sm leading-6 text-white/85">{subheading}</p>
           </div>
@@ -72,9 +73,9 @@ export function AuthSplitLayout({
 
           <p className="mt-6 text-sm text-white/65">
             {footerText}{" "}
-            <a href={footerLinkHref} className="font-semibold text-white underline decoration-white/40 underline-offset-4">
+            <Link href={footerLinkHref} className="font-semibold text-white underline decoration-white/40 underline-offset-4">
               {footerLinkText}
-            </a>
+            </Link>
           </p>
         </section>
       </div>
