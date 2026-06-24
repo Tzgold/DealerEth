@@ -94,28 +94,33 @@ export default function ClientProfilePage() {
       ? (/^https?:\/\//i.test(form.website.trim()) ? form.website.trim() : `https://${form.website.trim()}`)
       : "";
 
-    const response = await fetch("/api/client/profile", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        companyName: form.companyName,
-        avatarUrl: form.avatarUrl || "",
-        contactName: form.contactName,
-        industry: form.industry,
-        website,
-        description: form.description,
-      }),
-    });
+    try {
+      const response = await fetch("/api/client/profile", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          companyName: form.companyName,
+          avatarUrl: form.avatarUrl || "",
+          contactName: form.contactName,
+          industry: form.industry,
+          website,
+          description: form.description,
+        }),
+      });
 
-    if (!response.ok) {
-      const data = (await response.json()) as { error?: string };
-      setError(data.error ?? "Could not save profile");
+      if (!response.ok) {
+        const data = (await response.json()) as { error?: string };
+        setError(data.error ?? "Could not save profile");
+        return;
+      }
+
+      router.push("/client/dashboard");
+      router.refresh();
+    } catch {
+      setError("Network error. Please try again.");
+    } finally {
       setLoading(false);
-      return;
     }
-
-    router.push("/client/dashboard");
-    router.refresh();
   }
 
   return (

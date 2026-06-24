@@ -35,23 +35,27 @@ export function ApplicationChatBox({
       return;
     }
 
-    const response = await fetch(`/api/campaign-applications/${applicationId}/messages`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ text }),
-    });
+    try {
+      const response = await fetch(`/api/campaign-applications/${applicationId}/messages`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text }),
+      });
 
-    if (!response.ok) {
-      const data = (await response.json()) as { error?: string };
-      setError(data.error ?? "Could not send");
+      if (!response.ok) {
+        const data = (await response.json()) as { error?: string };
+        setError(data.error ?? "Could not send");
+        return;
+      }
+
+      const data = (await response.json()) as { message: Message };
+      setMessages((prev) => [...prev, data.message]);
+      form.reset();
+    } catch {
+      setError("Network error. Please try again.");
+    } finally {
       setLoading(false);
-      return;
     }
-
-    const data = (await response.json()) as { message: Message };
-    setMessages((prev) => [...prev, data.message]);
-    form.reset();
-    setLoading(false);
   }
 
   return (

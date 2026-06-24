@@ -21,32 +21,42 @@ export function CampaignManageActions({
   async function updateStatus(status: CampaignStatus) {
     setBusy(true);
     setError("");
-    const response = await fetch(`/api/campaigns/${campaignId}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ status }),
-    });
-    if (!response.ok) {
-      const data = (await response.json()) as { error?: string };
-      setError(data.error ?? "Could not update campaign.");
-    } else {
-      router.refresh();
+    try {
+      const response = await fetch(`/api/campaigns/${campaignId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status }),
+      });
+      if (!response.ok) {
+        const data = (await response.json()) as { error?: string };
+        setError(data.error ?? "Could not update campaign.");
+      } else {
+        router.refresh();
+      }
+    } catch {
+      setError("Network error. Please try again.");
+    } finally {
+      setBusy(false);
     }
-    setBusy(false);
   }
 
   async function removeCampaign() {
     if (!window.confirm("Delete this campaign permanently?")) return;
     setBusy(true);
     setError("");
-    const response = await fetch(`/api/campaigns/${campaignId}`, { method: "DELETE" });
-    if (!response.ok) {
-      const data = (await response.json()) as { error?: string };
-      setError(data.error ?? "Could not delete campaign.");
+    try {
+      const response = await fetch(`/api/campaigns/${campaignId}`, { method: "DELETE" });
+      if (!response.ok) {
+        const data = (await response.json()) as { error?: string };
+        setError(data.error ?? "Could not delete campaign.");
+        return;
+      }
+      router.refresh();
+    } catch {
+      setError("Network error. Please try again.");
+    } finally {
       setBusy(false);
-      return;
     }
-    router.refresh();
   }
 
   return (

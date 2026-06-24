@@ -14,23 +14,28 @@ export function CampaignPostForm({ dark }: { dark?: boolean }) {
     setLoading(true);
     const form = event.currentTarget;
     const formData = new FormData(form);
-    const response = await fetch("/api/client/campaigns", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        title: formData.get("title"), description: formData.get("description"), budget: formData.get("budget"),
-        niche: formData.get("niche"), deliverables: formData.get("deliverables"), deadline: formData.get("deadline") || undefined,
-      }),
-    });
-    if (!response.ok) {
-      const data = (await response.json()) as { error?: string };
-      setError(data.error ?? "Could not publish campaign");
+    try {
+      const response = await fetch("/api/client/campaigns", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title: formData.get("title"), description: formData.get("description"), budget: formData.get("budget"),
+          niche: formData.get("niche"), deliverables: formData.get("deliverables"), deadline: formData.get("deadline") || undefined,
+        }),
+      });
+      if (!response.ok) {
+        const data = (await response.json()) as { error?: string };
+        setError(data.error ?? "Could not publish campaign");
+        return;
+      }
+      form.reset();
+      router.push("/client/dashboard/campaigns");
+      router.refresh();
+    } catch {
+      setError("Network error. Please try again.");
+    } finally {
       setLoading(false);
-      return;
     }
-    form.reset();
-    router.push("/client/dashboard/campaigns");
-    router.refresh();
   }
 
   const fieldClass = dark ? "de-field" : "w-full rounded-lg border border-zinc-300 px-3 py-2";

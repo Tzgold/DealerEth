@@ -37,26 +37,30 @@ export function CampaignApplyForm({
     setLoading(true);
 
     const formData = new FormData(event.currentTarget);
-    const response = await fetch("/api/campaign-applications", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        campaignId,
-        coverLetter: formData.get("coverLetter"),
-        proposedBudget: formData.get("proposedBudget") || undefined,
-      }),
-    });
+    try {
+      const response = await fetch("/api/campaign-applications", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          campaignId,
+          coverLetter: formData.get("coverLetter"),
+          proposedBudget: formData.get("proposedBudget") || undefined,
+        }),
+      });
 
-    if (!response.ok) {
-      const data = (await response.json()) as { error?: string };
-      setError(data.error ?? "Could not apply");
+      if (!response.ok) {
+        const data = (await response.json()) as { error?: string };
+        setError(data.error ?? "Could not apply");
+        return;
+      }
+
+      setSuccess(true);
+      router.refresh();
+    } catch {
+      setError("Network error. Please try again.");
+    } finally {
       setLoading(false);
-      return;
     }
-
-    setSuccess(true);
-    router.refresh();
-    setLoading(false);
   }
 
   return (

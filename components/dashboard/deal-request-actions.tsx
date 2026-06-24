@@ -13,18 +13,23 @@ export function DealRequestActions({ requestId, currentStatus }: { requestId: st
   async function update(status: RequestStatus) {
     setBusy(true);
     setError("");
-    const response = await fetch(`/api/deal-requests/${requestId}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ status }),
-    });
-    if (!response.ok) {
-      const data = (await response.json()) as { error?: string };
-      setError(data.error ?? "Could not update request.");
-    } else {
-      router.refresh();
+    try {
+      const response = await fetch(`/api/deal-requests/${requestId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status }),
+      });
+      if (!response.ok) {
+        const data = (await response.json()) as { error?: string };
+        setError(data.error ?? "Could not update request.");
+      } else {
+        router.refresh();
+      }
+    } catch {
+      setError("Network error. Please try again.");
+    } finally {
+      setBusy(false);
     }
-    setBusy(false);
   }
 
   if (currentStatus !== "NEW") {

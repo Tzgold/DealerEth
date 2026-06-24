@@ -121,32 +121,37 @@ export default function ProfileSetupPage() {
       .filter(Boolean)
       .map((value) => (value.startsWith("http://") || value.startsWith("https://") ? value : `https://${value}`));
 
-    const response = await fetch("/api/profile", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        username: normalizedUsername,
-        name: form.name,
-        avatarUrl: form.avatarUrl || "",
-        tiktokHandle: form.tiktokHandle,
-        bio: form.bio,
-        niche: form.niche,
-        followers: form.followers,
-        priceRange: form.priceRange || undefined,
-        sampleVideos,
-      }),
-    });
+    try {
+      const response = await fetch("/api/profile", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          username: normalizedUsername,
+          name: form.name,
+          avatarUrl: form.avatarUrl || "",
+          tiktokHandle: form.tiktokHandle,
+          bio: form.bio,
+          niche: form.niche,
+          followers: form.followers,
+          priceRange: form.priceRange || undefined,
+          sampleVideos,
+        }),
+      });
 
-    if (!response.ok) {
-      const data = (await response.json()) as { error?: string };
-      setError(data.error ?? "Could not save profile");
+      if (!response.ok) {
+        const data = (await response.json()) as { error?: string };
+        setError(data.error ?? "Could not save profile");
+        return;
+      }
+
+      setSavedUsername(normalizedUsername);
+      router.push("/dashboard");
+      router.refresh();
+    } catch {
+      setError("Network error. Please try again.");
+    } finally {
       setLoading(false);
-      return;
     }
-
-    setSavedUsername(normalizedUsername);
-    router.push("/dashboard");
-    router.refresh();
   }
 
   return (

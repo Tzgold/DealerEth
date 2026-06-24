@@ -13,22 +13,27 @@ export function DealRequestForm({ creatorId, dark }: { creatorId: string; dark?:
     setStatus("");
     const form = event.currentTarget;
     const formData = new FormData(form);
-    const response = await fetch("/api/deal-requests", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        creatorId, name: formData.get("name"), email: formData.get("email"), description: formData.get("description"),
-        budget: formData.get("budget"), deliverables: formData.get("deliverables"),
-      }),
-    });
-    if (response.ok) {
-      form.reset();
-      setStatus("Request sent. The creator will see it in their DealerEth inbox.");
-    } else {
-      const data = (await response.json()) as { error?: string };
-      setStatus(data.error ?? "Failed to send request.");
+    try {
+      const response = await fetch("/api/deal-requests", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          creatorId, name: formData.get("name"), email: formData.get("email"), description: formData.get("description"),
+          budget: formData.get("budget"), deliverables: formData.get("deliverables"),
+        }),
+      });
+      if (response.ok) {
+        form.reset();
+        setStatus("Request sent. The creator will see it in their DealerEth inbox.");
+      } else {
+        const data = (await response.json()) as { error?: string };
+        setStatus(data.error ?? "Failed to send request.");
+      }
+    } catch {
+      setStatus("Network error. Please try again.");
+    } finally {
+      setSubmitting(false);
     }
-    setSubmitting(false);
   }
 
   return (

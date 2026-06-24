@@ -4,8 +4,30 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 
-const creatorSteps = ["Build a credible creator profile", "Share your DealerEth bio link", "Review briefs and direct offers", "Collaborate and get paid"];
-const brandSteps = ["Create a trusted brand profile", "Discover creators by niche", "Publish a clear campaign brief", "Review applications and collaborate"];
+const workflowGroups = [
+  {
+    title: "For creators",
+    label: "Creator process",
+    intro: "A clean path from your TikTok presence to serious brand work, built around clarity, trust, and local context.",
+    steps: [
+      { title: "Present your value", text: "Shape a sharp creator profile with your niche, TikTok handle, audience, work samples, and rate range." },
+      { title: "Share one clean link", text: "Use your DealerEth page as a simple media-kit style link when a brand wants to understand your work." },
+      { title: "Choose the right briefs", text: "Review budget, deliverables, timeline, and brand fit before spending time in messy back-and-forth chats." },
+      { title: "Move the deal forward", text: "Keep applications, messages, and collaboration status in one place until the work is ready to deliver." },
+    ],
+  },
+  {
+    title: "For clients",
+    label: "Client process",
+    intro: "A more professional way for Ethiopian brands and teams to discover creators, brief campaigns, and manage responses.",
+    steps: [
+      { title: "Set the brand context", text: "Add your website, industry, audience, and campaign direction so creators understand who they are working with." },
+      { title: "Find aligned creators", text: "Browse creators by niche, review public profiles, and shortlist people who fit the campaign naturally." },
+      { title: "Publish a clear brief", text: "Put the budget, deliverables, content expectations, and timeline into one structured campaign page." },
+      { title: "Manage the collaboration", text: "Review applications, talk with creators, update status, and keep every deal step easy to follow." },
+    ],
+  },
+];
 
 function EditorialIcon({ index, className = "h-6 w-6" }: { index: number; className?: string }) {
   const paths = [
@@ -41,6 +63,7 @@ function RoleModal({ close }: { close: () => void }) {
 
 export function LandingExperience() {
   const [modalOpen, setModalOpen] = useState(false);
+  const [activeWorkflowSteps, setActiveWorkflowSteps] = useState([0, 0]);
   return (
     <div className="editorial-shell min-h-screen overflow-hidden">
       <header className="sticky top-0 z-40 border-b border-white/[0.07] bg-[#09090b]/85 backdrop-blur-xl">
@@ -72,14 +95,53 @@ export function LandingExperience() {
           </div>
         </section>
 
-        <section id="how" className="border-y border-white/[0.07] bg-white/[0.018]">
-          <div className="mx-auto grid max-w-[1240px] gap-12 px-5 py-20 sm:px-8 lg:grid-cols-[300px_minmax(0,1fr)] lg:gap-16">
-            <div><p className="de-eyebrow">A simpler workflow</p><h2 className="mt-3 text-4xl font-extrabold leading-[1.05] tracking-tight sm:text-5xl">From discovery to collaboration, without the messy DMs.</h2></div>
-            <div className="grid gap-10 xl:grid-cols-2">
-              {[["For creators", creatorSteps], ["For brands", brandSteps]].map(([title, steps]) => (
-                <article key={title as string} className="landing-workflow-group">
-                  <div className="flex items-center justify-between border-b border-black/15 pb-4"><h3 className="text-2xl font-normal">{title as string}</h3><EditorialIcon index={title === "For creators" ? 0 : 1} className="h-7 w-7 text-black/55" /></div>
-                  <ol className="mt-4 space-y-3">{(steps as string[]).map((step,index) => <li key={step} className="landing-workflow-row grid min-h-20 grid-cols-[1fr_52px] items-center gap-4 rounded-2xl border px-5 py-4 transition"><span className="text-base leading-snug">{step}</span><span className="landing-step-number grid h-11 w-11 place-items-center rounded-full border text-xs font-semibold">0{index+1}</span></li>)}</ol>
+        <section id="how" className="landing-process-section border-y border-white/[0.07] bg-white/[0.018]">
+          <div className="mx-auto max-w-[1240px] px-5 py-20 sm:px-8 lg:py-24">
+            <div className="landing-process-intro">
+              <div>
+                <p className="de-eyebrow">A simpler workflow</p>
+                <h2 className="mt-3 text-4xl font-extrabold leading-[1.05] tracking-tight sm:text-5xl">From discovery to collaboration, without the messy DMs.</h2>
+              </div>
+              <p className="landing-process-intro-copy text-sm leading-7 text-black/55">
+                Two focused paths, one shared collaboration system. Creators present themselves professionally, while clients move from discovery to campaign decisions with less noise and better context.
+              </p>
+            </div>
+
+            <div className="mt-12 grid gap-5">
+              {workflowGroups.map((group, groupIndex) => (
+                <article key={group.title} className={`landing-process-board ${groupIndex === 1 ? "landing-process-board-client" : ""}`}>
+                  <div className="landing-process-copy">
+                    <div className="flex items-center gap-3">
+                      <EditorialIcon index={groupIndex} className="h-6 w-6 text-black/60" />
+                      <p className="de-eyebrow">{group.label}</p>
+                    </div>
+                    <h3 className="mt-4 text-3xl font-normal leading-none sm:text-4xl">{group.title}</h3>
+                    <p className="mt-4 max-w-sm text-sm leading-7 text-black/55">{group.intro}</p>
+                    <p className="landing-process-note">Click a number to explore the next stage.</p>
+                  </div>
+
+                  <ol className="landing-process-steps">
+                    {group.steps.map((step, index) => (
+                      <li key={step.title} className={`landing-process-step ${activeWorkflowSteps[groupIndex] === index ? "landing-process-step-active" : ""}`}>
+                        <span className="landing-process-line" aria-hidden="true" />
+                        <button
+                          type="button"
+                          className="landing-process-trigger"
+                          onClick={() => setActiveWorkflowSteps((previous) => previous.map((value, currentIndex) => currentIndex === groupIndex ? index : value))}
+                          aria-expanded={activeWorkflowSteps[groupIndex] === index}
+                        >
+                          <span className="landing-process-number">{index + 1}</span>
+                          <span className="sr-only">Show step {index + 1}: {step.title}</span>
+                        </button>
+                        {activeWorkflowSteps[groupIndex] === index && (
+                          <div className="landing-process-detail">
+                            <h4>{step.title}</h4>
+                            <p>{step.text}</p>
+                          </div>
+                        )}
+                      </li>
+                    ))}
+                  </ol>
                 </article>
               ))}
             </div>
@@ -92,7 +154,7 @@ export function LandingExperience() {
           </div>
         </section>
 
-        <section id="faq" className="border-y border-white/[0.07] bg-white/[0.018]"><div className="mx-auto grid max-w-[1240px] gap-10 px-5 py-20 sm:px-8 lg:grid-cols-[280px_minmax(0,1fr)] lg:gap-16"><div><p className="de-eyebrow">Common questions</p><h2 className="mt-3 text-4xl font-extrabold leading-[1.05]">A few things worth knowing.</h2></div><div className="space-y-4">{[["Who is DealerEth for?","Ethiopian TikTok creators and brands that want clearer, more professional collaborations."],["Can creators choose which offers to accept?","Yes. Creators review campaign details and decide what fits their audience and values."],["Can brands talk with applicants?","Yes. Every campaign application can become a focused message thread."],["Does it work on mobile?","Yes. Creator and brand workspaces include responsive mobile navigation and forms."]].map(([q,a]) => <details key={q} className="landing-faq-row group border"><summary className="grid cursor-pointer list-none items-center gap-4 px-5 py-5 sm:grid-cols-[minmax(180px,.8fr)_minmax(240px,1.25fr)_64px] sm:px-7"><span className="text-lg leading-tight sm:text-xl">{q}</span><span className="hidden text-sm leading-6 text-black/50 sm:block">{a}</span><span className="landing-faq-control ml-auto grid h-12 w-12 place-items-center rounded-full border text-2xl font-light transition group-open:rotate-45">+</span></summary><p className="px-5 pb-5 text-sm leading-7 text-black/55 sm:hidden">{a}</p></details>)}</div></div></section>
+        <section id="faq" className="border-y border-white/[0.07] bg-white/[0.018]"><div className="mx-auto grid max-w-[1240px] gap-10 px-5 py-20 sm:px-8 lg:grid-cols-[280px_minmax(0,1fr)] lg:gap-16"><div><p className="de-eyebrow">Common questions</p><h2 className="mt-3 text-4xl font-extrabold leading-[1.05]">A few things worth knowing.</h2></div><div className="space-y-4">{[["Who is DealerEth for?","Ethiopian TikTok creators and brands that want clearer, more professional collaborations."],["Can creators choose which offers to accept?","Yes. Creators review campaign details and decide what fits their audience and values."],["Can brands talk with applicants?","Yes. Every campaign application can become a focused message thread."],["Does it work on mobile?","Yes. Creator and brand workspaces include responsive mobile navigation and forms."]].map(([q,a]) => <details key={q} className="landing-faq-row group border"><summary className="grid cursor-pointer list-none items-center gap-4 px-5 py-5 sm:grid-cols-[minmax(0,1fr)_64px] sm:px-7"><span className="text-lg leading-tight sm:text-xl">{q}</span><span className="landing-faq-control ml-auto grid h-12 w-12 place-items-center rounded-full border text-2xl font-light transition group-open:rotate-45">+</span></summary><p className="landing-faq-answer px-5 pb-5 text-sm leading-7 text-black/55 sm:px-7">{a}</p></details>)}</div></div></section>
 
         <section className="mx-auto max-w-[1240px] px-5 py-20 sm:px-8"><div className="landing-final-cta border p-8 sm:p-12"><div className="flex flex-wrap items-end justify-between gap-8"><div><p className="de-eyebrow">Ready when you are</p><h2 className="mt-2 max-w-xl text-4xl font-extrabold tracking-tight">Make your next collaboration easier to start—and easier to manage.</h2></div><button type="button" onClick={() => setModalOpen(true)} className="de-btn de-btn-primary">Create your workspace</button></div></div></section>
       </main>

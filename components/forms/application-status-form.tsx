@@ -23,19 +23,25 @@ export function ApplicationStatusForm({
     setValue(status);
     setBusy(true);
     setError("");
-    const response = await fetch(`/api/campaign-applications/${applicationId}/status`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ status }),
-    });
-    if (!response.ok) {
-      const data = (await response.json()) as { error?: string };
+    try {
+      const response = await fetch(`/api/campaign-applications/${applicationId}/status`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status }),
+      });
+      if (!response.ok) {
+        const data = (await response.json()) as { error?: string };
+        setValue(previous);
+        setError(data.error ?? "Could not update status.");
+      } else {
+        router.refresh();
+      }
+    } catch {
       setValue(previous);
-      setError(data.error ?? "Could not update status.");
-    } else {
-      router.refresh();
+      setError("Network error. Please try again.");
+    } finally {
+      setBusy(false);
     }
-    setBusy(false);
   }
 
   return (

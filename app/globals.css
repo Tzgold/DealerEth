@@ -111,6 +111,269 @@ select {
   background: #f2ad7d;
 }
 .editorial-shell .landing-step-number { border-color: rgba(17, 17, 15, 0.42); }
+.editorial-shell .landing-process-section {
+  position: relative;
+  background:
+    radial-gradient(circle at 12% 8%, rgba(255, 255, 255, 0.74), transparent 22rem),
+    linear-gradient(180deg, #f7f6f2 0%, #f1efe8 100%);
+}
+
+.editorial-shell .landing-process-section::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(17, 17, 15, 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(17, 17, 15, 0.02) 1px, transparent 1px);
+  background-size: 72px 72px;
+  mask-image: linear-gradient(to bottom, transparent, black 20%, black 80%, transparent);
+}
+
+.editorial-shell .landing-process-section > div {
+  position: relative;
+}
+
+.editorial-shell .landing-process-intro {
+  max-width: 760px;
+}
+
+.editorial-shell .landing-process-intro h2 {
+  max-width: 740px;
+}
+
+.editorial-shell .landing-process-intro-copy {
+  max-width: 620px;
+  margin-top: 1.25rem;
+  margin-bottom: 0.15rem;
+}
+
+.editorial-shell .landing-process-board {
+  display: grid;
+  gap: 2rem;
+  min-height: 430px;
+  padding: clamp(1.4rem, 3vw, 2.75rem);
+  border: 1px solid rgba(17, 17, 15, 0.11);
+  border-radius: 1.55rem;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.82), rgba(248, 246, 239, 0.78)),
+    #f8f6ef;
+  overflow: hidden;
+}
+
+.editorial-shell .landing-process-copy {
+  position: relative;
+  z-index: 1;
+}
+
+.editorial-shell .landing-process-copy h3 {
+  letter-spacing: -0.045em;
+}
+
+.editorial-shell .landing-process-note {
+  margin-top: 1.7rem;
+  display: inline-flex;
+  min-height: 2rem;
+  align-items: center;
+  border: 1px solid rgba(17, 17, 15, 0.09);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.58);
+  padding: 0.35rem 0.72rem;
+  color: rgba(17, 17, 15, 0.48);
+  font-size: 0.72rem;
+  font-weight: 650;
+}
+
+.editorial-shell .landing-process-steps {
+  display: flex;
+  gap: clamp(0.85rem, 1.85vw, 1.65rem);
+  align-items: stretch;
+  overflow: visible;
+}
+
+.editorial-shell .landing-process-step {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  flex: 0 0 clamp(4.8rem, 10vw, 8.6rem);
+  width: clamp(4.8rem, 10vw, 8.6rem);
+  min-height: 250px;
+  align-content: end;
+  gap: 1.1rem;
+  border-radius: 1rem;
+  overflow: visible;
+  opacity: 0.78;
+  transition:
+    flex-basis 820ms cubic-bezier(0.19, 1, 0.22, 1),
+    width 820ms cubic-bezier(0.19, 1, 0.22, 1),
+    opacity 420ms ease;
+}
+
+.editorial-shell .landing-process-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 1px;
+  background: rgba(17, 17, 15, 0.16);
+  transition: background-color 420ms ease;
+}
+
+.editorial-shell .landing-process-trigger {
+  display: block;
+  width: 100%;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  text-align: left;
+  cursor: pointer;
+}
+
+.editorial-shell .landing-process-trigger:focus-visible {
+  outline: 1px solid rgba(17, 17, 15, 0.42);
+  outline-offset: 0.45rem;
+}
+
+.editorial-shell .landing-process-number {
+  display: block;
+  margin-top: 1.1rem;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: clamp(5.8rem, 12vw, 11rem);
+  font-weight: 700;
+  line-height: 0.78;
+  letter-spacing: -0.12em;
+  color: rgba(17, 17, 15, 0.16);
+  transition: color 620ms ease, transform 820ms cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.editorial-shell .landing-process-step-active {
+  opacity: 1;
+}
+
+.editorial-shell .landing-process-step-active .landing-process-line {
+  background: #d98554;
+}
+
+.editorial-shell .landing-process-step-active .landing-process-number {
+  color: #d96f32;
+  transform: translateY(-0.075em);
+}
+
+.editorial-shell .landing-process-board-client .landing-process-step-active .landing-process-line {
+  background: #d98554;
+}
+
+.editorial-shell .landing-process-board-client .landing-process-step-active .landing-process-number {
+  color: #d96f32;
+}
+
+.editorial-shell .landing-process-detail {
+  width: min(24rem, 100%);
+  max-width: 24rem;
+  align-self: end;
+  padding-bottom: 0.3rem;
+  animation: landingProcessReveal 700ms 120ms cubic-bezier(0.19, 1, 0.22, 1) both;
+}
+
+.editorial-shell .landing-process-detail h4 {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: clamp(1.06rem, 1.3vw, 1.28rem);
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+  color: #171715;
+}
+
+.editorial-shell .landing-process-detail p {
+  margin-top: 0.8rem;
+  font-size: 0.84rem;
+  line-height: 1.55;
+  color: rgba(17, 17, 15, 0.58);
+}
+
+@keyframes landingProcessReveal {
+  from {
+    opacity: 0;
+    filter: blur(4px);
+    transform: translateX(-1.2rem);
+  }
+
+  to {
+    opacity: 1;
+    filter: blur(0);
+    transform: translateX(0);
+  }
+}
+
+@media (min-width: 1024px) {
+  .editorial-shell .landing-process-board {
+    grid-template-columns: 255px minmax(0, 1fr);
+    align-items: end;
+  }
+
+  .editorial-shell .landing-process-board-client {
+    grid-template-columns: minmax(0, 1fr) 255px;
+  }
+
+  .editorial-shell .landing-process-board-client .landing-process-copy {
+    order: 2;
+  }
+
+  .editorial-shell .landing-process-board-client .landing-process-steps {
+    order: 1;
+    overflow: hidden;
+    padding-right: 1.1rem;
+  }
+
+  .editorial-shell .landing-process-board-client .landing-process-step {
+    flex-basis: clamp(4.35rem, 8vw, 7.15rem);
+    width: clamp(4.35rem, 8vw, 7.15rem);
+  }
+
+  .editorial-shell .landing-process-step-active {
+    flex: 1 1 clamp(30rem, 56vw, 48rem);
+    width: clamp(30rem, 56vw, 48rem);
+    grid-template-columns: minmax(7rem, 0.38fr) minmax(17rem, 1fr);
+    align-items: end;
+  }
+
+  .editorial-shell .landing-process-board-client .landing-process-step-active {
+    flex: 1 1 clamp(27rem, 43vw, 35rem);
+    width: clamp(27rem, 43vw, 35rem);
+  }
+}
+
+@media (max-width: 900px) {
+  .editorial-shell .landing-process-steps {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    overflow: visible;
+  }
+
+  .editorial-shell .landing-process-step,
+  .editorial-shell .landing-process-step-active {
+    width: auto;
+    flex: initial;
+  }
+}
+
+@media (max-width: 560px) {
+  .editorial-shell .landing-process-board {
+    min-height: auto;
+  }
+
+  .editorial-shell .landing-process-steps {
+    grid-template-columns: 1fr;
+  }
+
+  .editorial-shell .landing-process-step {
+    min-height: 190px;
+  }
+
+  .editorial-shell .landing-process-detail {
+    max-width: 100%;
+  }
+}
 .editorial-shell .landing-final-cta {
   border-color: rgba(17, 17, 15, 0.16);
   border-radius: 1.25rem;
@@ -128,6 +391,22 @@ select {
   background: #f2ad7d;
 }
 .editorial-shell .landing-faq-control { border-color: rgba(17, 17, 15, 0.45); }
+.editorial-shell .landing-faq-answer {
+  max-width: 54rem;
+  animation: landingFaqReveal 220ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes landingFaqReveal {
+  from {
+    opacity: 0;
+    transform: translateY(-0.25rem);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 .editorial-shell details > summary::-webkit-details-marker { display: none; }
 .editorial-shell .landing-role-card {
   border-color: rgba(17, 17, 15, 0.16);
