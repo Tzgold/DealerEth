@@ -53,9 +53,14 @@ export default async function BrandCampaignsPage({
               <p className="mt-3 text-sm leading-6 text-white/75">{campaign.description}</p>
               {campaign.deadline && <p className="mt-2 text-xs text-white/50">Deadline: {campaign.deadline}</p>}
               <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-white/5 pt-4">
-                <Link href={`/client/dashboard/messages?campaign=${campaign.id}`} className="text-xs font-semibold text-[#25F4EE] underline">
-                  Review applications
-                </Link>
+                <div className="flex flex-wrap gap-3">
+                  <Link href={`/client/dashboard/messages?campaign=${campaign.id}`} className="text-xs font-semibold text-[#25F4EE] underline">
+                    Review applications
+                  </Link>
+                  <Link href={`/client/dashboard/campaigns/${campaign.id}/edit`} className="text-xs font-semibold text-white/65 underline underline-offset-2 hover:text-white">
+                    Edit brief
+                  </Link>
+                </div>
                 <CampaignManageActions campaignId={campaign.id} currentStatus={campaign.status} applicationCount={campaign.applications.length} />
               </div>
             </li>

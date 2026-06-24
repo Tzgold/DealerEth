@@ -10,10 +10,14 @@ export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const q = (searchParams.get("q") ?? "").trim().toLowerCase();
   const niche = (searchParams.get("niche") ?? "").trim().toLowerCase();
+  const minFollowers = Number.parseInt(searchParams.get("minFollowers") ?? "", 10);
+  const maxFollowers = Number.parseInt(searchParams.get("maxFollowers") ?? "", 10);
+  const hasRate = searchParams.get("hasRate") === "1";
+  const sort = searchParams.get("sort") ?? "followers_desc";
 
   const creators = await prisma.creatorProfile.findMany({
     orderBy: { followers: "desc" },
-    take: 50,
+    take: 100,
     include: {
       user: { select: { tiktokAvatarUrl: true, googleAvatarUrl: true } },
     },
@@ -23,7 +27,14 @@ export async function GET(request: Request) {
     const text = `${creator.name} ${creator.username} ${creator.tiktokHandle} ${creator.niche} ${creator.bio}`.toLowerCase();
     const matchesQuery = !q || text.includes(q);
     const matchesNiche = !niche || creator.niche.toLowerCase().includes(niche);
-    return matchesQuery && matchesNiche;
+    const matchesMinFollowers = Number.isNaN(minFollowers) || creator.followers >= minFollowers;
+    const matchesMaxFollowers = Number.isNaN(maxFollowers) || creator.followers <= maxFollowers;
+    const matchesRate = !hasRate || Boolean(creator.priceRange?.trim());
+    return matchesQuery && matchesNiche && matchesMinFollowers && matchesMaxFollowers && matchesRate;
+  }).sort((a, b) => {
+    if (sort === "name") return a.name.localeCompare(b.name);
+    if (sort === "followers_asc") return a.followers - b.followers;
+    return b.followers - a.followers;
   });
 
   return NextResponse.json({
