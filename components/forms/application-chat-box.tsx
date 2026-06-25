@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
 
 type Message = {
   id: string;
@@ -21,6 +21,13 @@ export function ApplicationChatBox({
   const [messages, setMessages] = useState(initialMessages);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const listRef = useRef<HTMLUListElement>(null);
+  const latestMessage = messages[messages.length - 1];
+  const needsViewerReply = latestMessage ? latestMessage.senderRole !== viewerRole : false;
+
+  useEffect(() => {
+    listRef.current?.scrollTo({ top: listRef.current.scrollHeight, behavior: "smooth" });
+  }, [messages.length]);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -60,7 +67,24 @@ export function ApplicationChatBox({
 
   return (
     <div className="space-y-3">
-      <ul className="max-h-64 space-y-2 overflow-y-auto rounded-xl border border-white/10 bg-black/20 p-3">
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <div>
+          <p className="text-xs font-bold uppercase tracking-[0.16em] text-white/45">Thread activity</p>
+          <p className="mt-1 text-sm text-white/65">
+            {messages.length === 0
+              ? "Start with a clear note so the next step is easy."
+              : needsViewerReply
+                ? "The latest message is waiting on your reply."
+                : "You sent the latest message."}
+          </p>
+        </div>
+        {needsViewerReply && (
+          <span className="rounded-full border border-white/20 bg-white px-3 py-1 text-[11px] font-bold uppercase tracking-[0.14em] text-zinc-950">
+            Reply needed
+          </span>
+        )}
+      </div>
+      <ul ref={listRef} className="max-h-72 space-y-2 overflow-y-auto rounded-xl border border-white/10 bg-black/20 p-3">
         {messages.length === 0 ? (
           <li className="text-sm text-white/50">No messages yet. Start the conversation.</li>
         ) : (
@@ -68,7 +92,7 @@ export function ApplicationChatBox({
             <li
               key={message.id}
               className={`rounded-lg px-3 py-2 text-sm ${
-                message.senderRole === viewerRole ? "ml-4 bg-white/10 text-white" : "mr-4 bg-[#25F4EE]/10 text-white/90"
+                message.senderRole === viewerRole ? "ml-4 bg-white/10 text-white" : "mr-4 border border-white/10 bg-white/[0.04] text-white/90"
               }`}
             >
               <p className="text-[10px] font-bold uppercase tracking-wide text-white/40">
@@ -95,7 +119,7 @@ export function ApplicationChatBox({
           disabled={loading}
           className="de-btn de-btn-primary shrink-0"
         >
-          Send
+          {loading ? "Sending..." : "Send"}
         </button>
       </form>
       {error && <p className="text-sm text-rose-300">{error}</p>}

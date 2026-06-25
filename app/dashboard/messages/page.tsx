@@ -4,12 +4,15 @@ import { requireCreatorProfile } from "@/lib/dashboard-context";
 
 export default async function CreatorMessagesPage() {
   const { profile } = await requireCreatorProfile();
+  const threadsNeedingReply = profile.applications.filter((application) => application.messages[0]?.senderRole === "CLIENT").length;
 
   return (
     <>
       <div>
         <h1 className="text-2xl font-black text-white">Messages</h1>
-        <p className="mt-1 text-sm text-white/65">Campaign threads with brands after you apply.</p>
+        <p className="mt-1 text-sm text-white/65">
+          Campaign threads with brands after you apply. {threadsNeedingReply > 0 ? `${threadsNeedingReply} ${threadsNeedingReply === 1 ? "thread needs" : "threads need"} your reply.` : "You are caught up."}
+        </p>
       </div>
 
       <ul className="divide-y divide-white/5 overflow-hidden rounded-2xl border border-white/10 bg-[#141416]">
@@ -23,20 +26,32 @@ export default async function CreatorMessagesPage() {
             />
           </li>
         ) : (
-          profile.applications.map((application) => (
-            <li key={application.id}>
-              <Link href={`/dashboard/messages/${application.id}`} className="block px-5 py-4 transition hover:bg-white/[0.03]">
-                <div className="flex flex-wrap items-center justify-between gap-2">
-                  <p className="text-sm font-bold text-white">{application.campaign.client.companyName}</p>
-                  <span className="text-xs font-semibold text-white/50">{application.status.replace("_", " ")}</span>
-                </div>
-                <p className="mt-1 text-xs text-white/60">Campaign application</p>
-                {application.messages[0] && (
-                  <p className="mt-2 line-clamp-1 text-sm text-white/70">{application.messages[0].text}</p>
-                )}
-              </Link>
-            </li>
-          ))
+          profile.applications.map((application) => {
+            const latestMessage = application.messages[0];
+            const needsReply = latestMessage?.senderRole === "CLIENT";
+
+            return (
+              <li key={application.id}>
+                <Link href={`/dashboard/messages/${application.id}`} className={`block px-5 py-4 transition ${needsReply ? "bg-white/[0.04]" : "hover:bg-white/[0.03]"}`}>
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <p className="text-sm font-bold text-white">{application.campaign.client.companyName}</p>
+                    <span className={`rounded-full border px-3 py-1 text-[11px] font-bold uppercase tracking-[0.14em] ${needsReply ? "border-white/30 bg-white text-zinc-950" : "border-white/10 text-white/50"}`}>
+                      {needsReply ? "Needs reply" : application.status.replace("_", " ")}
+                    </span>
+                  </div>
+                  <p className="mt-1 text-xs text-white/60">Campaign application</p>
+                  {latestMessage ? (
+                    <p className="mt-2 line-clamp-1 text-sm text-white/70">
+                      <span className="text-white/40">{latestMessage.senderRole === "CREATOR" ? "You: " : "Brand: "}</span>
+                      {latestMessage.text}
+                    </p>
+                  ) : (
+                    <p className="mt-2 text-sm text-white/45">No brand reply yet. Your application is ready to be reviewed.</p>
+                  )}
+                </Link>
+              </li>
+            );
+          })
         )}
       </ul>
     </>

@@ -5,7 +5,7 @@ export default async function CreatorDashboardLayout({ children }: { children: R
   const { profile } = await requireCreatorProfile();
   const avatar = profile.avatarUrl ?? profile.user.tiktokAvatarUrl ?? profile.user.googleAvatarUrl ?? "/next.svg";
   const urls = await getPublicProfileUrls(profile.username);
-  const messageCount = profile.applications.filter((application) => application.messages.length > 0).length;
+  const messageCount = profile.applications.filter((application) => application.messages[0]?.senderRole === "CLIENT").length;
 
   return (
     <CreatorDashboardShell

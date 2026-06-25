@@ -25,12 +25,18 @@ export default async function BrandMessagesPage({
     : allApplications;
 
   const focused = applicationFocus ? filtered.find((a) => a.id === applicationFocus) : filtered[0];
+  const threadsNeedingReply = filtered.filter((application) => {
+    const latestMessage = application.messages[application.messages.length - 1];
+    return application.status === "APPLIED" || latestMessage?.senderRole === "CREATOR";
+  }).length;
 
   return (
     <>
       <div>
         <h1 className="text-2xl font-black text-white">Creator applications & messages</h1>
-        <p className="mt-1 text-sm text-white/65">Review applications, update status, and chat with creators.</p>
+        <p className="mt-1 text-sm text-white/65">
+          Review applications, update status, and chat with creators. {threadsNeedingReply > 0 ? `${threadsNeedingReply} ${threadsNeedingReply === 1 ? "thread needs" : "threads need"} your attention.` : "No open replies right now."}
+        </p>
       </div>
 
       <div className="grid gap-4 lg:grid-cols-[280px_minmax(0,1fr)]">
@@ -45,18 +51,34 @@ export default async function BrandMessagesPage({
               />
             </li>
           ) : (
-            filtered.map((application) => (
-              <li key={application.id}>
-                <Link
-                  href={`/client/dashboard/messages?application=${application.id}`}
-                  className={`block px-4 py-3 transition hover:bg-white/[0.03] ${focused?.id === application.id ? "bg-white/[0.06]" : ""}`}
-                >
-                  <p className="text-sm font-bold text-white">{application.creator.name}</p>
-                  <p className="text-xs text-white/55">{application.campaignTitle}</p>
-                  <p className="mt-1 text-[11px] text-white/45">{application.status.replace("_", " ")}</p>
-                </Link>
-              </li>
-            ))
+            filtered.map((application) => {
+              const latestMessage = application.messages[application.messages.length - 1];
+              const needsReply = application.status === "APPLIED" || latestMessage?.senderRole === "CREATOR";
+
+              return (
+                <li key={application.id}>
+                  <Link
+                    href={`/client/dashboard/messages?application=${application.id}`}
+                    className={`block px-4 py-3 transition ${focused?.id === application.id ? "bg-white/[0.06]" : "hover:bg-white/[0.03]"}`}
+                  >
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="min-w-0">
+                        <p className="truncate text-sm font-bold text-white">{application.creator.name}</p>
+                        <p className="truncate text-xs text-white/55">{application.campaignTitle}</p>
+                      </div>
+                      {needsReply && <span className="mt-0.5 h-2 w-2 shrink-0 rounded-full bg-white" aria-label="Needs reply" />}
+                    </div>
+                    <p className="mt-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-white/45">{needsReply ? "Needs reply" : application.status.replace("_", " ")}</p>
+                    {latestMessage && (
+                      <p className="mt-1 line-clamp-2 text-xs leading-5 text-white/60">
+                        <span className="text-white/35">{latestMessage.senderRole === "CLIENT" ? "You: " : "Creator: "}</span>
+                        {latestMessage.text}
+                      </p>
+                    )}
+                  </Link>
+                </li>
+              );
+            })
           )}
         </ul>
 
@@ -71,11 +93,16 @@ export default async function BrandMessagesPage({
               </div>
               <ApplicationStatusForm applicationId={focused.id} currentStatus={focused.status} />
             </div>
+            {(focused.status === "APPLIED" || focused.messages[focused.messages.length - 1]?.senderRole === "CREATOR") && (
+              <div className="mt-4 rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3 text-sm text-white/75">
+                This thread is waiting on you. Review the application, update its status, or send a reply to keep the campaign moving.
+              </div>
+            )}
             <p className="mt-4 text-sm leading-6 text-white/75">{focused.coverLetter}</p>
             {focused.proposedBudget && (
               <p className="mt-2 text-sm text-white/60">Proposed budget: {focused.proposedBudget}</p>
             )}
-            <Link href={`/${focused.creator.username}`} className="mt-3 inline-block text-xs font-semibold text-[#25F4EE] underline">
+            <Link href={`/${focused.creator.username}`} className="mt-3 inline-block text-xs font-semibold text-white underline decoration-white/40 underline-offset-4 transition hover:decoration-white">
               View creator profile
             </Link>
             <div className="mt-5 border-t border-white/10 pt-5">

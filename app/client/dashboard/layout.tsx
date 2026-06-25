@@ -5,7 +5,12 @@ export default async function BrandDashboardLayout({ children }: { children: Rea
   const { profile } = await requireClientProfile();
   const avatar = profile.avatarUrl ?? profile.user.googleAvatarUrl ?? "/next.svg";
   const applicationCount = profile.campaigns.reduce(
-    (sum, campaign) => sum + campaign.applications.filter((application) => application.status === "APPLIED").length,
+    (sum, campaign) =>
+      sum +
+      campaign.applications.filter((application) => {
+        const latestMessage = application.messages[application.messages.length - 1];
+        return application.status === "APPLIED" || latestMessage?.senderRole === "CREATOR";
+      }).length,
     0,
   );
 

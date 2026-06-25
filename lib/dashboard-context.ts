@@ -17,7 +17,7 @@ export async function requireCreatorProfile() {
         orderBy: { updatedAt: "desc" },
         include: {
           campaign: { include: { client: { select: { companyName: true } } } },
-          messages: { orderBy: { createdAt: "asc" }, take: 1 },
+          messages: { orderBy: { createdAt: "desc" }, take: 1 },
         },
       },
     },
