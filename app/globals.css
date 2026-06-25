@@ -834,6 +834,15 @@ select.de-field option {
   line-height: 1.35;
 }
 
+.product-editorial .de-action-card {
+  transition: border-color 150ms ease, background-color 150ms ease;
+}
+
+.product-editorial .de-action-card:hover {
+  border-color: rgba(17, 17, 15, 0.18);
+  background: #f4f2ec;
+}
+
 .product-editorial main section.rounded-2xl > p:not(.de-eyebrow),
 .product-editorial .de-card > p:not(.de-eyebrow) {
   font-family: Arial, Helvetica, sans-serif;

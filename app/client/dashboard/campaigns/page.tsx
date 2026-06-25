@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { CampaignManageActions } from "@/components/dashboard/campaign-manage-actions";
+import { DashboardEmptyState } from "@/components/dashboard/dashboard-ui";
 import { requireClientProfile } from "@/lib/dashboard-context";
 
 export default async function BrandCampaignsPage({
@@ -30,11 +31,13 @@ export default async function BrandCampaignsPage({
 
       <ul className="space-y-3">
         {filtered.length === 0 ? (
-          <li className="rounded-2xl border border-white/10 bg-[#141416] px-5 py-8 text-sm text-white/60">
-            No campaigns yet.{" "}
-            <Link href="/client/dashboard/post" className="font-semibold text-[#FE2C55] underline">
-              Post your first campaign
-            </Link>
+          <li>
+            <DashboardEmptyState
+              title={searchQuery ? "No campaigns match that search" : "No campaigns yet"}
+              description={searchQuery ? "Try a broader keyword or clear the search field to see all of your campaigns." : "Post your first creator brief with budget, deliverables, niche, and timeline so creators can apply."}
+              href={searchQuery ? "/client/dashboard/campaigns" : "/client/dashboard/post"}
+              action={searchQuery ? "Clear search" : "Post your first campaign"}
+            />
           </li>
         ) : (
           filtered.map((campaign) => (

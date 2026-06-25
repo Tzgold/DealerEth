@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { DashboardEmptyState } from "@/components/dashboard/dashboard-ui";
 import { ApplicationChatBox } from "@/components/forms/application-chat-box";
 import { ApplicationStatusForm } from "@/components/forms/application-status-form";
 import { requireClientProfile } from "@/lib/dashboard-context";
@@ -35,7 +36,14 @@ export default async function BrandMessagesPage({
       <div className="grid gap-4 lg:grid-cols-[280px_minmax(0,1fr)]">
         <ul className="max-h-[70vh] divide-y divide-white/5 overflow-y-auto rounded-2xl border border-white/10 bg-[#141416]">
           {filtered.length === 0 ? (
-            <li className="px-4 py-6 text-sm text-white/60">No applications yet.</li>
+            <li className="p-4">
+              <DashboardEmptyState
+                title="No applications yet"
+                description={campaignFilter ? "This campaign has not received applications yet. You can keep sharing the brief or discover creators directly." : "Post a campaign brief so creators can apply, or discover creators and request a collaboration directly."}
+                href={campaignFilter ? "/client/dashboard/creators" : "/client/dashboard/post"}
+                action={campaignFilter ? "Discover creators" : "Post a campaign"}
+              />
+            </li>
           ) : (
             filtered.map((application) => (
               <li key={application.id}>

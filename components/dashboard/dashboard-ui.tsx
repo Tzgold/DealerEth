@@ -1,8 +1,69 @@
+import Link from "next/link";
+
 export function StatTile({ label, value, tone }: { label: string; value: string; tone?: "default" | "accent" }) {
   return (
     <div className="de-stat-tile rounded-2xl border border-white/10 bg-[#151518] px-5 py-5 shadow-[0_8px_24px_rgba(0,0,0,0.22)]">
       <p className={`de-stat-value text-3xl font-black tracking-tight ${tone === "accent" ? "text-[#25F4EE]" : "text-white"}`}>{value}</p>
       <p className="de-stat-label mt-1.5 text-sm font-semibold text-white/65">{label}</p>
+    </div>
+  );
+}
+
+export function ProgressBar({ value }: { value: number }) {
+  const safeValue = Math.max(0, Math.min(100, value));
+
+  return (
+    <div className="h-2 overflow-hidden rounded-full bg-white/60">
+      <div className="h-full rounded-full bg-black transition-all" style={{ width: `${safeValue}%` }} />
+    </div>
+  );
+}
+
+export function DashboardActionCard({
+  eyebrow,
+  title,
+  description,
+  href,
+  action,
+}: {
+  eyebrow: string;
+  title: string;
+  description: string;
+  href: string;
+  action: string;
+}) {
+  return (
+    <Link href={href} className="de-action-card group rounded-2xl border border-white/10 bg-[#141416] p-5 transition">
+      <p className="de-eyebrow">{eyebrow}</p>
+      <h3 className="mt-3 text-lg font-black text-white">{title}</h3>
+      <p className="mt-2 text-sm leading-6 text-white/60">{description}</p>
+      <span className="mt-5 inline-flex text-sm font-semibold text-white/80 group-hover:text-white">
+        {action} →
+      </span>
+    </Link>
+  );
+}
+
+export function DashboardEmptyState({
+  title,
+  description,
+  href,
+  action,
+}: {
+  title: string;
+  description: string;
+  href?: string;
+  action?: string;
+}) {
+  return (
+    <div className="rounded-2xl border border-dashed border-white/15 bg-[#141416] px-5 py-8 text-center">
+      <p className="text-base font-semibold text-white">{title}</p>
+      <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-white/55">{description}</p>
+      {href && action ? (
+        <Link href={href} className="de-btn de-btn-secondary mt-4">
+          {action}
+        </Link>
+      ) : null}
     </div>
   );
 }

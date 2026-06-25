@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { DealRequestActions } from "@/components/dashboard/deal-request-actions";
+import { DashboardEmptyState } from "@/components/dashboard/dashboard-ui";
 import { getPublicProfileUrls, requireCreatorProfile } from "@/lib/dashboard-context";
 
 export default async function CreatorRequestsPage({ searchParams }: { searchParams: Promise<{ status?: string }> }) {
@@ -30,9 +31,13 @@ export default async function CreatorRequestsPage({ searchParams }: { searchPara
 
       <ul className="divide-y divide-white/5 overflow-hidden rounded-2xl border border-white/10 bg-[#141416]">
         {requests.length === 0 ? (
-          <li className="px-5 py-8 text-sm text-white/60">
-            No {activeFilter.toLowerCase()} requests. Share your bio link{" "}
-            <span className="font-mono text-white/80">{urls.display}</span> on TikTok.
+          <li className="p-4">
+            <DashboardEmptyState
+              title={`No ${activeFilter.toLowerCase()} requests`}
+              description={`Share your bio link (${urls.display}) on TikTok or send it to brands so they can request a collaboration.`}
+              href="/profile/setup"
+              action="Improve public profile"
+            />
           </li>
         ) : (
           requests.map((request) => (

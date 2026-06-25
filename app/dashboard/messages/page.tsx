@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { DashboardEmptyState } from "@/components/dashboard/dashboard-ui";
 import { requireCreatorProfile } from "@/lib/dashboard-context";
 
 export default async function CreatorMessagesPage() {
@@ -13,12 +14,13 @@ export default async function CreatorMessagesPage() {
 
       <ul className="divide-y divide-white/5 overflow-hidden rounded-2xl border border-white/10 bg-[#141416]">
         {profile.applications.length === 0 ? (
-          <li className="px-5 py-8 text-sm text-white/60">
-            No conversations yet.{" "}
-            <Link href="/dashboard/campaigns" className="font-semibold text-[#25F4EE] underline">
-              Browse campaigns
-            </Link>{" "}
-            and apply to start chatting.
+          <li className="p-4">
+            <DashboardEmptyState
+              title="No conversations yet"
+              description="Apply to a campaign first. Once a brand responds, your conversation stays connected to that application."
+              href="/dashboard/campaigns"
+              action="Browse campaigns"
+            />
           </li>
         ) : (
           profile.applications.map((application) => (

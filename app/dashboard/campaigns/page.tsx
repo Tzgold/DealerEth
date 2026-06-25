@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { DashboardEmptyState } from "@/components/dashboard/dashboard-ui";
 import { requireCreatorProfile, initialsFor } from "@/lib/dashboard-context";
 import { prisma } from "@/lib/prisma";
 
@@ -54,7 +55,14 @@ export default async function CreatorCampaignsPage({
 
       <ul className="space-y-3">
         {filtered.length === 0 ? (
-          <li className="rounded-2xl border border-white/10 bg-[#141416] px-5 py-8 text-sm text-white/60">No campaigns found.</li>
+          <li>
+            <DashboardEmptyState
+              title="No campaigns found"
+              description={filter === "match" ? "No live briefs match your niche yet. Browse all campaigns or check back when new brands post." : "There are no live briefs matching this search right now. Try a broader keyword or come back soon."}
+              href={filter === "match" ? "/dashboard/campaigns" : undefined}
+              action={filter === "match" ? "View all campaigns" : undefined}
+            />
+          </li>
         ) : (
           filtered.map((campaign) => {
             const application = applicationByCampaign.get(campaign.id);
