@@ -3,15 +3,40 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-type RequestStatus = "NEW" | "ACCEPTED" | "DECLINED";
+type RequestStatus = "NEW" | "ACCEPTED" | "IN_DISCUSSION" | "ACTIVE" | "COMPLETED" | "DECLINED";
+
+const nextActions: Record<RequestStatus, { status: RequestStatus; label: string; variant: "primary" | "secondary" }[]> = {
+  NEW: [
+    { status: "ACCEPTED", label: "Accept request", variant: "primary" },
+    { status: "DECLINED", label: "Decline", variant: "secondary" },
+  ],
+  ACCEPTED: [
+    { status: "IN_DISCUSSION", label: "Move to discussion", variant: "primary" },
+    { status: "DECLINED", label: "Decline", variant: "secondary" },
+  ],
+  IN_DISCUSSION: [
+    { status: "ACTIVE", label: "Mark active", variant: "primary" },
+    { status: "COMPLETED", label: "Mark completed", variant: "secondary" },
+  ],
+  ACTIVE: [
+    { status: "COMPLETED", label: "Mark completed", variant: "primary" },
+    { status: "IN_DISCUSSION", label: "Back to discussion", variant: "secondary" },
+  ],
+  COMPLETED: [
+    { status: "ACTIVE", label: "Reopen as active", variant: "secondary" },
+  ],
+  DECLINED: [
+    { status: "NEW", label: "Move back to inbox", variant: "secondary" },
+  ],
+};
 
 export function DealRequestActions({ requestId, currentStatus }: { requestId: string; currentStatus: RequestStatus }) {
   const router = useRouter();
-  const [busy, setBusy] = useState(false);
+  const [busyStatus, setBusyStatus] = useState<RequestStatus | null>(null);
   const [error, setError] = useState("");
 
   async function update(status: RequestStatus) {
-    setBusy(true);
+    setBusyStatus(status);
     setError("");
     try {
       const response = await fetch(`/api/deal-requests/${requestId}`, {
@@ -19,6 +44,7 @@ export function DealRequestActions({ requestId, currentStatus }: { requestId: st
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status }),
       });
+
       if (!response.ok) {
         const data = (await response.json()) as { error?: string };
         setError(data.error ?? "Could not update request.");
@@ -28,30 +54,24 @@ export function DealRequestActions({ requestId, currentStatus }: { requestId: st
     } catch {
       setError("Network error. Please try again.");
     } finally {
-      setBusy(false);
+      setBusyStatus(null);
     }
-  }
-
-  if (currentStatus !== "NEW") {
-    return (
-      <div>
-        <button type="button" disabled={busy} onClick={() => update("NEW")} className="de-btn de-btn-secondary min-h-9 py-2 text-xs">
-          {busy ? "Moving..." : "Move back to inbox"}
-        </button>
-        {error && <p className="mt-2 text-xs text-rose-300">{error}</p>}
-      </div>
-    );
   }
 
   return (
     <div>
       <div className="flex flex-wrap gap-2">
-        <button type="button" disabled={busy} onClick={() => update("ACCEPTED")} className="de-btn de-btn-primary">
-          {busy ? "Updating..." : "Accept request"}
-        </button>
-        <button type="button" disabled={busy} onClick={() => update("DECLINED")} className="de-btn de-btn-secondary">
-          Decline
-        </button>
+        {nextActions[currentStatus].map((action) => (
+          <button
+            key={action.status}
+            type="button"
+            disabled={Boolean(busyStatus)}
+            onClick={() => update(action.status)}
+            className={`de-btn ${action.variant === "primary" ? "de-btn-primary" : "de-btn-secondary"} min-h-9 py-2 text-xs`}
+          >
+            {busyStatus === action.status ? "Updating..." : action.label}
+          </button>
+        ))}
       </div>
       {error && <p className="mt-2 text-xs text-rose-300">{error}</p>}
     </div>

@@ -30,6 +30,9 @@ enum CampaignStatus {
 enum DealRequestStatus {
   NEW
   ACCEPTED
+  IN_DISCUSSION
+  ACTIVE
+  COMPLETED
   DECLINED
 }
 

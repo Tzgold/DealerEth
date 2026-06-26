@@ -70,7 +70,7 @@ export const dealRequestSchema = z.object({
   deliverables: z.string().min(5),
 });
 
-export const dealRequestStatusSchema = z.enum(["NEW", "ACCEPTED", "DECLINED"]);
+export const dealRequestStatusSchema = z.enum(["NEW", "ACCEPTED", "IN_DISCUSSION", "ACTIVE", "COMPLETED", "DECLINED"]);
 
 export const campaignApplicationSchema = z.object({
   campaignId: z.string().min(1),

@@ -19,7 +19,8 @@ export default async function CreatorHubPage() {
 
   const applicationByCampaign = new Map(profile.applications.map((a) => [a.campaignId, a]));
   const matchedCampaigns = marketCampaigns.filter((c) => c.niche.toLowerCase().includes(nicheKeyword));
-  const activeDeals = profile.applications.filter((a) => a.status === "ACTIVE").length;
+  const activeDirectRequests = profile.dealRequests.filter((request) => request.status === "ACCEPTED" || request.status === "IN_DISCUSSION" || request.status === "ACTIVE").length;
+  const activeDeals = profile.applications.filter((a) => a.status === "ACTIVE").length + activeDirectRequests;
   const newOffers = profile.dealRequests.filter((request) => request.status === "NEW").length;
 
   return (

@@ -54,6 +54,13 @@ export async function requireClientProfile() {
           },
         },
       },
+      dealRequests: {
+        orderBy: { createdAt: "desc" },
+        include: {
+          creator: { select: { name: true, username: true, tiktokHandle: true, niche: true, avatarUrl: true, user: { select: { email: true } } } },
+          campaign: { select: { title: true, budget: true, deliverables: true, deadline: true, status: true } },
+        },
+      },
     },
   });
 

@@ -13,9 +13,10 @@ export default async function BrandDashboardLayout({ children }: { children: Rea
       }).length,
     0,
   );
+  const dealRequestCount = profile.dealRequests.filter((request) => request.status === "ACCEPTED" || request.status === "IN_DISCUSSION" || request.status === "ACTIVE").length;
 
   return (
-    <BrandDashboardShell avatar={avatar} liveCampaigns={profile.campaigns.filter((campaign) => campaign.status === "LIVE").length} applicationCount={applicationCount}>
+    <BrandDashboardShell avatar={avatar} liveCampaigns={profile.campaigns.filter((campaign) => campaign.status === "LIVE").length} applicationCount={applicationCount} dealRequestCount={dealRequestCount}>
       {children}
     </BrandDashboardShell>
   );

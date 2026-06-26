@@ -7,8 +7,18 @@ export default async function CreatorRequestsPage({ searchParams }: { searchPara
   const { status } = await searchParams;
   const { profile } = await requireCreatorProfile();
   const urls = await getPublicProfileUrls(profile.username);
-  const activeFilter = status === "accepted" || status === "declined" ? status.toUpperCase() : "NEW";
+  const statusValues = ["NEW", "ACCEPTED", "IN_DISCUSSION", "ACTIVE", "COMPLETED", "DECLINED"] as const;
+  const normalizedStatus = status?.toUpperCase();
+  const activeFilter = statusValues.find((value) => value === normalizedStatus) ?? "NEW";
   const requests = profile.dealRequests.filter((request) => request.status === activeFilter);
+  const filterLabels: Record<(typeof statusValues)[number], string> = {
+    NEW: "Inbox",
+    ACCEPTED: "Accepted",
+    IN_DISCUSSION: "Discussion",
+    ACTIVE: "Active",
+    COMPLETED: "Completed",
+    DECLINED: "Declined",
+  };
 
   return (
     <>
@@ -18,13 +28,13 @@ export default async function CreatorRequestsPage({ searchParams }: { searchPara
       </div>
 
       <nav className="flex flex-wrap gap-2" aria-label="Request filters">
-        {[["NEW", "Inbox"], ["ACCEPTED", "Accepted"], ["DECLINED", "Declined"]].map(([value, label]) => (
+        {statusValues.map((value) => (
           <Link
             key={value}
             href={value === "NEW" ? "/dashboard/requests" : `/dashboard/requests?status=${value.toLowerCase()}`}
             className={`de-chip ${activeFilter === value ? "de-chip-active" : ""}`}
           >
-            {label} ({profile.dealRequests.filter((request) => request.status === value).length})
+            {filterLabels[value]} ({profile.dealRequests.filter((request) => request.status === value).length})
           </Link>
         ))}
       </nav>
@@ -44,8 +54,9 @@ export default async function CreatorRequestsPage({ searchParams }: { searchPara
             <li key={request.id} className="px-5 py-5">
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <p className="text-base font-bold text-white">{request.name}</p>
-                <p className="text-sm font-semibold text-[#25F4EE]">{request.budget}</p>
+                <p className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-xs font-bold uppercase tracking-[0.12em] text-white/55">{request.status.replace("_", " ")}</p>
               </div>
+              <p className="mt-2 text-sm font-semibold text-white/70">{request.budget}</p>
               <a href={`mailto:${request.email}`} className="mt-1 text-xs text-white/55 hover:text-white">
                 {request.email}
               </a>

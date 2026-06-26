@@ -18,12 +18,14 @@ export function BrandDashboardShell({
   avatar,
   liveCampaigns,
   applicationCount,
+  dealRequestCount,
   searchDefault = "",
 }: {
   children: ReactNode;
   avatar: string;
   liveCampaigns: number;
   applicationCount: number;
+  dealRequestCount: number;
   searchDefault?: string;
 }) {
   const pathname = usePathname();
@@ -41,6 +43,13 @@ export function BrandDashboardShell({
     },
     { href: "/client/dashboard/creators", label: "Creators", icon: "users", match: (p) => p.startsWith("/client/dashboard/creators") },
     {
+      href: "/client/dashboard/requests",
+      label: "Direct requests",
+      icon: "inbox",
+      badge: dealRequestCount || null,
+      match: (p) => p.startsWith("/client/dashboard/requests"),
+    },
+    {
       href: "/client/dashboard/messages",
       label: "Messages",
       icon: "chat",
@@ -53,6 +62,7 @@ export function BrandDashboardShell({
     { href: "/client/dashboard", label: "Your hub", match: (p: string) => p === "/client/dashboard" },
     { href: "/client/dashboard/campaigns", label: "Campaigns", match: (p: string) => p.startsWith("/client/dashboard/campaigns") || p === "/client/dashboard/post" },
     { href: "/client/dashboard/creators", label: "Creators", match: (p: string) => p.startsWith("/client/dashboard/creators") },
+    { href: "/client/dashboard/requests", label: "Requests", match: (p: string) => p.startsWith("/client/dashboard/requests") },
   ];
 
   function isActive(item: NavItem) {
@@ -156,7 +166,7 @@ export function BrandDashboardShell({
         <main className="space-y-5 pb-20 md:pb-0">{children}</main>
       </div>
       <nav className="editorial-mobile-nav fixed inset-x-0 bottom-0 z-40 overflow-x-auto border-t px-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-2 backdrop-blur md:hidden" aria-label="Brand dashboard">
-        <ul className="mx-auto grid min-w-[430px] max-w-xl grid-cols-6 gap-1">
+        <ul className="mx-auto grid min-w-[500px] max-w-xl grid-cols-7 gap-1">
           {navItems.map((item) => {
             const active = isActive(item);
             return (

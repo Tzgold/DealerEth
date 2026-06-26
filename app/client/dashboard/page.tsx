@@ -7,7 +7,8 @@ export default async function BrandHubPage() {
   const profileStrength = clientProfileStrength(profile);
   const liveCampaigns = profile.campaigns.filter((campaign) => campaign.status === "LIVE").length;
   const applications = profile.campaigns.flatMap((c) => c.applications);
-  const activeDeals = applications.filter((a) => a.status === "ACTIVE").length;
+  const directDeals = profile.dealRequests.filter((request) => request.status === "ACCEPTED" || request.status === "IN_DISCUSSION" || request.status === "ACTIVE").length;
+  const activeDeals = applications.filter((a) => a.status === "ACTIVE").length + directDeals;
   const pendingApplications = applications.filter((a) => a.status === "APPLIED").length;
 
   return (
@@ -116,7 +117,7 @@ export default async function BrandHubPage() {
       <section className="grid gap-3 md:grid-cols-3">
         <DashboardActionCard eyebrow="Campaigns" title="Post or manage briefs" description="Keep budgets, deliverables, status, and campaign details clear." href="/client/dashboard/campaigns" action="Manage campaigns" />
         <DashboardActionCard eyebrow="Discovery" title="Find aligned creators" description="Search by niche, followers, rate availability, and creator profile details." href="/client/dashboard/creators" action="Discover creators" />
-        <DashboardActionCard eyebrow="Applications" title="Review creator responses" description="Shortlist, message, and move promising applications through the deal flow." href="/client/dashboard/messages" action="Open messages" />
+        <DashboardActionCard eyebrow="Direct requests" title="Track creator outreach" description="Follow requests you sent from creator profiles as they move from sent to active work." href="/client/dashboard/requests" action="View requests" />
       </section>
     </>
   );
