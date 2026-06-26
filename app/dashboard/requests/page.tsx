@@ -50,6 +50,17 @@ export default async function CreatorRequestsPage({ searchParams }: { searchPara
                 {request.email}
               </a>
               <p className="mt-3 text-sm leading-7 text-white/80">{request.description}</p>
+              {request.campaign && (
+                <div className="mt-4 rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3">
+                  <p className="text-xs font-bold uppercase tracking-[0.16em] text-white/45">Attached campaign</p>
+                  <p className="mt-1 text-sm font-bold text-white">{request.campaign.title}</p>
+                  <p className="mt-2 text-xs leading-5 text-white/55">
+                    Budget: {request.campaign.budget}
+                    {request.campaign.deadline ? ` · Deadline: ${request.campaign.deadline}` : ""}
+                  </p>
+                  <p className="mt-1 text-xs leading-5 text-white/55">Deliverables: {request.campaign.deliverables}</p>
+                </div>
+              )}
               <p className="mt-2 text-xs text-white/50">Deliverables: {request.deliverables}</p>
               <p className="mt-3 text-xs text-white/40">{new Date(request.createdAt).toLocaleDateString()}</p>
               <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-white/5 pt-4">

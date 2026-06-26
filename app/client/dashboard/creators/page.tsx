@@ -103,13 +103,13 @@ export default async function BrandCreatorsPage({
         ) : filtered.map((creator) => {
           const avatar = creator.avatarUrl ?? creator.user.tiktokAvatarUrl ?? creator.user.googleAvatarUrl ?? "/next.svg";
           return (
-            <li key={creator.id} className="group rounded-2xl border border-white/10 bg-[#141416] p-5 shadow-[0_8px_24px_rgba(0,0,0,0.2)] transition hover:-translate-y-0.5 hover:border-white/20">
+            <li key={creator.id} className="group rounded-2xl border border-white/10 bg-[#141416] p-5 transition hover:border-white/20">
               <div className="flex gap-3">
                 <img src={avatar} alt={`${creator.name} profile`} className="h-16 w-16 rounded-2xl border border-white/10 object-cover" />
                 <div className="min-w-0">
                   <p className="truncate text-base font-extrabold text-white">{creator.name}</p>
                   <p className="mt-0.5 truncate text-sm text-white/65">{creator.tiktokHandle}</p>
-                  <p className="mt-2 text-xs font-semibold text-[#25F4EE]">{creator.niche} · {creator.followers.toLocaleString()} followers</p>
+                  <p className="mt-2 text-xs font-semibold text-white/55">{creator.niche} · {creator.followers.toLocaleString()} followers</p>
                 </div>
               </div>
               <p className="mt-4 line-clamp-3 text-sm leading-6 text-white/70">{creator.bio}</p>
@@ -121,7 +121,7 @@ export default async function BrandCreatorsPage({
                   <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-semibold text-white/45">Rate not listed</span>
                 )}
               </div>
-              <Link href={`/${creator.username}`} className="mt-4 inline-flex w-full items-center justify-center rounded-xl bg-white px-4 py-2.5 text-sm font-bold text-zinc-950 transition group-hover:bg-[#25F4EE]">
+              <Link href={`/${creator.username}`} className="de-btn de-btn-primary mt-4 w-full">
                 View profile and request a deal
               </Link>
             </li>

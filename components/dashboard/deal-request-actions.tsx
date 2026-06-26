@@ -34,9 +34,12 @@ export function DealRequestActions({ requestId, currentStatus }: { requestId: st
 
   if (currentStatus !== "NEW") {
     return (
-      <button type="button" disabled={busy} onClick={() => update("NEW")} className="text-xs font-semibold text-white/55 underline hover:text-white">
-        Move back to inbox
-      </button>
+      <div>
+        <button type="button" disabled={busy} onClick={() => update("NEW")} className="de-btn de-btn-secondary min-h-9 py-2 text-xs">
+          {busy ? "Moving..." : "Move back to inbox"}
+        </button>
+        {error && <p className="mt-2 text-xs text-rose-300">{error}</p>}
+      </div>
     );
   }
 
@@ -44,7 +47,7 @@ export function DealRequestActions({ requestId, currentStatus }: { requestId: st
     <div>
       <div className="flex flex-wrap gap-2">
         <button type="button" disabled={busy} onClick={() => update("ACCEPTED")} className="de-btn de-btn-primary">
-          Accept request
+          {busy ? "Updating..." : "Accept request"}
         </button>
         <button type="button" disabled={busy} onClick={() => update("DECLINED")} className="de-btn de-btn-secondary">
           Decline

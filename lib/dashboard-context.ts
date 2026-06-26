@@ -12,7 +12,13 @@ export async function requireCreatorProfile() {
     where: { userId: session.userId },
     include: {
       user: { select: { tiktokAvatarUrl: true, googleAvatarUrl: true, email: true } },
-      dealRequests: { orderBy: { createdAt: "desc" } },
+      dealRequests: {
+        orderBy: { createdAt: "desc" },
+        include: {
+          client: { select: { companyName: true, website: true } },
+          campaign: { select: { title: true, budget: true, deliverables: true, deadline: true, status: true } },
+        },
+      },
       applications: {
         orderBy: { updatedAt: "desc" },
         include: {

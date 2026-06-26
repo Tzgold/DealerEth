@@ -75,6 +75,8 @@ model CreatorProfile {
 model DealRequest {
   id           String         @id @default(cuid())
   creatorId    String
+  clientId     String?
+  campaignId   String?
   name         String
   email        String
   description  String
@@ -84,6 +86,8 @@ model DealRequest {
   createdAt    DateTime       @default(now())
 
   creator      CreatorProfile @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+  client       ClientProfile? @relation(fields: [clientId], references: [id], onDelete: SetNull)
+  campaign     CampaignPost?  @relation(fields: [campaignId], references: [id], onDelete: SetNull)
 }
 
 model ClientProfile {
@@ -100,6 +104,7 @@ model ClientProfile {
 
   user        User           @relation(fields: [userId], references: [id], onDelete: Cascade)
   campaigns   CampaignPost[]
+  dealRequests DealRequest[]
 }
 
 model CampaignPost {
@@ -116,6 +121,7 @@ model CampaignPost {
 
   client       ClientProfile @relation(fields: [clientId], references: [id], onDelete: Cascade)
   applications CampaignApplication[]
+  dealRequests DealRequest[]
 }
 
 model CampaignApplication {

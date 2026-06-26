@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { CopyLinkButton } from "@/components/dashboard/copy-link-button";
 import { DealRequestForm } from "@/components/forms/deal-request-form";
 import { prisma } from "@/lib/prisma";
+import { getSessionUser } from "@/lib/session";
 
 export default async function CreatorPublicPage({ params }: { params: Promise<{ atUsername: string }> }) {
   const { atUsername } = await params;
@@ -33,6 +34,19 @@ export default async function CreatorPublicPage({ params }: { params: Promise<{ 
   const profilePath = `/${profile.username}`;
   const profilePageUrl = host ? `${proto}://${host}${profilePath}` : profilePath;
   const displayHost = host.replace(/^www\./, "");
+  const session = await getSessionUser();
+  const clientProfile = session?.role === "CLIENT"
+    ? await prisma.clientProfile.findUnique({
+        where: { userId: session.userId },
+        include: {
+          campaigns: {
+            where: { status: "LIVE" },
+            orderBy: { createdAt: "desc" },
+            select: { id: true, title: true, description: true, budget: true, deliverables: true, deadline: true },
+          },
+        },
+      })
+    : null;
 
   return (
     <div className="product-editorial public-profile-editorial min-h-screen">
@@ -118,7 +132,13 @@ export default async function CreatorPublicPage({ params }: { params: Promise<{ 
           <h2 className="mt-2 text-2xl font-extrabold">Request a collaboration</h2>
           <p className="mt-2 text-sm leading-6 text-white/65">Share the campaign idea, budget, deliverables, and timeline. The request goes directly to the creator’s DealerEth inbox.</p>
           <div className="mt-5">
-            <DealRequestForm creatorId={profile.id} dark />
+            <DealRequestForm
+              creatorId={profile.id}
+              dark
+              initialName={clientProfile?.companyName ?? ""}
+              initialEmail={session?.role === "CLIENT" ? session.email : ""}
+              campaigns={clientProfile?.campaigns ?? []}
+            />
           </div>
         </section>
       </main>

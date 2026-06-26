@@ -62,6 +62,7 @@ export const campaignUpdateSchema = campaignPostSchema.partial().extend({
 
 export const dealRequestSchema = z.object({
   creatorId: z.string().min(1),
+  campaignId: z.string().optional().or(z.literal("")),
   name: z.string().min(2),
   email: z.string().email(),
   description: z.string().min(10),
