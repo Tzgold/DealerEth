@@ -60,6 +60,11 @@ export function CreatorDashboardShell({
     return item.match ? item.match(pathname) : pathname === item.href;
   }
 
+  const hasRequestNotifications = newOffers > 0 && !pathname.startsWith("/dashboard/requests");
+  const hasMessageNotifications = messageCount > 0 && !pathname.startsWith("/dashboard/messages");
+  const hasNotifications = hasRequestNotifications || hasMessageNotifications;
+  const notificationHref = hasRequestNotifications ? "/dashboard/requests" : "/dashboard/messages";
+
   return (
     <div className="dashboard-surface product-editorial creator-shell min-h-screen">
       <header className="sticky top-0 z-30 border-b border-black/10 bg-[#f7f6f2]/90 backdrop-blur">
@@ -93,16 +98,24 @@ export function CreatorDashboardShell({
                 </svg>
               </div>
             </form>
-            <Link
-              href="/dashboard/requests"
-              className="relative inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white/80 transition hover:bg-white/10"
-              aria-label="Notifications"
-            >
-              <svg viewBox="0 0 24 24" className="h-4 w-4" aria-hidden="true">
-                <path fill="currentColor" d="M12 22a2.5 2.5 0 0 0 2.45-2h-4.9A2.5 2.5 0 0 0 12 22Zm7-6v-5a7 7 0 1 0-14 0v5l-2 2v1h18v-1l-2-2Z" />
-              </svg>
-              {newOffers > 0 && <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-[#FE2C55] ring-2 ring-[#0a0a0b]" />}
-            </Link>
+            <div className="group relative">
+              <Link
+                href={notificationHref}
+                className="relative inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white/80 transition hover:bg-white/10"
+                aria-label="Notifications"
+              >
+                <svg viewBox="0 0 24 24" className="h-4 w-4" aria-hidden="true">
+                  <path fill="currentColor" d="M12 22a2.5 2.5 0 0 0 2.45-2h-4.9A2.5 2.5 0 0 0 12 22Zm7-6v-5a7 7 0 1 0-14 0v5l-2 2v1h18v-1l-2-2Z" />
+                </svg>
+                {hasNotifications && <span className="de-notification-dot absolute right-2 top-2 h-2 w-2 rounded-full ring-2 ring-white" />}
+              </Link>
+              <div className="de-menu invisible absolute right-0 top-11 z-40 w-60 opacity-0 transition group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100">
+                <p className="px-3 py-2 text-[11px] font-bold uppercase tracking-[0.14em] text-black/45">Notifications</p>
+                {hasRequestNotifications && <Link href="/dashboard/requests" className="de-menu-item">New brand requests ({newOffers})</Link>}
+                {hasMessageNotifications && <Link href="/dashboard/messages" className="de-menu-item">Messages need reply ({messageCount})</Link>}
+                {!hasNotifications && <p className="px-3 py-2 text-sm text-black/50">You are caught up.</p>}
+              </div>
+            </div>
             <div className="group relative">
               <button
                 type="button"
@@ -143,8 +156,8 @@ export function CreatorDashboardShell({
                   >
                     <SidebarIcon name={item.icon} className={active ? "text-white" : "text-white/60 group-hover:text-white"} />
                     <span className="flex-1">{item.label}</span>
-                    {item.badge ? (
-                      <span className="inline-flex h-5 min-w-[1.25rem] items-center justify-center rounded-full bg-[#FE2C55] px-1.5 text-[11px] font-bold text-white">
+                    {item.badge && !active ? (
+                      <span className="de-notification-badge inline-flex h-5 min-w-[1.25rem] items-center justify-center rounded-full px-1.5 text-[11px] font-bold text-white">
                         {item.badge}
                       </span>
                     ) : null}
@@ -178,7 +191,7 @@ export function CreatorDashboardShell({
                 <Link href={item.href} className={`relative flex min-h-12 flex-col items-center justify-center gap-1 rounded-xl px-1 text-[10px] font-semibold transition ${active ? "de-mobile-active" : "text-white/50 hover:bg-white/5 hover:text-white"}`}>
                   <SidebarIcon name={item.icon} className="h-4 w-4" />
                   <span className="max-w-full truncate">{item.label.replace("Brand ", "")}</span>
-                  {item.badge ? <span className="absolute right-2 top-1 h-4 min-w-4 rounded-full bg-[#FE2C55] px-1 text-center text-[9px] leading-4 text-white">{item.badge}</span> : null}
+                  {item.badge && !active ? <span className="de-notification-badge absolute right-2 top-1 h-4 min-w-4 rounded-full px-1 text-center text-[9px] leading-4 text-white">{item.badge}</span> : null}
                 </Link>
               </li>
             );

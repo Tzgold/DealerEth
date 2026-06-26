@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { DashboardEmptyState } from "@/components/dashboard/dashboard-ui";
+import { StatusPill } from "@/components/dashboard/status-pill";
 import { ApplicationChatBox } from "@/components/forms/application-chat-box";
 import { ApplicationStatusForm } from "@/components/forms/application-status-form";
 import { requireClientProfile } from "@/lib/dashboard-context";
@@ -27,7 +28,7 @@ export default async function BrandMessagesPage({
   const focused = applicationFocus ? filtered.find((a) => a.id === applicationFocus) : filtered[0];
   const threadsNeedingReply = filtered.filter((application) => {
     const latestMessage = application.messages[application.messages.length - 1];
-    return application.status === "APPLIED" || latestMessage?.senderRole === "CREATOR";
+    return application.status === "APPLIED" || (application.status === "IN_CHAT" && latestMessage?.senderRole === "CREATOR");
   }).length;
 
   return (
@@ -53,7 +54,7 @@ export default async function BrandMessagesPage({
           ) : (
             filtered.map((application) => {
               const latestMessage = application.messages[application.messages.length - 1];
-              const needsReply = application.status === "APPLIED" || latestMessage?.senderRole === "CREATOR";
+              const needsReply = application.status === "APPLIED" || (application.status === "IN_CHAT" && latestMessage?.senderRole === "CREATOR");
 
               return (
                 <li key={application.id}>
@@ -66,9 +67,15 @@ export default async function BrandMessagesPage({
                         <p className="truncate text-sm font-bold text-white">{application.creator.name}</p>
                         <p className="truncate text-xs text-white/55">{application.campaignTitle}</p>
                       </div>
-                      {needsReply && <span className="mt-0.5 h-2 w-2 shrink-0 rounded-full bg-white" aria-label="Needs reply" />}
+                      {needsReply && <span className="de-notification-dot mt-0.5 h-2 w-2 shrink-0 rounded-full" aria-label="Needs reply" />}
                     </div>
-                    <p className="mt-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-white/45">{needsReply ? "Needs reply" : application.status.replace("_", " ")}</p>
+                  <div className="mt-2">
+                    {needsReply ? (
+                      <span className="text-[11px] font-semibold uppercase tracking-[0.14em] text-white/45">Needs reply</span>
+                    ) : (
+                      <StatusPill status={application.status} />
+                    )}
+                  </div>
                     {latestMessage && (
                       <p className="mt-1 line-clamp-2 text-xs leading-5 text-white/60">
                         <span className="text-white/35">{latestMessage.senderRole === "CLIENT" ? "You: " : "Creator: "}</span>
@@ -93,9 +100,9 @@ export default async function BrandMessagesPage({
               </div>
               <ApplicationStatusForm applicationId={focused.id} currentStatus={focused.status} />
             </div>
-            {(focused.status === "APPLIED" || focused.messages[focused.messages.length - 1]?.senderRole === "CREATOR") && (
-              <div className="mt-4 rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3 text-sm text-white/75">
-                This thread is waiting on you. Review the application, update its status, or send a reply to keep the campaign moving.
+            {(focused.status === "APPLIED" || (focused.status === "IN_CHAT" && focused.messages[focused.messages.length - 1]?.senderRole === "CREATOR")) && (
+              <div className={`mt-4 rounded-2xl border px-4 py-3 text-sm ${focused.status === "APPLIED" ? "border-emerald-500/25 bg-emerald-500/10 text-emerald-100" : "border-white/10 bg-white/[0.04] text-white/75"}`}>
+                {focused.status === "APPLIED" ? "New application received. Approve it, reject it, or send a message before deciding." : "This thread is waiting on you. Review the application, update its status, or send a reply to keep the campaign moving."}
               </div>
             )}
             <p className="mt-4 text-sm leading-6 text-white/75">{focused.coverLetter}</p>

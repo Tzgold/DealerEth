@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { DashboardEmptyState } from "@/components/dashboard/dashboard-ui";
+import { StatusPill } from "@/components/dashboard/status-pill";
 import { requireCreatorProfile } from "@/lib/dashboard-context";
 
 export default async function CreatorMessagesPage() {
@@ -34,10 +35,15 @@ export default async function CreatorMessagesPage() {
               <li key={application.id}>
                 <Link href={`/dashboard/messages/${application.id}`} className={`block px-5 py-4 transition ${needsReply ? "bg-white/[0.04]" : "hover:bg-white/[0.03]"}`}>
                   <div className="flex flex-wrap items-center justify-between gap-2">
-                    <p className="text-sm font-bold text-white">{application.campaign.client.companyName}</p>
-                    <span className={`rounded-full border px-3 py-1 text-[11px] font-bold uppercase tracking-[0.14em] ${needsReply ? "border-white/30 bg-white text-zinc-950" : "border-white/10 text-white/50"}`}>
-                      {needsReply ? "Needs reply" : application.status.replace("_", " ")}
-                    </span>
+                    <div>
+                      <p className="text-sm font-bold text-white">Campaign conversation</p>
+                      <p className="mt-0.5 text-xs text-white/45">Brand team: {application.campaign.client.companyName}</p>
+                    </div>
+                    {needsReply ? (
+                      <span className="rounded-full border border-white/30 bg-white px-3 py-1 text-[11px] font-bold uppercase tracking-[0.14em] text-zinc-950">Needs reply</span>
+                    ) : (
+                      <StatusPill status={application.status} />
+                    )}
                   </div>
                   <p className="mt-1 text-xs text-white/60">Campaign application</p>
                   {latestMessage ? (

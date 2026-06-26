@@ -929,6 +929,98 @@ select.de-field option {
   color: #191917;
 }
 
+.product-editorial .de-chat-surface {
+  border-color: rgba(17, 17, 15, 0.1);
+  background-color: #efeee8;
+  color: #191917;
+}
+
+.product-editorial .de-chat-surface [class*="text-white"] {
+  color: rgba(25, 25, 23, 0.66);
+}
+
+.product-editorial .de-chat-surface .de-chat-bubble-self,
+.product-editorial .de-chat-surface .de-chat-bubble-self p,
+.product-editorial .de-chat-surface .de-chat-bubble-self time {
+  color: #f8f7f2;
+}
+
+.product-editorial .de-chat-surface .de-chat-bubble-self {
+  background: #242421;
+  box-shadow: none;
+}
+
+.product-editorial .de-chat-surface .de-chat-bubble-other,
+.product-editorial .de-chat-surface .de-chat-bubble-other p,
+.product-editorial .de-chat-surface .de-chat-bubble-other time {
+  color: #18181b;
+}
+
+.product-editorial .de-chat-surface .de-chat-bubble-other {
+  border-color: rgba(17, 17, 15, 0.08);
+  background: rgba(255, 255, 255, 0.86);
+}
+
+.product-editorial .de-chat-surface .de-field {
+  border-color: rgba(17, 17, 15, 0.12);
+  background: rgba(255, 255, 255, 0.86);
+}
+
+.product-editorial .de-status-trigger {
+  border-color: rgba(17, 17, 15, 0.12);
+  background: rgba(255, 255, 255, 0.62);
+  color: rgba(17, 17, 15, 0.55);
+}
+
+.product-editorial .de-status-trigger:hover {
+  background: #ffffff;
+  color: #11110f;
+}
+
+.de-status-pill,
+.product-editorial .de-status-pill {
+  font-weight: 800;
+}
+
+.de-status-success,
+.product-editorial .de-status-success {
+  border-color: rgba(4, 120, 87, 0.3) !important;
+  background: rgba(16, 185, 129, 0.16) !important;
+  color: #047857 !important;
+}
+
+.de-status-warning,
+.product-editorial .de-status-warning {
+  border-color: rgba(180, 83, 9, 0.34) !important;
+  background: rgba(245, 158, 11, 0.16) !important;
+  color: #92400e !important;
+}
+
+.de-status-danger,
+.product-editorial .de-status-danger {
+  border-color: rgba(190, 18, 60, 0.3) !important;
+  background: rgba(244, 63, 94, 0.14) !important;
+  color: #be123c !important;
+}
+
+.de-status-neutral,
+.product-editorial .de-status-neutral {
+  border-color: rgba(17, 17, 15, 0.14) !important;
+  background: rgba(255, 255, 255, 0.58) !important;
+  color: rgba(17, 17, 15, 0.68) !important;
+}
+
+.de-notification-dot,
+.product-editorial .de-notification-dot {
+  background: #e11d48 !important;
+}
+
+.de-notification-badge,
+.product-editorial .de-notification-badge {
+  background: #e11d48 !important;
+  color: #ffffff !important;
+}
+
 .product-editorial .de-chip {
   border-color: transparent;
   background: transparent;
