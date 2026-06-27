@@ -1,3 +1,5 @@
+import { getRequiredEnv } from "@/lib/env";
+
 export type TikTokUserInfo = {
   openId: string;
   username?: string;
@@ -6,21 +8,11 @@ export type TikTokUserInfo = {
   followerCount?: number;
 };
 
-function requiredEnv(name: string): string {
-  const value = process.env[name];
-
-  if (!value) {
-    throw new Error(`${name} is missing.`);
-  }
-
-  return value;
-}
-
 export function getTikTokAuthConfig() {
   return {
-    clientKey: requiredEnv("TIKTOK_CLIENT_KEY"),
-    clientSecret: requiredEnv("TIKTOK_CLIENT_SECRET"),
-    redirectUri: requiredEnv("TIKTOK_REDIRECT_URI"),
+    clientKey: getRequiredEnv("TIKTOK_CLIENT_KEY"),
+    clientSecret: getRequiredEnv("TIKTOK_CLIENT_SECRET"),
+    redirectUri: getRequiredEnv("TIKTOK_REDIRECT_URI"),
   };
 }
 

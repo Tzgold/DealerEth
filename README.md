@@ -78,15 +78,16 @@ Create a `.env` file in the project root.
 
 ```env
 DATABASE_URL="file:./dev.db"
-SESSION_SECRET="replace-with-a-secure-secret"
+AUTH_SECRET="replace-with-a-long-random-secret"
+NEXT_PUBLIC_APP_URL="http://localhost:3000"
 
 GOOGLE_CLIENT_ID=""
 GOOGLE_CLIENT_SECRET=""
-GOOGLE_REDIRECT_URI=""
+GOOGLE_REDIRECT_URI="http://localhost:3000/api/auth/google/callback"
 
 TIKTOK_CLIENT_KEY=""
 TIKTOK_CLIENT_SECRET=""
-TIKTOK_REDIRECT_URI=""
+TIKTOK_REDIRECT_URI="http://localhost:3000/api/auth/tiktok/callback"
 ```
 
 OAuth values are only required when using Google or TikTok sign-in locally.
@@ -150,9 +151,20 @@ npm run build
 DealerEth can be deployed to any platform that supports Next.js applications. For production, configure:
 
 - A production database connection
-- A secure session secret
+- A secure `AUTH_SECRET`
+- A public `NEXT_PUBLIC_APP_URL`
 - OAuth callback URLs that match the deployed domain
 - File/image storage strategy if avatar uploads need to persist outside the local filesystem
+
+## Health check
+
+The application exposes a lightweight health endpoint:
+
+```text
+/api/health
+```
+
+It returns the application status and verifies database connectivity, which can be used by deployment platforms, monitors, or uptime checks.
 
 ## Product direction
 

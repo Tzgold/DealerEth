@@ -1,9 +1,26 @@
 import type { Metadata } from "next";
+import { getAppUrl } from "@/lib/env";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "DealerEth",
-  description: "Creator profile links and brand deal requests for Ethiopian TikTok creators.",
+  metadataBase: new URL(getAppUrl()),
+  title: {
+    default: "DealerEth",
+    template: "%s | DealerEth",
+  },
+  description: "A creator-brand collaboration workspace for Ethiopian TikTok creators and local businesses.",
+  openGraph: {
+    title: "DealerEth",
+    description: "Discover creators, manage campaign applications, and keep brand collaborations organized.",
+    type: "website",
+    url: getAppUrl(),
+    siteName: "DealerEth",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "DealerEth",
+    description: "A professional collaboration workspace for creators and brands.",
+  },
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {

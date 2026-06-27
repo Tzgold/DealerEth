@@ -1,3 +1,5 @@
+import { getRequiredEnv } from "@/lib/env";
+
 export type GoogleUserInfo = {
   sub: string;
   email: string;
@@ -5,19 +7,11 @@ export type GoogleUserInfo = {
   picture?: string;
 };
 
-function requiredEnv(name: string): string {
-  const value = process.env[name];
-  if (!value) {
-    throw new Error(`${name} is missing.`);
-  }
-  return value;
-}
-
 export function getGoogleAuthConfig() {
   return {
-    clientId: requiredEnv("GOOGLE_CLIENT_ID"),
-    clientSecret: requiredEnv("GOOGLE_CLIENT_SECRET"),
-    redirectUri: requiredEnv("GOOGLE_REDIRECT_URI"),
+    clientId: getRequiredEnv("GOOGLE_CLIENT_ID"),
+    clientSecret: getRequiredEnv("GOOGLE_CLIENT_SECRET"),
+    redirectUri: getRequiredEnv("GOOGLE_REDIRECT_URI"),
   };
 }
 

@@ -1,17 +1,12 @@
 import bcrypt from "bcryptjs";
 import { SignJWT, jwtVerify } from "jose";
+import { getRequiredEnv } from "@/lib/env";
 
 const SESSION_TTL_SECONDS = 60 * 60 * 24 * 7;
 export type SessionRole = "CREATOR" | "CLIENT";
 
 function getSessionSecret(): Uint8Array {
-  const secret = process.env.AUTH_SECRET;
-
-  if (!secret) {
-    throw new Error("AUTH_SECRET is missing from environment variables.");
-  }
-
-  return new TextEncoder().encode(secret);
+  return new TextEncoder().encode(getRequiredEnv("AUTH_SECRET"));
 }
 
 export async function hashPassword(password: string): Promise<string> {
