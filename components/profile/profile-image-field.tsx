@@ -1,6 +1,7 @@
 "use client";
 
 import { ChangeEvent, useRef, useState } from "react";
+import { AvatarImage } from "@/components/ui/avatar-image";
 
 export function ProfileImageField({
   value,
@@ -85,7 +86,7 @@ export function ProfileImageField({
 
   return (
     <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-      <img src={value || fallbackUrl || "/next.svg"} alt="Profile preview" className="h-24 w-24 shrink-0 rounded-2xl border border-white/10 bg-white/5 object-cover shadow-lg" />
+      <AvatarImage src={value || fallbackUrl || "/next.svg"} alt="Profile preview" className="h-24 w-24 shrink-0 rounded-2xl border border-white/10 bg-white/5 object-cover shadow-lg" size={96} />
       <div className="min-w-0 flex-1 space-y-3">
         <div className="flex flex-wrap gap-2">
           <button type="button" disabled={disabled || uploading} onClick={() => inputRef.current?.click()} className="de-btn de-btn-primary">

@@ -1,3 +1,5 @@
+import { AvatarImage } from "@/components/ui/avatar-image";
+
 export function CreatorProfilePreview({
   name,
   avatarUrl,
@@ -28,7 +30,7 @@ export function CreatorProfilePreview({
       </div>
       <div className="p-5">
         <div className="flex gap-3">
-          <img src={avatar} alt="" className="h-14 w-14 rounded-2xl border border-white/10 object-cover bg-white/5" />
+          <AvatarImage src={avatar} className="h-14 w-14 rounded-2xl border border-white/10 bg-white/5 object-cover" size={56} />
           <div className="min-w-0">
             <p className="truncate text-lg font-black text-white">{name || "Your name"}</p>
             <p className="text-sm text-white/60">{tiktokHandle || "@tiktok"}</p>

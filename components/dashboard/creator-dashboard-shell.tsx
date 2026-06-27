@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ReactNode } from "react";
 import { SidebarIcon } from "@/components/dashboard/dashboard-ui";
+import { AvatarImage } from "@/components/ui/avatar-image";
 
 type NavItem = {
   href: string;
@@ -122,7 +123,7 @@ export function CreatorDashboardShell({
                 className="inline-flex h-9 w-9 items-center justify-center overflow-hidden rounded-full border border-white/10 bg-white/5"
                 aria-label="Account"
               >
-                <img src={avatar} alt="" className="h-full w-full object-cover" />
+                <AvatarImage src={avatar} className="h-full w-full object-cover" size={36} />
               </button>
               <div className="de-menu invisible absolute right-0 top-11 z-40 w-48 opacity-0 transition group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100">
                 <Link href={publicProfilePath} className="de-menu-item">

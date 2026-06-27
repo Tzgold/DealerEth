@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { AvatarImage } from "@/components/ui/avatar-image";
 import { requireClientProfile } from "@/lib/dashboard-context";
 import { prisma } from "@/lib/prisma";
 
@@ -142,7 +143,7 @@ export default async function BrandCreatorsPage({
           return (
             <li key={creator.id} className="group rounded-2xl border border-white/10 bg-[#141416] p-5 transition hover:border-white/20">
               <div className="flex gap-3">
-                <img src={avatar} alt={`${creator.name} profile`} className="h-16 w-16 rounded-2xl border border-white/10 object-cover" />
+                <AvatarImage src={avatar} alt={`${creator.name} profile`} className="h-16 w-16 rounded-2xl border border-white/10 object-cover" size={64} />
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-base font-extrabold text-white">{creator.name}</p>
                   <p className="mt-0.5 truncate text-sm text-white/65">{creator.tiktokHandle}</p>

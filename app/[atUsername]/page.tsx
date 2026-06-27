@@ -3,6 +3,7 @@ import { headers } from "next/headers";
 import { notFound } from "next/navigation";
 import { CopyLinkButton } from "@/components/dashboard/copy-link-button";
 import { DealRequestForm } from "@/components/forms/deal-request-form";
+import { AvatarImage } from "@/components/ui/avatar-image";
 import { prisma } from "@/lib/prisma";
 import { getSessionUser } from "@/lib/session";
 
@@ -66,7 +67,7 @@ export default async function CreatorPublicPage({ params }: { params: Promise<{ 
             </div>
             <div className="p-6">
               <div className="flex flex-wrap items-start gap-4">
-                <img src={avatar} alt="" className="h-20 w-20 shrink-0 rounded-2xl border border-white/10 object-cover" />
+                <AvatarImage src={avatar} className="h-20 w-20 shrink-0 rounded-2xl border border-white/10 object-cover" size={80} priority />
                 <div className="min-w-0 flex-1">
                   <h1 className="text-3xl font-black tracking-tight">{profile.name}</h1>
                   <p className="mt-1 text-sm font-semibold text-white/60">{profile.tiktokHandle}</p>

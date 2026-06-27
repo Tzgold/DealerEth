@@ -1,3 +1,5 @@
+import { AvatarImage } from "@/components/ui/avatar-image";
+
 export function BrandProfilePreview({
   companyName,
   avatarUrl,
@@ -30,7 +32,7 @@ export function BrandProfilePreview({
       <div className="p-5">
         <div className="flex gap-3">
           {avatarUrl ? (
-            <img src={avatar} alt="" className="h-14 w-14 rounded-2xl border border-white/10 object-cover" />
+            <AvatarImage src={avatar} className="h-14 w-14 rounded-2xl border border-white/10 object-cover" size={56} />
           ) : (
             <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-[#FE2C55]/30 to-[#25F4EE]/30 text-sm font-black">
               {initials || "BR"}
