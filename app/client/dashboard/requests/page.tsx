@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { DashboardEmptyState } from "@/components/dashboard/dashboard-ui";
+import { NotificationSeenMarker } from "@/components/dashboard/notification-seen-marker";
 import { requireClientProfile } from "@/lib/dashboard-context";
 
 const statusValues = ["NEW", "ACCEPTED", "IN_DISCUSSION", "ACTIVE", "COMPLETED", "DECLINED"] as const;
@@ -29,9 +30,13 @@ export default async function BrandDirectRequestsPage({ searchParams }: { search
   const activeFilter = statusValues.find((value) => value === normalizedStatus) ?? "NEW";
   const requests = profile.dealRequests.filter((request) => request.status === activeFilter);
   const openRequests = profile.dealRequests.filter((request) => request.status === "ACCEPTED" || request.status === "IN_DISCUSSION" || request.status === "ACTIVE").length;
+  const seenItems = profile.dealRequests
+    .filter((request) => request.status === "ACCEPTED" || request.status === "IN_DISCUSSION" || request.status === "ACTIVE")
+    .map((request) => ({ key: `deal-request:${request.id}`, time: request.createdAt.toISOString() }));
 
   return (
     <>
+      <NotificationSeenMarker items={seenItems} />
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <h1 className="text-2xl font-black text-white">Direct requests</h1>

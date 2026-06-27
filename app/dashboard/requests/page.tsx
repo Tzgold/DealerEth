@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { DealRequestActions } from "@/components/dashboard/deal-request-actions";
 import { DashboardEmptyState } from "@/components/dashboard/dashboard-ui";
+import { NotificationSeenMarker } from "@/components/dashboard/notification-seen-marker";
 import { getPublicProfileUrls, requireCreatorProfile } from "@/lib/dashboard-context";
 
 export default async function CreatorRequestsPage({ searchParams }: { searchParams: Promise<{ status?: string }> }) {
@@ -11,6 +12,9 @@ export default async function CreatorRequestsPage({ searchParams }: { searchPara
   const normalizedStatus = status?.toUpperCase();
   const activeFilter = statusValues.find((value) => value === normalizedStatus) ?? "NEW";
   const requests = profile.dealRequests.filter((request) => request.status === activeFilter);
+  const seenItems = profile.dealRequests
+    .filter((request) => request.status === "NEW")
+    .map((request) => ({ key: `deal-request:${request.id}`, time: request.createdAt.toISOString() }));
   const filterLabels: Record<(typeof statusValues)[number], string> = {
     NEW: "Inbox",
     ACCEPTED: "Accepted",
@@ -22,6 +26,7 @@ export default async function CreatorRequestsPage({ searchParams }: { searchPara
 
   return (
     <>
+      <NotificationSeenMarker items={seenItems} />
       <div>
         <h1 className="text-2xl font-black text-white">Brand deal requests</h1>
         <p className="mt-1 text-sm text-white/65">Direct requests from brands who found your public page.</p>

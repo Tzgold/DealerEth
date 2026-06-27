@@ -13,6 +13,7 @@ export async function GET(request: Request) {
   const minFollowers = Number.parseInt(searchParams.get("minFollowers") ?? "", 10);
   const maxFollowers = Number.parseInt(searchParams.get("maxFollowers") ?? "", 10);
   const hasRate = searchParams.get("hasRate") === "1";
+  const hasPortfolio = searchParams.get("hasPortfolio") === "1";
   const sort = searchParams.get("sort") ?? "followers_desc";
 
   const creators = await prisma.creatorProfile.findMany({
@@ -23,6 +24,24 @@ export async function GET(request: Request) {
     },
   });
 
+  function portfolioCount(sampleVideos: unknown) {
+    return Array.isArray(sampleVideos) ? sampleVideos.length : 0;
+  }
+
+  function profileScore(creator: (typeof creators)[number]) {
+    const checks = [
+      Boolean(creator.avatarUrl ?? creator.user.tiktokAvatarUrl ?? creator.user.googleAvatarUrl),
+      Boolean(creator.name.trim()),
+      Boolean(creator.tiktokHandle.trim()),
+      Boolean(creator.bio.trim()),
+      Boolean(creator.niche.trim()),
+      creator.followers > 0,
+      Boolean(creator.priceRange?.trim()),
+      portfolioCount(creator.sampleVideos) > 0,
+    ];
+    return Math.round((checks.filter(Boolean).length / checks.length) * 100);
+  }
+
   const filtered = creators.filter((creator) => {
     const text = `${creator.name} ${creator.username} ${creator.tiktokHandle} ${creator.niche} ${creator.bio}`.toLowerCase();
     const matchesQuery = !q || text.includes(q);
@@ -30,10 +49,12 @@ export async function GET(request: Request) {
     const matchesMinFollowers = Number.isNaN(minFollowers) || creator.followers >= minFollowers;
     const matchesMaxFollowers = Number.isNaN(maxFollowers) || creator.followers <= maxFollowers;
     const matchesRate = !hasRate || Boolean(creator.priceRange?.trim());
-    return matchesQuery && matchesNiche && matchesMinFollowers && matchesMaxFollowers && matchesRate;
+    const matchesPortfolio = !hasPortfolio || portfolioCount(creator.sampleVideos) > 0;
+    return matchesQuery && matchesNiche && matchesMinFollowers && matchesMaxFollowers && matchesRate && matchesPortfolio;
   }).sort((a, b) => {
     if (sort === "name") return a.name.localeCompare(b.name);
     if (sort === "followers_asc") return a.followers - b.followers;
+    if (sort === "profile_score") return profileScore(b) - profileScore(a);
     return b.followers - a.followers;
   });
 
@@ -48,6 +69,8 @@ export async function GET(request: Request) {
       priceRange: c.priceRange,
       bio: c.bio,
       avatarUrl: c.avatarUrl ?? c.user.tiktokAvatarUrl ?? c.user.googleAvatarUrl,
+      portfolioCount: portfolioCount(c.sampleVideos),
+      profileScore: profileScore(c),
     })),
   });
 }

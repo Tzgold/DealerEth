@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useEffect, useRef, useState } from "react";
+import { FormEvent, KeyboardEvent, useEffect, useRef, useState } from "react";
 
 type Message = {
   id: string;
@@ -22,6 +22,7 @@ export function ApplicationChatBox({
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const listRef = useRef<HTMLUListElement>(null);
+  const formRef = useRef<HTMLFormElement>(null);
   const latestMessage = messages[messages.length - 1];
   const needsViewerReply = latestMessage ? latestMessage.senderRole !== viewerRole : false;
   const otherRoleLabel = viewerRole === "CLIENT" ? "Creator" : "Brand";
@@ -66,12 +67,18 @@ export function ApplicationChatBox({
     }
   }
 
+  function handleKeyDown(event: KeyboardEvent<HTMLTextAreaElement>) {
+    if (event.key !== "Enter" || event.shiftKey) return;
+    event.preventDefault();
+    formRef.current?.requestSubmit();
+  }
+
   return (
-    <div className="de-chat-surface overflow-hidden rounded-2xl border border-white/10 bg-[#efeee8]">
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 bg-white/[0.42] px-4 py-3">
+    <div className="de-chat-surface flex h-full min-h-[420px] flex-col overflow-hidden rounded-2xl border border-white/10 bg-[#efeee8]">
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-zinc-950/10 bg-white/55 px-4 py-3">
         <div>
-          <p className="text-xs font-bold uppercase tracking-[0.16em] text-white/45">Conversation</p>
-          <p className="mt-1 text-sm text-white/65">
+          <p className="text-xs font-bold uppercase tracking-[0.16em] text-zinc-500">Conversation</p>
+          <p className="mt-1 text-sm text-zinc-600">
             {messages.length === 0
               ? `Start the conversation with a clear note to the ${otherRoleLabel.toLowerCase()}.`
               : needsViewerReply
@@ -85,12 +92,12 @@ export function ApplicationChatBox({
           </span>
         )}
       </div>
-      <ul ref={listRef} className="max-h-[460px] min-h-[320px] space-y-3 overflow-y-auto bg-[linear-gradient(180deg,rgba(255,255,255,0.28),rgba(17,17,15,0.018))] px-4 py-5">
+      <ul ref={listRef} className="min-h-0 flex-1 space-y-3 overflow-y-auto bg-[linear-gradient(180deg,rgba(255,255,255,0.28),rgba(17,17,15,0.018))] px-4 py-5">
         {messages.length === 0 ? (
           <li className="flex min-h-[240px] items-center justify-center text-center">
             <div className="max-w-sm rounded-2xl border border-dashed border-white/15 px-5 py-6">
-              <p className="text-sm font-bold text-white">No messages yet</p>
-              <p className="mt-1 text-sm leading-6 text-white/50">Send the first message to keep this application moving.</p>
+              <p className="text-sm font-bold text-zinc-950">No messages yet</p>
+              <p className="mt-1 text-sm leading-6 text-zinc-500">Send the first message to keep this application moving.</p>
             </div>
           </li>
         ) : (
@@ -118,8 +125,16 @@ export function ApplicationChatBox({
           ))
         )}
       </ul>
-      <form onSubmit={handleSubmit} className="flex gap-2 border-t border-white/10 bg-white/[0.55] p-3">
-        <textarea name="text" required maxLength={2000} rows={1} placeholder="Write a message..." className="de-field min-h-12 min-w-0 flex-1 resize-none rounded-2xl" />
+      <form ref={formRef} onSubmit={handleSubmit} className="flex gap-2 border-t border-zinc-950/10 bg-white/70 p-3">
+        <textarea
+          name="text"
+          required
+          maxLength={2000}
+          rows={1}
+          placeholder="Write a message... Enter sends, Shift+Enter adds a line"
+          onKeyDown={handleKeyDown}
+          className="de-field min-h-12 min-w-0 flex-1 resize-none rounded-2xl"
+        />
         <button
           type="submit"
           disabled={loading}

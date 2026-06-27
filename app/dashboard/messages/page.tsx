@@ -1,14 +1,19 @@
 import Link from "next/link";
 import { DashboardEmptyState } from "@/components/dashboard/dashboard-ui";
+import { NotificationSeenMarker } from "@/components/dashboard/notification-seen-marker";
 import { StatusPill } from "@/components/dashboard/status-pill";
 import { requireCreatorProfile } from "@/lib/dashboard-context";
 
 export default async function CreatorMessagesPage() {
   const { profile } = await requireCreatorProfile();
   const threadsNeedingReply = profile.applications.filter((application) => application.messages[0]?.senderRole === "CLIENT").length;
+  const seenItems = profile.applications
+    .filter((application) => application.messages[0]?.senderRole === "CLIENT")
+    .map((application) => ({ key: `application:${application.id}`, time: application.messages[0].createdAt.toISOString() }));
 
   return (
     <>
+      <NotificationSeenMarker items={seenItems} />
       <div>
         <h1 className="text-2xl font-black text-white">Messages</h1>
         <p className="mt-1 text-sm text-white/65">

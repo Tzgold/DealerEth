@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { StatusPill } from "@/components/dashboard/status-pill";
 
 export function StatTile({ label, value, tone }: { label: string; value: string; tone?: "default" | "accent" }) {
   return (
@@ -65,6 +66,58 @@ export function DashboardEmptyState({
         </Link>
       ) : null}
     </div>
+  );
+}
+
+export type ActivityItem = {
+  id: string;
+  title: string;
+  description: string;
+  href: string;
+  status?: string;
+  time?: Date | string;
+};
+
+export function DashboardActivityFeed({
+  title = "Recent activity",
+  items,
+  empty,
+}: {
+  title?: string;
+  items: ActivityItem[];
+  empty: string;
+}) {
+  return (
+    <section className="overflow-hidden rounded-2xl border border-white/10 bg-[#141416]">
+      <div className="flex items-center justify-between border-b border-white/5 px-5 py-3.5">
+        <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-white/55">{title}</p>
+        <span className="text-xs font-semibold text-white/45">{items.length} update{items.length === 1 ? "" : "s"}</span>
+      </div>
+      <ul className="divide-y divide-white/5">
+        {items.length === 0 ? (
+          <li className="px-5 py-8 text-sm text-white/55">{empty}</li>
+        ) : (
+          items.slice(0, 6).map((item) => (
+            <li key={item.id}>
+              <Link href={item.href} className="block px-5 py-4 transition hover:bg-white/[0.035]">
+                <div className="flex flex-wrap items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <p className="text-sm font-bold text-white">{item.title}</p>
+                    <p className="mt-1 line-clamp-2 text-xs leading-5 text-white/55">{item.description}</p>
+                  </div>
+                  {item.status ? <StatusPill status={item.status} /> : null}
+                </div>
+                {item.time ? (
+                  <time className="mt-2 block text-[11px] font-semibold uppercase tracking-[0.12em] text-white/35" dateTime={new Date(item.time).toISOString()}>
+                    {new Date(item.time).toLocaleDateString([], { month: "short", day: "numeric", year: "numeric" })}
+                  </time>
+                ) : null}
+              </Link>
+            </li>
+          ))
+        )}
+      </ul>
+    </section>
   );
 }
 

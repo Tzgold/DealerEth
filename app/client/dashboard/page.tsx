@@ -1,15 +1,49 @@
 import Link from "next/link";
-import { DashboardActionCard, ProgressBar, StatTile } from "@/components/dashboard/dashboard-ui";
+import { DashboardActionCard, DashboardActivityFeed, ProgressBar, StatTile } from "@/components/dashboard/dashboard-ui";
 import { clientProfileStrength, initialsFor, requireClientProfile } from "@/lib/dashboard-context";
 
 export default async function BrandHubPage() {
   const { profile } = await requireClientProfile();
   const profileStrength = clientProfileStrength(profile);
   const liveCampaigns = profile.campaigns.filter((campaign) => campaign.status === "LIVE").length;
-  const applications = profile.campaigns.flatMap((c) => c.applications);
+  const applications = profile.campaigns.flatMap((campaign) =>
+    campaign.applications.map((application) => ({ ...application, campaignTitle: campaign.title })),
+  );
   const directDeals = profile.dealRequests.filter((request) => request.status === "ACCEPTED" || request.status === "IN_DISCUSSION" || request.status === "ACTIVE").length;
   const activeDeals = applications.filter((a) => a.status === "ACTIVE").length + directDeals;
   const pendingApplications = applications.filter((a) => a.status === "APPLIED").length;
+  const activityItems = [
+    ...applications.flatMap((application) => {
+      const latestMessage = application.messages[application.messages.length - 1];
+      return [
+        {
+          id: `application-${application.id}`,
+          title: `${application.creator.name} applied`,
+          description: application.campaignTitle,
+          href: `/client/dashboard/messages?application=${application.id}`,
+          status: application.status,
+          time: application.updatedAt,
+        },
+        ...(latestMessage
+          ? [{
+              id: `message-${latestMessage.id}`,
+              title: latestMessage.senderRole === "CLIENT" ? "You sent a message" : `${application.creator.name} replied`,
+              description: latestMessage.text,
+              href: `/client/dashboard/messages?application=${application.id}`,
+              time: latestMessage.createdAt,
+            }]
+          : []),
+      ];
+    }),
+    ...profile.dealRequests.map((request) => ({
+      id: `request-${request.id}`,
+      title: `Direct request to ${request.creator.name}`,
+      description: request.campaign?.title ?? request.description,
+      href: `/client/dashboard/requests?status=${request.status.toLowerCase()}`,
+      status: request.status,
+      time: request.createdAt,
+    })),
+  ].sort((a, b) => new Date(b.time).getTime() - new Date(a.time).getTime());
 
   return (
     <>
@@ -75,6 +109,11 @@ export default async function BrandHubPage() {
           </p>
         </div>
       </section>
+
+      <DashboardActivityFeed
+        items={activityItems}
+        empty="No activity yet. Post a campaign or send a direct creator request to start building your workspace history."
+      />
 
       <section className="overflow-hidden rounded-2xl border border-white/10 bg-[#141416] shadow-[0_8px_30px_rgba(0,0,0,0.35)]">
         <div className="flex items-center justify-between border-b border-white/5 px-5 py-3.5">

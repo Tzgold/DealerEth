@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { DashboardEmptyState } from "@/components/dashboard/dashboard-ui";
+import { NotificationSeenMarker } from "@/components/dashboard/notification-seen-marker";
 import { StatusPill } from "@/components/dashboard/status-pill";
 import { ApplicationChatBox } from "@/components/forms/application-chat-box";
 import { ApplicationStatusForm } from "@/components/forms/application-status-form";
@@ -30,9 +31,22 @@ export default async function BrandMessagesPage({
     const latestMessage = application.messages[application.messages.length - 1];
     return application.status === "APPLIED" || (application.status === "IN_CHAT" && latestMessage?.senderRole === "CREATOR");
   }).length;
+  const seenItems = filtered
+    .filter((application) => {
+      const latestMessage = application.messages[application.messages.length - 1];
+      return application.status === "APPLIED" || (application.status === "IN_CHAT" && latestMessage?.senderRole === "CREATOR");
+    })
+    .map((application) => {
+      const latestMessage = application.messages[application.messages.length - 1];
+      return {
+        key: `application:${application.id}`,
+        time: latestMessage?.senderRole === "CREATOR" ? latestMessage.createdAt.toISOString() : application.updatedAt.toISOString(),
+      };
+    });
 
   return (
     <>
+      <NotificationSeenMarker items={seenItems} />
       <div>
         <h1 className="text-2xl font-black text-white">Creator applications & messages</h1>
         <p className="mt-1 text-sm text-white/65">
@@ -40,7 +54,7 @@ export default async function BrandMessagesPage({
         </p>
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-[280px_minmax(0,1fr)]">
+      <div className="grid gap-4 lg:grid-cols-[280px_minmax(0,1fr)] lg:h-[calc(100vh-170px)]">
         <ul className="max-h-[70vh] divide-y divide-white/5 overflow-y-auto rounded-2xl border border-white/10 bg-[#141416]">
           {filtered.length === 0 ? (
             <li className="p-4">
@@ -90,8 +104,8 @@ export default async function BrandMessagesPage({
         </ul>
 
         {focused ? (
-          <section className="rounded-2xl border border-white/10 bg-[#141416] p-5">
-            <div className="flex flex-wrap items-center justify-between gap-2">
+          <section className="flex min-h-0 flex-col rounded-2xl border border-white/10 bg-[#141416] p-4">
+            <div className="flex flex-wrap items-center justify-between gap-2 border-b border-white/10 pb-4">
               <div>
                 <h2 className="text-lg font-black text-white">{focused.creator.name}</h2>
                 <p className="text-sm text-white/60">
@@ -100,19 +114,16 @@ export default async function BrandMessagesPage({
               </div>
               <ApplicationStatusForm applicationId={focused.id} currentStatus={focused.status} />
             </div>
-            {(focused.status === "APPLIED" || (focused.status === "IN_CHAT" && focused.messages[focused.messages.length - 1]?.senderRole === "CREATOR")) && (
-              <div className={`mt-4 rounded-2xl border px-4 py-3 text-sm ${focused.status === "APPLIED" ? "border-emerald-500/25 bg-emerald-500/10 text-emerald-100" : "border-white/10 bg-white/[0.04] text-white/75"}`}>
-                {focused.status === "APPLIED" ? "New application received. Approve it, reject it, or send a message before deciding." : "This thread is waiting on you. Review the application, update its status, or send a reply to keep the campaign moving."}
+            <div className="grid gap-3 border-b border-white/10 py-4 text-sm text-white/70 md:grid-cols-[minmax(0,1fr)_auto]">
+              <p className="line-clamp-2 leading-6">{focused.coverLetter}</p>
+              <div className="flex flex-wrap items-center gap-2 md:justify-end">
+                {focused.proposedBudget && <span className="de-chip">Budget: {focused.proposedBudget}</span>}
+                <Link href={`/${focused.creator.username}`} className="de-chip">
+                  View profile
+                </Link>
               </div>
-            )}
-            <p className="mt-4 text-sm leading-6 text-white/75">{focused.coverLetter}</p>
-            {focused.proposedBudget && (
-              <p className="mt-2 text-sm text-white/60">Proposed budget: {focused.proposedBudget}</p>
-            )}
-            <Link href={`/${focused.creator.username}`} className="mt-3 inline-block text-xs font-semibold text-white underline decoration-white/40 underline-offset-4 transition hover:decoration-white">
-              View creator profile
-            </Link>
-            <div className="mt-5 border-t border-white/10 pt-5">
+            </div>
+            <div className="min-h-0 flex-1 pt-4">
               <ApplicationChatBox
                 key={focused.id}
                 applicationId={focused.id}

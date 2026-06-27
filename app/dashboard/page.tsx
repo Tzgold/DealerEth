@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { CopyLinkButton } from "@/components/dashboard/copy-link-button";
-import { DashboardActionCard, ProgressBar, StatTile } from "@/components/dashboard/dashboard-ui";
+import { DashboardActionCard, DashboardActivityFeed, ProgressBar, StatTile } from "@/components/dashboard/dashboard-ui";
 import { creatorProfileStrength, getPublicProfileUrls, initialsFor, requireCreatorProfile } from "@/lib/dashboard-context";
 import { prisma } from "@/lib/prisma";
 
@@ -22,6 +22,38 @@ export default async function CreatorHubPage() {
   const activeDirectRequests = profile.dealRequests.filter((request) => request.status === "ACCEPTED" || request.status === "IN_DISCUSSION" || request.status === "ACTIVE").length;
   const activeDeals = profile.applications.filter((a) => a.status === "ACTIVE").length + activeDirectRequests;
   const newOffers = profile.dealRequests.filter((request) => request.status === "NEW").length;
+  const activityItems = [
+    ...profile.dealRequests.map((request) => ({
+      id: `request-${request.id}`,
+      title: request.status === "NEW" ? "New brand request" : `Brand request: ${request.status.replace("_", " ").toLowerCase()}`,
+      description: request.campaign?.title ?? request.description,
+      href: `/dashboard/requests${request.status === "NEW" ? "" : `?status=${request.status.toLowerCase()}`}`,
+      status: request.status,
+      time: request.createdAt,
+    })),
+    ...profile.applications.flatMap((application) => {
+      const latestMessage = application.messages[0];
+      return [
+        {
+          id: `application-${application.id}`,
+          title: "Campaign application",
+          description: application.campaign.client.companyName,
+          href: `/dashboard/messages/${application.id}`,
+          status: application.status,
+          time: application.updatedAt,
+        },
+        ...(latestMessage
+          ? [{
+              id: `message-${latestMessage.id}`,
+              title: latestMessage.senderRole === "CREATOR" ? "You sent a message" : "Brand team replied",
+              description: latestMessage.text,
+              href: `/dashboard/messages/${application.id}`,
+              time: latestMessage.createdAt,
+            }]
+          : []),
+      ];
+    }),
+  ].sort((a, b) => new Date(b.time).getTime() - new Date(a.time).getTime());
 
   return (
     <>
@@ -72,6 +104,11 @@ export default async function CreatorHubPage() {
           </p>
         </div>
       </section>
+
+      <DashboardActivityFeed
+        items={activityItems}
+        empty="No activity yet. Share your public profile or apply to a campaign to start tracking collaboration updates."
+      />
 
       <section className="overflow-hidden rounded-2xl border border-white/10 bg-[#141416] shadow-[0_8px_30px_rgba(0,0,0,0.35)]">
         <div className="flex items-center justify-between border-b border-white/5 px-5 py-3.5">
