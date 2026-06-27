@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
+import { SiteFooter } from "@/components/site-footer";
 
 export function LegalPage({
   eyebrow,
@@ -43,6 +44,8 @@ export function LegalPage({
           {children}
         </article>
       </main>
+
+      <SiteFooter variant="light" />
     </div>
   );
 }
