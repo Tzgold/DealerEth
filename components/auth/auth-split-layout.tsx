@@ -23,6 +23,7 @@ export function AuthSplitLayout(props: AuthSplitLayoutProps) {
     tiktok_state: "TikTok sign-in expired or was interrupted. Please try again.",
     google_failed: "Google could not complete sign-in. Please retry or use email and password.",
     tiktok_failed: "TikTok could not complete sign-in. Please retry or use email and password.",
+    oauth_database: "Sign-in reached DealerEth, but the production database is not ready. Check DATABASE_URL, run migrations, and redeploy.",
   };
   const providerError = error ? (messages[error] ?? "Sign-in could not be completed. Please try again.") : "";
   return (

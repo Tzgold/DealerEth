@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
+import { Prisma } from "@prisma/client";
 import { hashPassword, signSessionToken, type SessionRole } from "@/lib/auth";
 import { createSessionCookie } from "@/lib/session";
 import { prisma } from "@/lib/prisma";
@@ -79,7 +80,14 @@ export async function GET(request: Request) {
       user.role === "CLIENT" ? (user.clientProfile ? "/client/dashboard" : "/client/profile") : user.profile ? "/dashboard" : "/profile/setup";
 
     return NextResponse.redirect(new URL(redirectPath, request.url));
-  } catch {
+  } catch (error) {
+    if (
+      error instanceof Prisma.PrismaClientInitializationError ||
+      error instanceof Prisma.PrismaClientKnownRequestError
+    ) {
+      return NextResponse.redirect(new URL(role === "CLIENT" ? "/client/login?error=oauth_database" : "/login?error=oauth_database", request.url));
+    }
+
     return NextResponse.redirect(new URL(role === "CLIENT" ? "/client/login?error=tiktok_failed" : "/login?error=tiktok_failed", request.url));
   }
 }

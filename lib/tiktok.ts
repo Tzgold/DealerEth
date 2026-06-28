@@ -1,4 +1,4 @@
-import { getRequiredEnv } from "@/lib/env";
+import { getOptionalEnv, getRequiredEnv } from "@/lib/env";
 
 export type TikTokUserInfo = {
   openId: string;
@@ -10,7 +10,7 @@ export type TikTokUserInfo = {
 
 export function getTikTokAuthConfig() {
   return {
-    clientKey: getRequiredEnv("TIKTOK_CLIENT_KEY"),
+    clientKey: getOptionalEnv("TIKTOK_CLIENT_KEY") ?? getRequiredEnv("TIKTOK_CLIENT_ID"),
     clientSecret: getRequiredEnv("TIKTOK_CLIENT_SECRET"),
     redirectUri: getRequiredEnv("TIKTOK_REDIRECT_URI"),
   };
