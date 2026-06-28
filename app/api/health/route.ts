@@ -37,11 +37,19 @@ function getSafeErrorDiagnostics(error: unknown) {
     return { name: "UnknownError" };
   }
 
-  const maybeError = error as { name?: unknown; code?: unknown };
+  const maybeError = error as { name?: unknown; code?: unknown; message?: unknown };
+  const message =
+    typeof maybeError.message === "string"
+      ? maybeError.message
+          .replaceAll(/postgresql:\/\/[^\s'"]+/g, "postgresql://[redacted]")
+          .replaceAll(/postgres:\/\/[^\s'"]+/g, "postgres://[redacted]")
+          .slice(0, 360)
+      : undefined;
 
   return {
     name: typeof maybeError.name === "string" ? maybeError.name : "UnknownError",
     code: typeof maybeError.code === "string" ? maybeError.code : undefined,
+    message,
   };
 }
 
