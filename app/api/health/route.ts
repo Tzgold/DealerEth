@@ -32,6 +32,19 @@ function getSafeRuntimeDiagnostics() {
   };
 }
 
+function getSafeErrorDiagnostics(error: unknown) {
+  if (!error || typeof error !== "object") {
+    return { name: "UnknownError" };
+  }
+
+  const maybeError = error as { name?: unknown; code?: unknown };
+
+  return {
+    name: typeof maybeError.name === "string" ? maybeError.name : "UnknownError",
+    code: typeof maybeError.code === "string" ? maybeError.code : undefined,
+  };
+}
+
 export async function GET() {
   try {
     await prisma.$queryRaw`SELECT 1`;
@@ -42,12 +55,13 @@ export async function GET() {
       runtime: getSafeRuntimeDiagnostics(),
       timestamp: new Date().toISOString(),
     });
-  } catch {
+  } catch (error) {
     return NextResponse.json(
       {
         status: "error",
         database: "unavailable",
         runtime: getSafeRuntimeDiagnostics(),
+        error: getSafeErrorDiagnostics(error),
         timestamp: new Date().toISOString(),
       },
       { status: 503 },
