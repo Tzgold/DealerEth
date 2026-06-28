@@ -8,6 +8,16 @@ export type TikTokUserInfo = {
   followerCount?: number;
 };
 
+export class TikTokAuthError extends Error {
+  constructor(
+    public readonly stage: "token" | "profile",
+    message: string,
+  ) {
+    super(message);
+    this.name = "TikTokAuthError";
+  }
+}
+
 export function getTikTokAuthConfig() {
   return {
     clientKey: getOptionalEnv("TIKTOK_CLIENT_KEY") ?? getRequiredEnv("TIKTOK_CLIENT_ID"),
@@ -33,7 +43,7 @@ export async function exchangeTikTokCode(code: string) {
   });
 
   if (!response.ok) {
-    throw new Error("TikTok token exchange failed.");
+    throw new TikTokAuthError("token", "TikTok token exchange failed.");
   }
 
   const data = (await response.json()) as {
@@ -43,7 +53,7 @@ export async function exchangeTikTokCode(code: string) {
   };
 
   if (!data.access_token) {
-    throw new Error(data.error ?? "TikTok access token missing.");
+    throw new TikTokAuthError("token", data.error ?? "TikTok access token missing.");
   }
 
   return {
@@ -62,7 +72,7 @@ export async function fetchTikTokUserInfo(accessToken: string): Promise<TikTokUs
   );
 
   if (!response.ok) {
-    throw new Error("Failed to fetch TikTok user info.");
+    throw new TikTokAuthError("profile", "Failed to fetch TikTok user info.");
   }
 
   const data = (await response.json()) as {
@@ -79,7 +89,7 @@ export async function fetchTikTokUserInfo(accessToken: string): Promise<TikTokUs
 
   const user = data.data?.user;
   if (!user?.open_id) {
-    throw new Error("TikTok user info missing open_id.");
+    throw new TikTokAuthError("profile", "TikTok user info missing open_id.");
   }
 
   return {

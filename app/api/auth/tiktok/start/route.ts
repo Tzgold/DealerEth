@@ -29,7 +29,7 @@ export async function GET(request: Request) {
     const params = new URLSearchParams({
       client_key: clientKey,
       response_type: "code",
-      scope: "user.info.basic,user.info.profile",
+      scope: "user.info.basic,user.info.profile,user.info.stats",
       redirect_uri: redirectUri,
       state,
     });

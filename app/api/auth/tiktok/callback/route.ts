@@ -4,7 +4,7 @@ import { Prisma } from "@prisma/client";
 import { hashPassword, signSessionToken, type SessionRole } from "@/lib/auth";
 import { createSessionCookie } from "@/lib/session";
 import { prisma } from "@/lib/prisma";
-import { exchangeTikTokCode, fetchTikTokUserInfo } from "@/lib/tiktok";
+import { exchangeTikTokCode, fetchTikTokUserInfo, TikTokAuthError } from "@/lib/tiktok";
 
 export async function GET(request: Request) {
   const url = new URL(request.url);
@@ -86,6 +86,12 @@ export async function GET(request: Request) {
       error instanceof Prisma.PrismaClientKnownRequestError
     ) {
       return NextResponse.redirect(new URL(role === "CLIENT" ? "/client/login?error=oauth_database" : "/login?error=oauth_database", request.url));
+    }
+
+    if (error instanceof TikTokAuthError) {
+      return NextResponse.redirect(
+        new URL(role === "CLIENT" ? `/client/login?error=tiktok_${error.stage}` : `/login?error=tiktok_${error.stage}`, request.url),
+      );
     }
 
     return NextResponse.redirect(new URL(role === "CLIENT" ? "/client/login?error=tiktok_failed" : "/login?error=tiktok_failed", request.url));
