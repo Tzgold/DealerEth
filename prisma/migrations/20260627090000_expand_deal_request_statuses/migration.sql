@@ -1,2 +1,0 @@
--- DealRequest.status is stored as TEXT in SQLite. The Prisma enum now includes
--- IN_DISCUSSION, ACTIVE, and COMPLETED for direct collaboration workflow stages.

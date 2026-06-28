@@ -3,8 +3,9 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 enum UserRole {
@@ -56,9 +57,9 @@ model User {
 }
 
 model CreatorProfile {
-  id           String        @id @default(cuid())
-  userId       String        @unique
-  username     String        @unique
+  id           String   @id @default(cuid())
+  userId       String   @unique
+  username     String   @unique
   name         String
   avatarUrl    String?
   tiktokHandle String
@@ -67,16 +68,16 @@ model CreatorProfile {
   followers    Int
   priceRange   String?
   sampleVideos Json
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
-  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user         User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
   dealRequests DealRequest[]
   applications CampaignApplication[]
 }
 
 model DealRequest {
-  id           String         @id @default(cuid())
+  id           String            @id @default(cuid())
   creatorId    String
   clientId     String?
   campaignId   String?
@@ -86,32 +87,32 @@ model DealRequest {
   budget       String
   deliverables String
   status       DealRequestStatus @default(NEW)
-  createdAt    DateTime       @default(now())
+  createdAt    DateTime          @default(now())
 
-  creator      CreatorProfile @relation(fields: [creatorId], references: [id], onDelete: Cascade)
-  client       ClientProfile? @relation(fields: [clientId], references: [id], onDelete: SetNull)
-  campaign     CampaignPost?  @relation(fields: [campaignId], references: [id], onDelete: SetNull)
+  creator  CreatorProfile @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+  client   ClientProfile? @relation(fields: [clientId], references: [id], onDelete: SetNull)
+  campaign CampaignPost?  @relation(fields: [campaignId], references: [id], onDelete: SetNull)
 }
 
 model ClientProfile {
-  id          String         @id @default(cuid())
-  userId      String         @unique
+  id          String   @id @default(cuid())
+  userId      String   @unique
   companyName String
   avatarUrl   String?
   contactName String
   industry    String
   website     String?
   description String
-  createdAt   DateTime       @default(now())
-  updatedAt   DateTime       @updatedAt
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
-  user        User           @relation(fields: [userId], references: [id], onDelete: Cascade)
-  campaigns   CampaignPost[]
+  user         User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  campaigns    CampaignPost[]
   dealRequests DealRequest[]
 }
 
 model CampaignPost {
-  id           String        @id @default(cuid())
+  id           String         @id @default(cuid())
   clientId     String
   title        String
   description  String
@@ -120,9 +121,9 @@ model CampaignPost {
   deliverables String
   deadline     String?
   status       CampaignStatus @default(LIVE)
-  createdAt    DateTime      @default(now())
+  createdAt    DateTime       @default(now())
 
-  client       ClientProfile @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  client       ClientProfile         @relation(fields: [clientId], references: [id], onDelete: Cascade)
   applications CampaignApplication[]
   dealRequests DealRequest[]
 }
@@ -137,19 +138,19 @@ model CampaignApplication {
   createdAt      DateTime          @default(now())
   updatedAt      DateTime          @updatedAt
 
-  campaign       CampaignPost      @relation(fields: [campaignId], references: [id], onDelete: Cascade)
-  creator        CreatorProfile    @relation(fields: [creatorId], references: [id], onDelete: Cascade)
-  messages       ApplicationMessage[]
+  campaign CampaignPost         @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  creator  CreatorProfile       @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+  messages ApplicationMessage[]
 
   @@unique([campaignId, creatorId])
 }
 
 model ApplicationMessage {
-  id            String              @id @default(cuid())
+  id            String   @id @default(cuid())
   applicationId String
   senderRole    UserRole
   text          String
-  createdAt     DateTime            @default(now())
+  createdAt     DateTime @default(now())
 
-  application   CampaignApplication @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  application CampaignApplication @relation(fields: [applicationId], references: [id], onDelete: Cascade)
 }

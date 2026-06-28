@@ -49,7 +49,7 @@ The application is designed around clarity, trust, and fast decision-making for 
 - React
 - TypeScript
 - Prisma ORM
-- SQLite for local development
+- PostgreSQL
 - Tailwind CSS
 - Zod validation
 - JWT-based session cookies
@@ -77,7 +77,8 @@ npm install
 Create a `.env` file in the project root.
 
 ```env
-DATABASE_URL="file:./dev.db"
+DATABASE_URL="postgresql://postgres:[YOUR-PASSWORD]@[YOUR-SUPABASE-HOST]:5432/postgres?pgbouncer=true&connection_limit=1"
+DIRECT_URL="postgresql://postgres:[YOUR-PASSWORD]@[YOUR-SUPABASE-HOST]:5432/postgres"
 AUTH_SECRET="replace-with-a-long-random-secret"
 NEXT_PUBLIC_APP_URL="http://localhost:3000"
 
@@ -94,8 +95,10 @@ OAuth values are only required when using Google or TikTok sign-in locally.
 
 ### 3. Prepare the database
 
+DealerEth uses PostgreSQL through Prisma. For production, create a Supabase project and add the pooled connection string as `DATABASE_URL` and the direct connection string as `DIRECT_URL`.
+
 ```bash
-npx prisma migrate dev
+npm run db:deploy
 ```
 
 ### 4. Run the development server
@@ -136,6 +139,30 @@ npm run start
 
 Starts the production server after a successful build.
 
+```bash
+npm run db:generate
+```
+
+Regenerates the Prisma client.
+
+```bash
+npm run db:migrate
+```
+
+Creates and applies a local development migration.
+
+```bash
+npm run db:deploy
+```
+
+Applies committed Prisma migrations to a deployed database.
+
+```bash
+npm run db:studio
+```
+
+Opens Prisma Studio for database inspection.
+
 ## Quality checks
 
 Before shipping changes, run:
@@ -151,6 +178,7 @@ npm run build
 DealerEth can be deployed to any platform that supports Next.js applications. For production, configure:
 
 - A production database connection
+- A direct database connection for migrations
 - A secure `AUTH_SECRET`
 - A public `NEXT_PUBLIC_APP_URL`
 - OAuth callback URLs that match the deployed domain
