@@ -77,8 +77,8 @@ npm install
 Create a `.env` file in the project root.
 
 ```env
-DATABASE_URL="postgresql://postgres:[YOUR-PASSWORD]@[YOUR-SUPABASE-HOST]:5432/postgres?pgbouncer=true&connection_limit=1"
-DIRECT_URL="postgresql://postgres:[YOUR-PASSWORD]@[YOUR-SUPABASE-HOST]:5432/postgres"
+DATABASE_URL="postgresql://postgres.[PROJECT-REF]:[YOUR-PASSWORD]@[YOUR-SUPABASE-POOLER-HOST]:6543/postgres?pgbouncer=true&connection_limit=1"
+DIRECT_URL="postgresql://postgres.[PROJECT-REF]:[YOUR-PASSWORD]@[YOUR-SUPABASE-POOLER-HOST]:6543/postgres?pgbouncer=true&connection_limit=1"
 AUTH_SECRET="replace-with-a-long-random-secret"
 NEXT_PUBLIC_APP_URL="http://localhost:3000"
 
@@ -95,7 +95,7 @@ OAuth values are only required when using Google or TikTok sign-in locally.
 
 ### 3. Prepare the database
 
-DealerEth uses PostgreSQL through Prisma. For production, create a Supabase project and add the pooled connection string as `DATABASE_URL` and the direct connection string as `DIRECT_URL`.
+DealerEth uses PostgreSQL through Prisma. For production, create a Supabase project and use the transaction pooler connection string on port `6543` with `pgbouncer=true&connection_limit=1`. Use that pooler URL for `DATABASE_URL`. If direct database access is blocked by your network, use the same pooler URL for `DIRECT_URL` and run the initial migration SQL through the Supabase SQL Editor.
 
 ```bash
 npm run db:deploy
