@@ -7,6 +7,7 @@ import { ProfileCompletionCard } from "@/components/profile/profile-completion-c
 import { ProfileImageField } from "@/components/profile/profile-image-field";
 import { ProfilePageShell } from "@/components/profile/profile-page-shell";
 import { darkInputClassBrand, darkTextareaClassBrand } from "@/components/profile/profile-styles";
+import { BRAND_INDUSTRIES, SearchSelect } from "@/components/ui/search-select";
 
 type ClientSetupState = {
   companyName: string;
@@ -77,7 +78,7 @@ export default function ClientProfilePage() {
   }, []);
 
   const completionItems = [
-    { label: "Brand logo / image", done: Boolean(form.avatarUrl.trim()) },
+    { label: "Brand image", done: Boolean(form.avatarUrl.trim()) },
     { label: "Company name", done: Boolean(form.companyName.trim()) },
     { label: "Contact person", done: Boolean(form.contactName.trim()) },
     { label: "Industry", done: Boolean(form.industry.trim()) },
@@ -127,120 +128,67 @@ export default function ClientProfilePage() {
     <ProfilePageShell
       variant="brand"
       title="Build your brand profile"
-      subtitle="Creators see this when you post campaigns. A complete profile builds trust and gets better applications."
+      subtitle="Creators see this when they review your campaigns."
       backHref="/client/dashboard"
-      backLabel="Brand hub"
     >
-      <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_340px]">
-        <div className="space-y-5">
-          <div className="relative overflow-hidden rounded-2xl border border-[#FE2C55]/30 bg-[#141416] p-5">
-            <span className="absolute left-0 top-0 h-full w-1 bg-gradient-to-b from-[#FE2C55] to-[#25F4EE]" aria-hidden="true" />
-            <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#FE2C55]">Quick actions</p>
-            <div className="mt-3 flex flex-wrap gap-2">
-              <button
-                type="button"
-                disabled={!hasProfile}
-                onClick={() => router.push("/client/dashboard/post")}
-                className="de-btn de-btn-primary"
-              >
-                Post a campaign
-              </button>
-              <button
-                type="button"
-                disabled={!hasProfile}
-                onClick={() => router.push("/client/dashboard/creators")}
-                className="de-btn de-btn-secondary"
-              >
-                Discover creators
-              </button>
-              {!hasProfile && <p className="w-full text-xs text-amber-200/80">Save your brand profile first to unlock creator discovery and campaign tools.</p>}
-            </div>
+      <div className="grid gap-5 lg:grid-cols-[minmax(0,1.35fr)_320px]">
+        <div className="space-y-4">
+          <div className="flex flex-wrap gap-2 rounded-2xl border border-white/10 bg-[#141416] p-4">
+            <button type="button" disabled={!hasProfile} onClick={() => router.push("/client/dashboard/post")} className="de-btn de-btn-primary min-h-9 py-2 text-xs">
+              Post a campaign
+            </button>
+            <button type="button" disabled={!hasProfile} onClick={() => router.push("/client/dashboard/creators")} className="de-btn de-btn-secondary min-h-9 py-2 text-xs">
+              Discover creators
+            </button>
           </div>
 
-          <form
-            onSubmit={onSubmit}
-            className="space-y-6 rounded-2xl border border-white/10 bg-[#141416] p-5 shadow-[0_8px_30px_rgba(0,0,0,0.35)] sm:p-6"
-          >
-            <section>
-              <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-white/50">Brand image</p>
-              <div className="mt-3">
-                <ProfileImageField value={form.avatarUrl} fallbackUrl={fallbackAvatarUrl} website={form.website} variant="brand" disabled={bootLoading} onChange={(avatarUrl) => setForm((previous) => ({ ...previous, avatarUrl }))} />
-              </div>
+          <form onSubmit={onSubmit} className="space-y-5 rounded-2xl border border-white/10 bg-[#141416] p-5 sm:p-6">
+            <section className="space-y-3">
+              <p className="de-eyebrow">Brand image</p>
+              <ProfileImageField
+                value={form.avatarUrl}
+                fallbackUrl={fallbackAvatarUrl}
+                website={form.website}
+                variant="brand"
+                disabled={bootLoading}
+                onChange={(avatarUrl) => setForm((previous) => ({ ...previous, avatarUrl }))}
+              />
             </section>
 
             <section className="space-y-3">
-              <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-white/50">Company</p>
-              <input
-                className={darkInputClassBrand}
-                placeholder="Company name"
-                required
-                value={form.companyName}
-                disabled={bootLoading}
-                onChange={(e) => setForm((p) => ({ ...p, companyName: e.target.value }))}
-              />
+              <p className="de-eyebrow">Company</p>
               <div className="grid gap-3 sm:grid-cols-2">
-                <input
-                  className={darkInputClassBrand}
-                  placeholder="Contact person"
-                  required
-                  value={form.contactName}
-                  disabled={bootLoading}
-                  onChange={(e) => setForm((p) => ({ ...p, contactName: e.target.value }))}
-                />
-                <input
-                  className={darkInputClassBrand}
-                  placeholder="Industry"
-                  required
+                <input className={darkInputClassBrand} placeholder="Company name" required value={form.companyName} disabled={bootLoading} onChange={(e) => setForm((p) => ({ ...p, companyName: e.target.value }))} />
+                <input className={darkInputClassBrand} placeholder="Contact person" required value={form.contactName} disabled={bootLoading} onChange={(e) => setForm((p) => ({ ...p, contactName: e.target.value }))} />
+                <SearchSelect
                   value={form.industry}
+                  onChange={(industry) => setForm((p) => ({ ...p, industry }))}
+                  options={BRAND_INDUSTRIES}
+                  placeholder="Search or type your industry"
+                  required
                   disabled={bootLoading}
-                  onChange={(e) => setForm((p) => ({ ...p, industry: e.target.value }))}
+                  allowCustom
+                  className={darkInputClassBrand}
                 />
+                <input className={darkInputClassBrand} placeholder="Website (optional)" value={form.website} disabled={bootLoading} onChange={(e) => setForm((p) => ({ ...p, website: e.target.value }))} />
+                <textarea className={`${darkTextareaClassBrand} sm:col-span-2`} rows={4} placeholder="Brand description" required value={form.description} disabled={bootLoading} onChange={(e) => setForm((p) => ({ ...p, description: e.target.value }))} />
               </div>
-              <input
-                className={darkInputClassBrand}
-                placeholder="Website (for example, company.com)"
-                value={form.website}
-                disabled={bootLoading}
-                onChange={(e) => setForm((p) => ({ ...p, website: e.target.value }))}
-              />
             </section>
 
-            <section className="space-y-3">
-              <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-white/50">Collaboration goals</p>
-              <textarea
-                className={darkTextareaClassBrand}
-                rows={6}
-                placeholder="What campaigns are you running? Who is your audience? What creators do you want?"
-                required
-                value={form.description}
-                disabled={bootLoading}
-                onChange={(e) => setForm((p) => ({ ...p, description: e.target.value }))}
-              />
-            </section>
-
-            <div className="flex flex-wrap gap-3 pt-2">
-              <button
-                type="submit"
-                disabled={loading || bootLoading}
-                className="de-btn de-btn-primary flex-1 sm:flex-none"
-              >
+            <div className="flex flex-wrap gap-3">
+              <button type="submit" disabled={loading || bootLoading} className="de-btn de-btn-primary">
                 {bootLoading ? "Loading…" : loading ? "Saving…" : "Save brand profile"}
               </button>
-              <button
-                type="button"
-                disabled={bootLoading}
-                onClick={() => router.push("/client/dashboard")}
-                className="de-btn de-btn-secondary"
-              >
-                Back to dashboard
+              <button type="button" disabled={bootLoading} onClick={() => router.push("/client/dashboard")} className="de-btn de-btn-secondary">
+                Cancel
               </button>
             </div>
-            {error && <p className="text-sm text-rose-300">{error}</p>}
+            {error ? <p className="text-sm text-rose-700">{error}</p> : null}
           </form>
         </div>
 
         <aside className="space-y-4 lg:sticky lg:top-24 lg:self-start">
-          <ProfileCompletionCard completion={completion} items={completionItems} accent="brand" />
+          <ProfileCompletionCard completion={completion} items={completionItems} />
           <BrandProfilePreview
             companyName={form.companyName}
             avatarUrl={form.avatarUrl}

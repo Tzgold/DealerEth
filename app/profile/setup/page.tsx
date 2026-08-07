@@ -8,6 +8,7 @@ import { ProfileCompletionCard } from "@/components/profile/profile-completion-c
 import { ProfileImageField } from "@/components/profile/profile-image-field";
 import { ProfilePageShell } from "@/components/profile/profile-page-shell";
 import { darkInputClass, darkTextareaClass } from "@/components/profile/profile-styles";
+import { CREATOR_NICHES, SearchSelect } from "@/components/ui/search-select";
 
 type CreatorSetupState = {
   name: string;
@@ -95,12 +96,12 @@ export default function ProfileSetupPage() {
   const completionItems = [
     { label: "Profile photo", done: Boolean(form.avatarUrl.trim()) },
     { label: "Full name", done: Boolean(form.name.trim()) },
-    { label: "Username (bio link)", done: Boolean(form.username.trim()) },
+    { label: "Username", done: Boolean(form.username.trim()) },
     { label: "TikTok handle", done: Boolean(form.tiktokHandle.trim()) },
     { label: "Bio", done: Boolean(form.bio.trim()) },
     { label: "Niche", done: Boolean(form.niche.trim()) },
     { label: "Followers", done: Boolean(form.followers.trim()) },
-    { label: "Portfolio links", done: Boolean(form.sampleVideos.trim()) },
+    { label: "Portfolio", done: Boolean(form.sampleVideos.trim()) },
   ];
   const completion = Math.round((completionItems.filter((i) => i.done).length / completionItems.length) * 100);
 
@@ -158,132 +159,71 @@ export default function ProfileSetupPage() {
     <ProfilePageShell
       variant="creator"
       title="Build your creator profile"
-      subtitle="This becomes your public DealerEth page for brands. Add your bio link to TikTok and keep your portfolio up to date."
+      subtitle="Keep it clear for brands. Your bio link updates as you set a username."
       backHref="/dashboard"
-      backLabel="Creator hub"
     >
-      <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_340px]">
-        <div className="space-y-5">
+      <div className="grid gap-5 lg:grid-cols-[minmax(0,1.35fr)_320px]">
+        <div className="space-y-4">
           <ProfileBioLinkCard username={form.username || savedUsername} />
 
-          <form
-            onSubmit={onSubmit}
-            className="space-y-6 rounded-2xl border border-white/10 bg-[#141416] p-5 shadow-[0_8px_30px_rgba(0,0,0,0.35)] sm:p-6"
-          >
-            <section>
-              <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-white/50">Photo</p>
-              <div className="mt-3">
-                <ProfileImageField value={form.avatarUrl} fallbackUrl={sourceAvatarUrl} variant="creator" disabled={bootLoading} onChange={(avatarUrl) => setForm((previous) => ({ ...previous, avatarUrl }))} />
-              </div>
-            </section>
-
+          <form onSubmit={onSubmit} className="space-y-5 rounded-2xl border border-white/10 bg-[#141416] p-5 sm:p-6">
             <section className="space-y-3">
-              <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-white/50">Identity</p>
-              <div className="grid gap-3 sm:grid-cols-2">
-                <input
-                  className={darkInputClass}
-                  placeholder="Full name"
-                  required
-                  value={form.name}
-                  disabled={bootLoading}
-                  onChange={(e) => setForm((p) => ({ ...p, name: e.target.value }))}
-                />
-                <input
-                  className={darkInputClass}
-                  placeholder="@yourtiktok"
-                  required
-                  value={form.tiktokHandle}
-                  disabled={bootLoading}
-                  onChange={(e) => setForm((p) => ({ ...p, tiktokHandle: e.target.value }))}
-                />
-              </div>
-              <input
-                className={darkInputClass}
-                placeholder="Username for bio link (e.g. shemzu)"
-                required
-                value={form.username}
+              <p className="de-eyebrow">Photo</p>
+              <ProfileImageField
+                value={form.avatarUrl}
+                fallbackUrl={sourceAvatarUrl}
+                variant="creator"
                 disabled={bootLoading}
-                onChange={(e) => setForm((p) => ({ ...p, username: e.target.value }))}
-              />
-              <p className="text-xs text-white/45">Lowercase letters, numbers, and underscore only.</p>
-              <textarea
-                className={darkTextareaClass}
-                rows={4}
-                placeholder="Short bio — your content style, audience, and what brands can expect"
-                required
-                value={form.bio}
-                disabled={bootLoading}
-                onChange={(e) => setForm((p) => ({ ...p, bio: e.target.value }))}
+                onChange={(avatarUrl) => setForm((previous) => ({ ...previous, avatarUrl }))}
               />
             </section>
 
             <section className="space-y-3">
-              <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-white/50">Audience & rates</p>
+              <p className="de-eyebrow">Identity</p>
               <div className="grid gap-3 sm:grid-cols-2">
-                <input
-                  className={darkInputClass}
-                  placeholder="Niche (Fashion, Tech, Food…)"
-                  required
+                <input className={darkInputClass} placeholder="Full name" required value={form.name} disabled={bootLoading} onChange={(e) => setForm((p) => ({ ...p, name: e.target.value }))} />
+                <input className={darkInputClass} placeholder="@yourtiktok" required value={form.tiktokHandle} disabled={bootLoading} onChange={(e) => setForm((p) => ({ ...p, tiktokHandle: e.target.value }))} />
+                <input className={`${darkInputClass} sm:col-span-2`} placeholder="Username for bio link" required value={form.username} disabled={bootLoading} onChange={(e) => setForm((p) => ({ ...p, username: e.target.value }))} />
+                <textarea className={`${darkTextareaClass} sm:col-span-2`} rows={3} placeholder="Short bio" required value={form.bio} disabled={bootLoading} onChange={(e) => setForm((p) => ({ ...p, bio: e.target.value }))} />
+              </div>
+            </section>
+
+            <section className="space-y-3">
+              <p className="de-eyebrow">Audience & rates</p>
+              <div className="grid gap-3 sm:grid-cols-2">
+                <SearchSelect
                   value={form.niche}
-                  disabled={bootLoading}
-                  onChange={(e) => setForm((p) => ({ ...p, niche: e.target.value }))}
-                />
-                <input
-                  className={darkInputClass}
-                  type="number"
-                  min={0}
-                  placeholder="Follower count"
+                  onChange={(niche) => setForm((p) => ({ ...p, niche }))}
+                  options={CREATOR_NICHES}
+                  placeholder="Search or type your niche"
                   required
-                  value={form.followers}
                   disabled={bootLoading}
-                  onChange={(e) => setForm((p) => ({ ...p, followers: e.target.value }))}
+                  allowCustom
                 />
+                <input className={darkInputClass} type="number" min={0} placeholder="Followers" required value={form.followers} disabled={bootLoading} onChange={(e) => setForm((p) => ({ ...p, followers: e.target.value }))} />
+                <input className={`${darkInputClass} sm:col-span-2`} placeholder="Guide rate (optional)" value={form.priceRange} disabled={bootLoading} onChange={(e) => setForm((p) => ({ ...p, priceRange: e.target.value }))} />
               </div>
-              <input
-                className={darkInputClass}
-                placeholder="Guide rate (optional, e.g. 5,000–15,000 ETB/post)"
-                value={form.priceRange}
-                disabled={bootLoading}
-                onChange={(e) => setForm((p) => ({ ...p, priceRange: e.target.value }))}
-              />
             </section>
 
             <section className="space-y-3">
-              <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-white/50">Portfolio</p>
-              <textarea
-                className={darkTextareaClass}
-                rows={5}
-                placeholder="TikTok video URLs, one per line (max 5)"
-                required
-                value={form.sampleVideos}
-                disabled={bootLoading}
-                onChange={(e) => setForm((p) => ({ ...p, sampleVideos: e.target.value }))}
-              />
+              <p className="de-eyebrow">Portfolio</p>
+              <textarea className={darkTextareaClass} rows={3} placeholder="TikTok video URLs, one per line" required value={form.sampleVideos} disabled={bootLoading} onChange={(e) => setForm((p) => ({ ...p, sampleVideos: e.target.value }))} />
             </section>
 
-            <div className="flex flex-wrap gap-3 pt-2">
-              <button
-                type="submit"
-                disabled={loading || bootLoading}
-                className="de-btn de-btn-primary flex-1 sm:flex-none"
-              >
+            <div className="flex flex-wrap gap-3">
+              <button type="submit" disabled={loading || bootLoading} className="de-btn de-btn-primary">
                 {bootLoading ? "Loading…" : loading ? "Saving…" : "Save profile"}
               </button>
-              <button
-                type="button"
-                disabled={bootLoading}
-                onClick={() => router.push("/dashboard")}
-                className="de-btn de-btn-secondary"
-              >
-                Back to dashboard
+              <button type="button" disabled={bootLoading} onClick={() => router.push("/dashboard")} className="de-btn de-btn-secondary">
+                Cancel
               </button>
             </div>
-            {error && <p className="text-sm text-rose-300">{error}</p>}
+            {error ? <p className="text-sm text-rose-700">{error}</p> : null}
           </form>
         </div>
 
         <aside className="space-y-4 lg:sticky lg:top-24 lg:self-start">
-          <ProfileCompletionCard completion={completion} items={completionItems} accent="creator" />
+          <ProfileCompletionCard completion={completion} items={completionItems} />
           <CreatorProfilePreview
             name={form.name}
             avatarUrl={form.avatarUrl}

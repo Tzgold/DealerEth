@@ -21,12 +21,12 @@ export function CreatorProfilePreview({
 }) {
   const avatar = avatarUrl || "/next.svg";
   const followerNum = Number(followers) || 0;
+  const handle = username.trim().replace(/^@+/, "").toLowerCase();
 
   return (
-    <div className="overflow-hidden rounded-2xl border border-white/10 bg-[#141416] shadow-[0_8px_30px_rgba(0,0,0,0.35)]">
-      <div className="border-b border-white/5 bg-gradient-to-r from-[#25F4EE]/15 via-transparent to-[#FE2C55]/15 px-4 py-3">
-        <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-white/50">Live preview</p>
-        <p className="text-xs text-white/60">How brands see your public page</p>
+    <div className="overflow-hidden rounded-2xl border border-white/10 bg-[#141416]">
+      <div className="border-b border-white/10 px-4 py-3">
+        <p className="de-eyebrow">Live preview</p>
       </div>
       <div className="p-5">
         <div className="flex gap-3">
@@ -34,28 +34,14 @@ export function CreatorProfilePreview({
           <div className="min-w-0">
             <p className="truncate text-lg font-black text-white">{name || "Your name"}</p>
             <p className="text-sm text-white/60">{tiktokHandle || "@tiktok"}</p>
-            {username.trim() && (
-              <p className="mt-0.5 font-mono text-xs text-[#25F4EE]">/{username.replace(/^@+/, "").toLowerCase()}</p>
-            )}
+            {handle ? <p className="mt-0.5 font-mono text-xs text-white/70">/{handle}</p> : null}
           </div>
         </div>
-        <p className="mt-4 line-clamp-4 text-sm leading-6 text-white/75">{bio || "Your bio will appear here…"}</p>
+        <p className="mt-4 line-clamp-4 text-sm leading-6 text-white/70">{bio || "Your bio will appear here…"}</p>
         <div className="mt-4 flex flex-wrap gap-2">
-          {niche && (
-            <span className="rounded-full border border-white/10 bg-white/5 px-2.5 py-1 text-[11px] font-semibold text-white/80">
-              {niche}
-            </span>
-          )}
-          {followerNum > 0 && (
-            <span className="rounded-full border border-white/10 bg-white/5 px-2.5 py-1 text-[11px] font-semibold text-white/80">
-              {followerNum.toLocaleString()} followers
-            </span>
-          )}
-          {priceRange && (
-            <span className="rounded-full border border-white/10 bg-white/5 px-2.5 py-1 text-[11px] font-semibold text-white/80">
-              {priceRange}
-            </span>
-          )}
+          {niche ? <span className="de-chip">{niche}</span> : null}
+          {followerNum > 0 ? <span className="de-chip">{followerNum.toLocaleString()} followers</span> : null}
+          {priceRange ? <span className="de-chip">{priceRange}</span> : null}
         </div>
       </div>
     </div>

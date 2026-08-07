@@ -2,6 +2,7 @@
 
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
+import { CREATOR_NICHES, SearchSelect } from "@/components/ui/search-select";
 
 type CampaignFormValues = {
   title: string;
@@ -26,6 +27,7 @@ export function CampaignPostForm({
   const router = useRouter();
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [niche, setNiche] = useState(initialValues?.niche ?? "");
   const isEditing = mode === "edit";
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -43,7 +45,7 @@ export function CampaignPostForm({
           title: formData.get("title"),
           description: formData.get("description"),
           budget: formData.get("budget"),
-          niche: formData.get("niche"),
+          niche: niche.trim(),
           deliverables: formData.get("deliverables"),
           deadline: formData.get("deadline") || undefined,
         }),
@@ -55,7 +57,10 @@ export function CampaignPostForm({
         return;
       }
 
-      if (!isEditing) form.reset();
+      if (!isEditing) {
+        form.reset();
+        setNiche("");
+      }
       router.push("/client/dashboard/campaigns");
       router.refresh();
     } catch {
@@ -86,7 +91,15 @@ export function CampaignPostForm({
         </label>
         <label className="block space-y-2">
           <span className="text-sm font-semibold text-white/75">Target niche</span>
-          <input name="niche" defaultValue={initialValues?.niche ?? ""} placeholder="Fashion, technology, food..." required className={fieldClass} />
+          <SearchSelect
+            value={niche}
+            onChange={setNiche}
+            options={CREATOR_NICHES}
+            placeholder="Search or type a niche"
+            required
+            allowCustom
+            className={fieldClass}
+          />
         </label>
       </div>
 
