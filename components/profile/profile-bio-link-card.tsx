@@ -3,24 +3,40 @@
 import { useSyncExternalStore } from "react";
 import { CopyLinkButton } from "@/components/dashboard/copy-link-button";
 
-export function ProfileBioLinkCard({ username }: { username: string }) {
+export function ProfileBioLinkCard({
+  username,
+  slug,
+  variant = "creator",
+}: {
+  username?: string;
+  slug?: string;
+  variant?: "creator" | "brand";
+}) {
   const origin = useSyncExternalStore(
     () => () => undefined,
     () => window.location.origin,
     () => "",
   );
 
-  const normalized = username.trim().toLowerCase().replace(/^@+/, "").replace(/\s+/g, "_");
-  const ready = normalized.length >= 3;
-  const path = ready ? `/${normalized}` : "";
+  const creatorHandle = (username ?? "").trim().toLowerCase().replace(/^@+/, "").replace(/\s+/g, "_");
+  const brandSlug = (slug ?? "").trim().toLowerCase();
+  const ready = variant === "creator" ? creatorHandle.length >= 3 : brandSlug.length >= 2;
+  const path = variant === "creator" ? (ready ? `/${creatorHandle}` : "") : ready ? `/brand/${brandSlug}` : "";
   const host = origin ? origin.replace(/^https?:\/\//, "") : "dealereth.com";
-  const display = ready ? `${host}${path}` : `${host}/your_username`;
+  const display =
+    variant === "creator"
+      ? ready
+        ? `${host}${path}`
+        : `${host}/your_username`
+      : ready
+        ? `${host}${path}`
+        : `${host}/brand/your-company`;
   const fullUrl = ready && origin ? `${origin}${path}` : "";
 
   return (
     <div className="rounded-2xl border border-white/10 bg-[#141416] p-4 sm:p-5">
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <p className="de-eyebrow">Bio link</p>
+        <p className="de-eyebrow">{variant === "creator" ? "Bio link" : "Brand page"}</p>
         {ready ? (
           <a href={path} target="_blank" rel="noreferrer" className="text-xs font-semibold underline underline-offset-4">
             View page

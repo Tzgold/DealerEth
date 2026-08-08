@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { ZodError } from "zod";
 import { prisma } from "@/lib/prisma";
+import { allocateBrandSlug } from "@/lib/profile-sync";
+import { isReservedPathSegment, slugifyBrandName } from "@/lib/slugs";
 import { getSessionUser } from "@/lib/session";
 import { clientProfileSchema } from "@/lib/validations";
 
@@ -35,14 +37,22 @@ export async function GET() {
     },
   });
 
-  return NextResponse.json({
-    profile: user?.clientProfile ?? null,
-    defaults: {
-      avatarUrl: user?.clientProfile?.avatarUrl ?? websiteLogoUrl(user?.clientProfile?.website ?? undefined) ?? user?.googleAvatarUrl ?? "",
-      contactName: user?.googleDisplayName ?? "",
-      email: user?.email ?? "",
+  return NextResponse.json(
+    {
+      profile: user?.clientProfile ?? null,
+      defaults: {
+        avatarUrl:
+          user?.clientProfile?.avatarUrl ??
+          websiteLogoUrl(user?.clientProfile?.website ?? undefined) ??
+          user?.googleAvatarUrl ??
+          "",
+        contactName: user?.googleDisplayName ?? "",
+        email: user?.email ?? "",
+        slug: user?.clientProfile?.slug ?? "",
+      },
     },
-  }, { headers: { "Cache-Control": "no-store" } });
+    { headers: { "Cache-Control": "no-store" } },
+  );
 }
 
 export async function POST(request: Request) {
@@ -59,11 +69,19 @@ export async function POST(request: Request) {
   try {
     const payload = clientProfileSchema.parse(await request.json());
     const avatarUrl = payload.avatarUrl || websiteLogoUrl(payload.website);
+    const preferredSlug = payload.slug?.trim() || slugifyBrandName(payload.companyName);
+
+    if (isReservedPathSegment(preferredSlug)) {
+      return NextResponse.json({ error: "That brand link is reserved." }, { status: 400 });
+    }
+
+    const slug = await allocateBrandSlug(payload.companyName, preferredSlug, session.userId);
 
     await prisma.clientProfile.upsert({
       where: { userId: session.userId },
       create: {
         userId: session.userId,
+        slug,
         companyName: payload.companyName,
         avatarUrl,
         contactName: payload.contactName,
@@ -72,6 +90,7 @@ export async function POST(request: Request) {
         description: payload.description,
       },
       update: {
+        slug,
         companyName: payload.companyName,
         avatarUrl,
         contactName: payload.contactName,
@@ -81,7 +100,7 @@ export async function POST(request: Request) {
       },
     });
 
-    return NextResponse.json({ ok: true });
+    return NextResponse.json({ ok: true, slug });
   } catch (error) {
     if (error instanceof ZodError) {
       const firstIssue = error.issues[0];

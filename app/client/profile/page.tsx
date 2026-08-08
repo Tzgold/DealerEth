@@ -3,6 +3,7 @@
 import { FormEvent, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { BrandProfilePreview } from "@/components/profile/brand-profile-preview";
+import { ProfileBioLinkCard } from "@/components/profile/profile-bio-link-card";
 import { ProfileCompletionCard } from "@/components/profile/profile-completion-card";
 import { ProfileImageField } from "@/components/profile/profile-image-field";
 import { ProfilePageShell } from "@/components/profile/profile-page-shell";
@@ -11,6 +12,7 @@ import { BRAND_INDUSTRIES, SearchSelect } from "@/components/ui/search-select";
 
 type ClientSetupState = {
   companyName: string;
+  slug: string;
   avatarUrl: string;
   contactName: string;
   industry: string;
@@ -25,8 +27,10 @@ export default function ClientProfilePage() {
   const [bootLoading, setBootLoading] = useState(true);
   const [fallbackAvatarUrl, setFallbackAvatarUrl] = useState("");
   const [hasProfile, setHasProfile] = useState(false);
+  const [savedSlug, setSavedSlug] = useState("");
   const [form, setForm] = useState<ClientSetupState>({
     companyName: "",
+    slug: "",
     avatarUrl: "",
     contactName: "",
     industry: "",
@@ -46,6 +50,7 @@ export default function ClientProfilePage() {
         const data = (await response.json()) as {
           profile?: {
             companyName?: string;
+            slug?: string;
             avatarUrl?: string | null;
             contactName?: string;
             industry?: string;
@@ -55,14 +60,17 @@ export default function ClientProfilePage() {
           defaults?: {
             avatarUrl?: string;
             contactName?: string;
+            slug?: string;
           };
         };
 
         setHasProfile(Boolean(data.profile));
         setFallbackAvatarUrl(data.defaults?.avatarUrl ?? "");
+        setSavedSlug(data.profile?.slug ?? "");
         setForm((prev) => ({
           ...prev,
           companyName: data.profile?.companyName ?? "",
+          slug: data.profile?.slug ?? data.defaults?.slug ?? "",
           avatarUrl: data.profile?.avatarUrl ?? data.defaults?.avatarUrl ?? "",
           contactName: data.profile?.contactName ?? data.defaults?.contactName ?? "",
           industry: data.profile?.industry ?? "",
@@ -80,6 +88,7 @@ export default function ClientProfilePage() {
   const completionItems = [
     { label: "Brand image", done: Boolean(form.avatarUrl.trim()) },
     { label: "Company name", done: Boolean(form.companyName.trim()) },
+    { label: "Public brand link", done: Boolean((form.slug || savedSlug).trim()) },
     { label: "Contact person", done: Boolean(form.contactName.trim()) },
     { label: "Industry", done: Boolean(form.industry.trim()) },
     { label: "Brand story", done: Boolean(form.description.trim()) },
@@ -95,12 +104,19 @@ export default function ClientProfilePage() {
       ? (/^https?:\/\//i.test(form.website.trim()) ? form.website.trim() : `https://${form.website.trim()}`)
       : "";
 
+    const slug = form.slug
+      .trim()
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "");
+
     try {
       const response = await fetch("/api/client/profile", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           companyName: form.companyName,
+          slug,
           avatarUrl: form.avatarUrl || "",
           contactName: form.contactName,
           industry: form.industry,
@@ -115,6 +131,8 @@ export default function ClientProfilePage() {
         return;
       }
 
+      const data = (await response.json()) as { slug?: string };
+      if (data.slug) setSavedSlug(data.slug);
       router.push("/client/dashboard");
       router.refresh();
     } catch {
@@ -128,11 +146,13 @@ export default function ClientProfilePage() {
     <ProfilePageShell
       variant="brand"
       title="Build your brand profile"
-      subtitle="Creators see this when they review your campaigns."
+      subtitle="Creators see this on your public brand page and when they review campaigns."
       backHref="/client/dashboard"
     >
       <div className="grid gap-5 lg:grid-cols-[minmax(0,1.35fr)_320px]">
         <div className="space-y-4">
+          <ProfileBioLinkCard variant="brand" slug={form.slug || savedSlug} />
+
           <div className="flex flex-wrap gap-2 rounded-2xl border border-white/10 bg-[#141416] p-4">
             <button type="button" disabled={!hasProfile} onClick={() => router.push("/client/dashboard/post")} className="de-btn de-btn-primary min-h-9 py-2 text-xs">
               Post a campaign
@@ -158,8 +178,32 @@ export default function ClientProfilePage() {
             <section className="space-y-3">
               <p className="de-eyebrow">Company</p>
               <div className="grid gap-3 sm:grid-cols-2">
-                <input className={darkInputClassBrand} placeholder="Company name" required value={form.companyName} disabled={bootLoading} onChange={(e) => setForm((p) => ({ ...p, companyName: e.target.value }))} />
+                <input
+                  className={darkInputClassBrand}
+                  placeholder="Company name"
+                  required
+                  value={form.companyName}
+                  disabled={bootLoading}
+                  onChange={(e) => {
+                    const companyName = e.target.value;
+                    setForm((p) => ({
+                      ...p,
+                      companyName,
+                      slug:
+                        !p.slug || p.slug === slugifyPreview(p.companyName)
+                          ? slugifyPreview(companyName)
+                          : p.slug,
+                    }));
+                  }}
+                />
                 <input className={darkInputClassBrand} placeholder="Contact person" required value={form.contactName} disabled={bootLoading} onChange={(e) => setForm((p) => ({ ...p, contactName: e.target.value }))} />
+                <input
+                  className={darkInputClassBrand}
+                  placeholder="brand-link (optional)"
+                  value={form.slug}
+                  disabled={bootLoading}
+                  onChange={(e) => setForm((p) => ({ ...p, slug: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, "") }))}
+                />
                 <SearchSelect
                   value={form.industry}
                   onChange={(industry) => setForm((p) => ({ ...p, industry }))}
@@ -170,7 +214,7 @@ export default function ClientProfilePage() {
                   allowCustom
                   className={darkInputClassBrand}
                 />
-                <input className={darkInputClassBrand} placeholder="Website (optional)" value={form.website} disabled={bootLoading} onChange={(e) => setForm((p) => ({ ...p, website: e.target.value }))} />
+                <input className={`${darkInputClassBrand} sm:col-span-2`} placeholder="Website (optional)" value={form.website} disabled={bootLoading} onChange={(e) => setForm((p) => ({ ...p, website: e.target.value }))} />
                 <textarea className={`${darkTextareaClassBrand} sm:col-span-2`} rows={4} placeholder="Brand description" required value={form.description} disabled={bootLoading} onChange={(e) => setForm((p) => ({ ...p, description: e.target.value }))} />
               </div>
             </section>
@@ -201,4 +245,13 @@ export default function ClientProfilePage() {
       </div>
     </ProfilePageShell>
   );
+}
+
+function slugifyPreview(companyName: string) {
+  return companyName
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 48);
 }

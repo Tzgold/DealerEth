@@ -24,7 +24,10 @@ export const creatorProfileSchema = z.object({
     .string()
     .min(3)
     .max(30)
-    .regex(/^[a-z0-9_]+$/, "Username must use lowercase letters, numbers, and underscore only."),
+    .regex(/^[a-z0-9_]+$/, "Username must use lowercase letters, numbers, and underscore only.")
+    .refine((value) => !["api", "brand", "brands", "client", "dashboard", "login", "logout", "signup", "profile", "privacy", "terms", "uploads", "admin", "health"].includes(value), {
+      message: "That username is reserved.",
+    }),
   name: z.string().min(2),
   avatarUrl: imageSourceSchema.optional(),
   tiktokHandle: z.string().min(2),
@@ -40,6 +43,15 @@ export const creatorProfileSchema = z.object({
 
 export const clientProfileSchema = z.object({
   companyName: z.string().min(2),
+  slug: z
+    .string()
+    .trim()
+    .max(48)
+    .transform((value) => value.toLowerCase())
+    .refine((value) => value === "" || /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(value), {
+      message: "Brand link must use lowercase letters, numbers, and hyphens.",
+    })
+    .optional(),
   avatarUrl: imageSourceSchema.optional(),
   contactName: z.string().min(2),
   industry: z.string().min(2),
