@@ -57,19 +57,20 @@ model User {
 }
 
 model CreatorProfile {
-  id           String   @id @default(cuid())
-  userId       String   @unique
-  username     String   @unique
-  name         String
-  avatarUrl    String?
-  tiktokHandle String
-  bio          String
-  niche        String
-  followers    Int
-  priceRange   String?
-  sampleVideos Json
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  id               String    @id @default(cuid())
+  userId           String    @unique
+  username         String    @unique
+  name             String
+  avatarUrl        String?
+  tiktokHandle     String
+  bio              String
+  niche            String
+  followers        Int
+  priceRange       String?
+  sampleVideos     Json
+  tiktokVerifiedAt DateTime?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
 
   user         User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
   dealRequests DealRequest[]
@@ -97,6 +98,7 @@ model DealRequest {
 model ClientProfile {
   id          String   @id @default(cuid())
   userId      String   @unique
+  slug        String   @unique
   companyName String
   avatarUrl   String?
   contactName String
