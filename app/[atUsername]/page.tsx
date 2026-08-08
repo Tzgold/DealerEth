@@ -15,11 +15,12 @@ export default async function CreatorPublicPage({ params }: { params: Promise<{ 
     where: { username: normalizedUsername },
     include: {
       user: {
-        select: {
-          tiktokAvatarUrl: true,
-          googleAvatarUrl: true,
+          select: {
+            tiktokOpenId: true,
+            tiktokAvatarUrl: true,
+            googleAvatarUrl: true,
+          },
         },
-      },
     },
   });
 
@@ -69,7 +70,14 @@ export default async function CreatorPublicPage({ params }: { params: Promise<{ 
               <div className="flex flex-wrap items-start gap-4">
                 <AvatarImage src={avatar} className="h-20 w-20 shrink-0 rounded-2xl border border-white/10 object-cover" size={80} priority />
                 <div className="min-w-0 flex-1">
-                  <h1 className="text-3xl font-black tracking-tight">{profile.name}</h1>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <h1 className="text-3xl font-black tracking-tight">{profile.name}</h1>
+                    {profile.tiktokVerifiedAt || profile.user.tiktokOpenId ? (
+                      <span className="rounded-full border border-emerald-400/30 bg-emerald-400/10 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wide text-emerald-300">
+                        TikTok verified
+                      </span>
+                    ) : null}
+                  </div>
                   <p className="mt-1 text-sm font-semibold text-white/60">{profile.tiktokHandle}</p>
                   <div className="mt-3 flex flex-wrap items-center gap-2 rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2">
                     <span className="truncate font-mono text-xs text-white/85">

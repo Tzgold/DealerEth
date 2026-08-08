@@ -4,6 +4,8 @@ import { Prisma } from "@prisma/client";
 import { hashPassword, signSessionToken, type SessionRole } from "@/lib/auth";
 import { createSessionCookie } from "@/lib/session";
 import { prisma } from "@/lib/prisma";
+import { syncCreatorTikTokVerification } from "@/lib/profile-sync";
+import { getSessionUser } from "@/lib/session";
 import { exchangeTikTokCode, fetchTikTokUserInfo, TikTokAuthError } from "@/lib/tiktok";
 
 export async function GET(request: Request) {
@@ -13,17 +15,68 @@ export async function GET(request: Request) {
   const cookieStore = await cookies();
   const savedState = cookieStore.get("dealereth_tiktok_state")?.value;
   const role = (cookieStore.get("dealereth_tiktok_role")?.value === "CLIENT" ? "CLIENT" : "CREATOR") as SessionRole;
+  const intent = cookieStore.get("dealereth_tiktok_intent")?.value === "link" ? "link" : "login";
 
   cookieStore.delete("dealereth_tiktok_state");
   cookieStore.delete("dealereth_tiktok_role");
+  cookieStore.delete("dealereth_tiktok_intent");
 
   if (!code || !state || state !== savedState) {
-    return NextResponse.redirect(new URL(role === "CLIENT" ? "/client/login?error=tiktok_state" : "/login?error=tiktok_state", request.url));
+    return NextResponse.redirect(
+      new URL(
+        intent === "link"
+          ? "/profile/setup?error=tiktok_state"
+          : role === "CLIENT"
+            ? "/client/login?error=tiktok_state"
+            : "/login?error=tiktok_state",
+        request.url,
+      ),
+    );
   }
 
   try {
     const { accessToken } = await exchangeTikTokCode(code);
     const tiktokUser = await fetchTikTokUserInfo(accessToken);
+
+    if (intent === "link") {
+      const session = await getSessionUser();
+      if (!session || session.role !== "CREATOR") {
+        return NextResponse.redirect(new URL("/login?error=tiktok_state", request.url));
+      }
+
+      const taken = await prisma.user.findFirst({
+        where: {
+          tiktokOpenId: tiktokUser.openId,
+          NOT: { id: session.userId },
+        },
+        select: { id: true },
+      });
+
+      if (taken) {
+        return NextResponse.redirect(new URL("/profile/setup?error=tiktok_taken", request.url));
+      }
+
+      await prisma.user.update({
+        where: { id: session.userId },
+        data: {
+          tiktokOpenId: tiktokUser.openId,
+          tiktokUsername: tiktokUser.username,
+          tiktokDisplayName: tiktokUser.displayName,
+          tiktokAvatarUrl: tiktokUser.avatarUrl,
+          tiktokFollowers: tiktokUser.followerCount,
+        },
+      });
+
+      await syncCreatorTikTokVerification({
+        userId: session.userId,
+        tiktokUsername: tiktokUser.username,
+        tiktokFollowers: tiktokUser.followerCount,
+        tiktokAvatarUrl: tiktokUser.avatarUrl,
+      });
+
+      return NextResponse.redirect(new URL("/profile/setup?tiktok=verified", request.url));
+    }
+
     const fallbackEmail = `tiktok_${tiktokUser.openId}@dealereth.local`;
 
     let user = await prisma.user.findFirst({
@@ -73,27 +126,64 @@ export async function GET(request: Request) {
       });
     }
 
+    if (user.role === "CREATOR") {
+      await syncCreatorTikTokVerification({
+        userId: user.id,
+        tiktokUsername: tiktokUser.username,
+        tiktokFollowers: tiktokUser.followerCount,
+        tiktokAvatarUrl: tiktokUser.avatarUrl,
+      });
+    }
+
     const token = await signSessionToken({ userId: user.id, email: user.email, role: user.role });
     await createSessionCookie(token);
 
     const redirectPath =
-      user.role === "CLIENT" ? (user.clientProfile ? "/client/dashboard" : "/client/profile") : user.profile ? "/dashboard" : "/profile/setup";
+      user.role === "CLIENT"
+        ? user.clientProfile
+          ? "/client/dashboard"
+          : "/client/profile"
+        : user.profile
+          ? "/dashboard"
+          : "/profile/setup";
 
     return NextResponse.redirect(new URL(redirectPath, request.url));
   } catch (error) {
-    if (
-      error instanceof Prisma.PrismaClientInitializationError ||
-      error instanceof Prisma.PrismaClientKnownRequestError
-    ) {
-      return NextResponse.redirect(new URL(role === "CLIENT" ? "/client/login?error=oauth_database" : "/login?error=oauth_database", request.url));
+    if (error instanceof Prisma.PrismaClientInitializationError || error instanceof Prisma.PrismaClientKnownRequestError) {
+      return NextResponse.redirect(
+        new URL(
+          intent === "link"
+            ? "/profile/setup?error=oauth_database"
+            : role === "CLIENT"
+              ? "/client/login?error=oauth_database"
+              : "/login?error=oauth_database",
+          request.url,
+        ),
+      );
     }
 
     if (error instanceof TikTokAuthError) {
       return NextResponse.redirect(
-        new URL(role === "CLIENT" ? `/client/login?error=tiktok_${error.stage}` : `/login?error=tiktok_${error.stage}`, request.url),
+        new URL(
+          intent === "link"
+            ? `/profile/setup?error=tiktok_${error.stage}`
+            : role === "CLIENT"
+              ? `/client/login?error=tiktok_${error.stage}`
+              : `/login?error=tiktok_${error.stage}`,
+          request.url,
+        ),
       );
     }
 
-    return NextResponse.redirect(new URL(role === "CLIENT" ? "/client/login?error=tiktok_failed" : "/login?error=tiktok_failed", request.url));
+    return NextResponse.redirect(
+      new URL(
+        intent === "link"
+          ? "/profile/setup?error=tiktok_failed"
+          : role === "CLIENT"
+            ? "/client/login?error=tiktok_failed"
+            : "/login?error=tiktok_failed",
+        request.url,
+      ),
+    );
   }
 }
